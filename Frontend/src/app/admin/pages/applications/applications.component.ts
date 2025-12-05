@@ -1,14 +1,70 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import issues from 'src/assets/dummy/issues.json';
 
 @Component({
   selector: 'app-applications',
   templateUrl: './applications.component.html',
-  styleUrls: ['./applications.component.css']
+  styleUrls: ['./applications.component.css'],
 })
-export class ApplicationsComponent {
-
+export class ApplicationsComponent implements OnInit {
   @Output() saveIssue = new EventEmitter<any>();
+
+  ngOnInit(): void {
+    // this.issueList = issues;
+    // localStorage.setItem('issueList', JSON.stringify(this.issueList));
+    this.getIssueList();
+  }
+
+  getIssueList() {
+    const issueList = localStorage.getItem('issueList');
+    
+    if (issueList) {
+      this.issueList = JSON.parse(issueList);
+      console.log("issueList: ", this.issueList);
+      
+
+      const filteredIssues = this.issueList.filter((issue: any) => {
+        console.log("branch ", this.user.role);
+        
+        if (this.user.role === 'branch') {
+          return issue.branch_name === this.user.branch_name;
+        }
+        return issue; // include everything else
+      });
+      // console.log("filteredIssues ", this.issueList);
+      
+      this.tableData = filteredIssues.map((issue: any) => {
+        return {
+          id: issue.id,
+          title: issue.title,
+          ward: issue.ward,
+          // status: (issue.status && issue?.status?.length > 0) && console.log("=>", issue.status && Array.isArray(issue?.status) ? issue?.status.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process') : 'no' ),
+          
+          status: this.getStatus(issue),
+          // status: issue?.status?.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process'),
+          date: issue.date,
+        };
+      });
+
+      console.log("tableData ", this.tableData);
+      
+    }
+  }
+
+  getStatus(data:any){
+    const result = data && Array.isArray(data?.status)
+  ? data.status.find((e: any) =>
+      e.role === this.user.role &&
+      e.branch_name === this.user.branch_name
+    )?.status || 'In Process'
+  : 'In Process';
+    console.log("result ", result);
+    
+    return result;
+  }
+
+  tableData:any;
 
   sidebarCollapsed = false;
 
@@ -17,42 +73,37 @@ export class ApplicationsComponent {
 
   // 🔥 Issue model for NG-MODEL
   issue = {
-    title: "",
-    id: "",
-    ward: "",
-    submittedBy: "",
-    date: "",
-    location: "",
-    description: "",
-    status: "In Process",
+    title: '',
+    id: '',
+    ward: '',
+    submittedBy: '',
+    date: '',
+    location: '',
+    description: '',
+    // status: 'In Process',
+    status : 'In Process',
     timeline: [] as any[],
-    attachments: [] as File[]
+    attachments: [] as File[],
+    role: '',
+    branch_name: ''
   };
 
   selectedFiles: File[] = [];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {
+    let u = localStorage.getItem('user');
+    this.user = JSON.parse(u || '{}');
+  }
 
   columns = [
     { field: 'id', header: 'ID' },
     { field: 'title', header: 'Issue Title' },
     { field: 'ward', header: 'Ward No.' },
     { field: 'status', header: 'Status' },
-    { field: 'date', header: 'Date' }
+    { field: 'date', header: 'Date' },
   ];
 
-  issueList = [
-    { id: 'ISS-001', title: 'Road Repair', ward: '05', status: 'In-Process', date: '20 Nov 2025' },
-    { id: 'ISS-002', title: 'Drainage Block', ward: '11', status: 'Approved', date: '21 Nov 2025' },
-    { id: 'ISS-003', title: 'Street Light Not Working', ward: '03', status: 'Rejected', date: '18 Nov 2025' },
-    { id: 'ISS-004', title: 'Garbage Overflow', ward: '07', status: 'Approved', date: '19 Nov 2025' },
-    { id: 'ISS-005', title: 'Water Leakage', ward: '04', status: 'In-Process', date: '17 Nov 2025' },
-    { id: 'ISS-006', title: 'Tree Fallen', ward: '12', status: 'Rejected', date: '15 Nov 2025' },
-    { id: 'ISS-007', title: 'Footpath Broken', ward: '02', status: 'Approved', date: '14 Nov 2025' },
-    { id: 'ISS-008', title: 'Transformer Issue', ward: '08', status: 'In-Process', date: '12 Nov 2025' },
-    { id: 'ISS-009', title: 'Public Toilet Maintenance', ward: '10', status: 'Rejected', date: '10 Nov 2025' },
-    { id: 'ISS-010', title: 'Sewer Cleaning Required', ward: '06', status: 'Approved', date: '08 Nov 2025' }
-  ];
+  issueList:any = [];
 
   onSidebarToggle(val: boolean) {
     this.sidebarCollapsed = val;
@@ -76,16 +127,18 @@ export class ApplicationsComponent {
   // 🔄 RESET FORM FIELDS
   resetForm() {
     this.issue = {
-      title: "",
-      id: "",
-      ward: "",
-      submittedBy: "",
-      date: "",
-      location: "",
-      description: "",
-      status: "In Process",
+      title: '',
+      id: '',
+      ward: '',
+      submittedBy: '',
+      date: '',
+      location: '',
+      description: '',
+      status: 'In Process',
       timeline: [],
-      attachments: []
+      attachments: [],
+      role: '',
+      branch_name: ''
     };
     this.selectedFiles = [];
   }
@@ -96,10 +149,19 @@ export class ApplicationsComponent {
     this.issue.attachments = this.selectedFiles;
   }
 
+  user:any;
+
   // 💾 SAVE ISSUE
   submitIssue() {
+     
+
+    if (this.user) {
+      this.issue.role = this.user.role;
+      this.issue.branch_name = this.user.branch_name;
+    }
+    
     if (!this.issue.id || !this.issue.title) {
-      alert("Issue ID & Title are required!");
+      alert('Issue ID & Title are required!');
       return;
     }
 
@@ -107,11 +169,27 @@ export class ApplicationsComponent {
       id: this.issue.id,
       title: this.issue.title,
       ward: this.issue.ward,
-      status: this.issue.status,
-      date: this.issue.date
+      // status: this.issue.status,
+      status : [
+        {
+          status: this.issue.status,
+          date: this.issue.date,
+          role: this.issue.role,
+          branch_name: this.issue.branch_name
+        }
+      ],
+      date: this.issue.date,
+      
+      role: this.issue.role,
+      branch_name: this.issue.branch_name
     });
 
     this.saveIssue.emit(this.issue);
+    console.log('issueList : ', this.issueList);
+    localStorage.setItem('issueList', JSON.stringify(this.issueList));
+
+    // sessionStorage.setItem('user', JSON.stringify(found));
+    this.getIssueList();
 
     this.closePopup();
   }

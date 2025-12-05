@@ -51,7 +51,7 @@ export class LoginComponent {
     if (found) {
       console.log('LOGIN SUCCESS', found);
 
-      sessionStorage.setItem('user', JSON.stringify(found));
+      localStorage.setItem('user', JSON.stringify(found));
       // sessionStorage.setItem('issues', JSON.stringify(issues));
 
 
