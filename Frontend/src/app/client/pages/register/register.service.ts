@@ -3,12 +3,28 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegisterService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
+  
 
   organizerRegistration(requestObject?: any): Observable<any> {
-    return this.http.post(`${environment.BASE_URL}/api/organizer-registration`, { requestObject });
+    return this.http.post(
+      `${environment.BASE_URL}/api/organizer-registration`,
+      { requestObject }
+    );
   }
+
+  data() {
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    console.log('Logged user:', user);
+  }
+
+  logout() {
+    sessionStorage.removeItem('user');
+    // this.router.navigate(['/login']);
+  }
+
+
 }

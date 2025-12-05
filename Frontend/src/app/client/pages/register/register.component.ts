@@ -33,10 +33,24 @@ export class RegisterComponent implements OnInit {
     private spinner: NgxSpinnerService
   ) {}
   ngOnInit(): void {
-    this.AllData = data.getAll();
-    this.Countries = data.getCountries();
-    console.log('AllData==', this.AllData);
+    // this.AllData = data.getAll();
+    // this.Countries = data.getCountries();
+    // console.log('AllData==', this.AllData);
+    this.data();
   }
+
+
+  // ******************
+  data() {
+    const user = JSON.parse(sessionStorage.getItem('user') || '{}');
+    console.log('Logged user from register:', user);
+  }
+  // ******************
+
+
+
+
+
 
   onChangeCountry = () => {
     if (this.selectedCountry) {

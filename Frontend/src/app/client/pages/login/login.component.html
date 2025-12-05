@@ -1,0 +1,88 @@
+<div class="page-container">
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <div class="nav-title w-100 text-center">
+        e-Cabinet MIC Portal – Guwahati Municipal Corporation
+      </div>
+    </nav>
+  
+    <div class="content-wrapper">
+      <div class="logo">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Guwahati_Municipal_Corporation_logo.svg/250px-Guwahati_Municipal_Corporation_logo.svg.png"
+          alt="GMC Logo"
+        />
+      </div>
+  
+      <div class="login-box">
+        <h2>e-Cabinet MIC Login</h2>
+  
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+          <!-- <div class="input-group">
+            <label>Email Address</label>
+            <div class="email-row">
+              <input
+                type="email"
+                placeholder="Enter your email"
+                [(ngModel)]="email"
+                name="email"
+                required
+              />
+              <button type="button" class="send-otp" (click)="sendOtp()">
+                Send OTP
+              </button>
+            </div>
+          </div> -->
+  
+          <div class="input-group">
+            <label>Email</label>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              [(ngModel)]="email"
+              name="email"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              [(ngModel)]="password"
+              name="password"
+              required
+            />
+          </div>
+  
+          <!-- <div class="input-group">
+            <label>OTP</label>
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              [(ngModel)]="otp"
+              name="otp"
+            />
+          </div> -->
+  
+          <button class="login-btn" type="submit">Login</button>
+  
+          <div class="links">
+            <p><a href="#">Forgot Password?</a></p>
+          </div>
+        </form>
+      </div>
+  
+      <!-- FOOTER -->
+      <!-- <footer>
+        <div class="footer-content">
+          <span class="footer-text">Developed By:</span>
+          <img
+            src="https://skaplinktechnologies.com/images/logo/logo.png"
+            class="footer-logo"
+          />
+        </div>
+      </footer> -->
+    </div>
+  </div>
+  
