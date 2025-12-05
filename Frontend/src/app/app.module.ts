@@ -46,6 +46,11 @@ import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.co
 import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { LoaderComponent } from './components/loader/loader.component';
+import { SidebarComponent } from './admin/sidebar/sidebar.component';
+import { ApplicationsComponent } from './admin/pages/applications/applications.component';
+import { ReportsComponent } from './admin/pages/reports/reports.component';
+import { TableComponent } from './components/table/table.component';
+import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -66,6 +71,11 @@ import { LoaderComponent } from './components/loader/loader.component';
     FileUploadComponent,
     AdminProfileComponent,
     LoaderComponent,
+    SidebarComponent,
+    ApplicationsComponent,
+    ReportsComponent,
+    TableComponent,
+    IssueDetailsComponent,
   ],
   imports: [
     FormsModule,

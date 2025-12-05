@@ -1,78 +1,41 @@
-<app-loader [show]="loader"></app-loader>  
-  
-  <!-- Statistic Cards Row -->
-  <div class="dashboard-container">
-  <h2><strong>Admin Dashboard</strong></h2>
+<app-sidebar (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
-  <div class="card-grid">
-    <mat-card class="dashboard-card bg-blue">
-      <mat-card-title>Total Events</mat-card-title>
-      <mat-card-content><h2>{{counts.totalEvents}}</h2></mat-card-content>
-    </mat-card>
+<div class="main-content" [class.collapsed]="sidebarCollapsed">
+<h3 class="fw-bold mb-4">Mayor in council(MIC) - Dashboard</h3>
 
-    <mat-card class="dashboard-card bg-green">
-      <mat-card-title>Active Events</mat-card-title>
-      <mat-card-content><h2>{{counts.activeEvents}}</h2></mat-card-content>
-    </mat-card>
-
-    <mat-card class="dashboard-card bg-purple">
-      <mat-card-title>Upcoming Events</mat-card-title>
-      <mat-card-content><h2>{{counts.upcomingEvents}}</h2></mat-card-content>
-    </mat-card>
-
-    <mat-card class="dashboard-card bg-orange">
-      <mat-card-title>Past Events</mat-card-title>
-      <mat-card-content><h2>{{counts.pastEvents}}</h2></mat-card-content>
-    </mat-card>
-  </div>
-
-  <!-- Table and Actions -->
-  <div class="table-section">
-    <div class="table-box">
-      <h4>Recent Events</h4>
-      <table mat-table [dataSource]="counts.recentEvents" class="mat-elevation-z1 full-width-table">
-
-        <ng-container matColumnDef="event">
-          <th mat-header-cell *matHeaderCellDef> Event </th>
-          <td mat-cell *matCellDef="let element"> {{element.eventName}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef> Date </th>
-          <td mat-cell *matCellDef="let element"> {{element.eventToDate | date}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="tickets">
-          <th mat-header-cell *matHeaderCellDef> City </th>
-          <td mat-cell *matCellDef="let element"> {{element.city}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="status">
-          <th mat-header-cell *matHeaderCellDef> Status </th>
-          <td mat-cell *matCellDef="let element">
-            <span class="badge" [ngClass]="{'active': element.status === 'Active', 'completed': element.status === 'Completed'}">
-              {{element.status}}
-            </span>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="['event', 'date', 'tickets', 'status']"></tr>
-        <tr mat-row *matRowDef="let row; columns: ['event', 'date', 'tickets', 'status'];"></tr>
-      </table>
+    <!-- SUMMARY CARDS -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-3"><div class="issue-card">Applications <br> <span class="text-primary fs-3">120</span></div></div>
+      <div class="col-md-3"><div class="issue-card">In-Process <br> <span class="text-warning fs-3">45</span></div></div>
+      <div class="col-md-3"><div class="issue-card">Approved <br> <span class="text-success fs-3">65</span></div></div>
+      <div class="col-md-3"><div class="issue-card">Rejected <br> <span class="text-danger fs-3">10</span></div></div>
     </div>
+  <!-- ISSUE LIST TABLE -->
+  <h4 class="fw-bold mb-3">Issue List</h4>
+  <table class="table table-striped table-bordered bg-white shadow-sm">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Issue Title</th>
+        <th>Ward No.</th>
+        <th>Status</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let i of issueList">
+        <td>{{ i.id }}</td>
+        <td>{{ i.title }}</td>
+        <td>{{ i.ward }}</td>
+        <td>{{ i.status }}</td>
+        <td>{{ i.date }}</td>
+      </tr>
+    </tbody>
+  </table>
 
-    <div class="quick-actions-box">
-      <h4>Quick Actions</h4>
-      <button mat-stroked-button color="primary" (click)="createEvent()">
-        <mat-icon>add</mat-icon> &nbsp; Create Event
-      </button>
-      <!-- <button mat-stroked-button color="accent">
-        <mat-icon>confirmation_number</mat-icon> &nbsp; Manage Tickets
-      </button>
-      <button mat-stroked-button color="warn">
-        <mat-icon>question_answer</mat-icon> &nbsp; Respond to Queries
-      </button> -->
-    </div>
-  </div>
+  <hr class="my-5">
+
+  <!-- GRAPH -->
+  <h4 class="fw-bold mb-3">Issues Registered - Monthly Graph</h4>
+  <canvas id="issueGraph"></canvas>
 </div>
-
