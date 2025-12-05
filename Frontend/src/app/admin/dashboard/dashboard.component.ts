@@ -1,72 +1,41 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { AppService } from '../../app.service';
 import { AuthService } from '../../auth/auth.service';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
+declare var Chart: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
-export class DashboardComponent implements OnInit {
-  constructor(
-    private appService: AppService,
-    private authService: AuthService,
-    private http: HttpClient
-  ) {}
+export class DashboardComponent implements AfterViewInit {
 
-  counts: any = {};
-  userEmail: any = '';
-  loader = false;
-  ngOnInit(): void {
-    let payload = this.authService.getDecodedToken();
-    console.log('Payload=', payload);
-    this.userEmail = payload.email;
-    this.getCounts();
-  }
-  // Define the columns to show in the Material table
-  displayedColumns: string[] = ['event', 'date', 'tickets', 'status'];
-
-  // Sample data for recent events
-  events = [
-    {
-      event: 'New Year Bash',
-      date: 'Dec 31, 2025',
-      tickets: 320,
-      status: 'Active',
-    },
-    {
-      event: 'Music Fest',
-      date: 'Aug 15, 2025',
-      tickets: 512,
-      status: 'Completed',
-    },
-    {
-      event: 'Startup Expo',
-      date: 'Sep 10, 2025',
-      tickets: 210,
-      status: 'Active',
-    },
-    {
-      event: 'Food Carnival',
-      date: 'Oct 20, 2025',
-      tickets: 420,
-      status: 'Completed',
-    },
+  issueList = [
+    { id: 'ISS-001', title: 'Road Repair', ward: '05', status: 'In-Process', date: '20 Nov 2025' },
+    { id: 'ISS-002', title: 'Drainage Block', ward: '11', status: 'Approved', date: '21 Nov 2025' },
+    { id: 'ISS-003', title: 'Street Light Not Working', ward: '03', status: 'Rejected', date: '18 Nov 2025' }
   ];
 
-  getCounts(): void {
-    this.loader = true;
-    this.http
-      .get(`${environment.BASE_URL}/api/getCounts?email=${this.userEmail}`)
-      .subscribe((res: any) => {
-        console.log('getAllEvents', res);
-        this.counts = res;
-        this.loader = false;
-      });
-  }
+  sidebarCollapsed = false;
 
-  createEvent(): void {
-    window.location.href = '/add-event';
+onSidebarToggle(state: boolean) {
+  this.sidebarCollapsed = state;
+}
+
+  ngAfterViewInit(): void {
+    const ctx = document.getElementById('issueGraph') as HTMLCanvasElement;
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+        datasets: [{
+          label: 'Issues Registered',
+          data: [50, 80, 60, 90, 120, 150, 130],
+          borderWidth: 3
+        }]
+      }
+    });
   }
 }

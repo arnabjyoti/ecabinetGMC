@@ -1,0 +1,111 @@
+.main-content {
+  margin-left: 250px;
+  padding: 30px;
+  transition: margin-left 0.3s ease;
+}
+
+.main-content.collapsed {
+  margin-left: 70px;
+}
+
+.page-title {
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* When sidebar is manually collapsed */
+.main-content.collapsed {
+  margin-left: 70px;
+}
+
+/* Auto full width on tablet/mobile */
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 70px !important;
+  }
+}
+
+/* Sticky Header */
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #f8f9fa;
+  padding: 10px 0;
+}
+
+/* Sections */
+.section-card {
+  border-radius: 10px;
+}
+
+/* Status badge */
+.status-badge {
+  font-size: 14px;
+  padding: 6px 12px;
+}
+
+/* TIMELINE */
+.timeline-container {
+  position: relative;
+  padding-left: 30px;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 5px;
+  left: 10px;
+  width: 3px;
+  height: 100%;
+  background: #d0d0d0;
+  border-radius: 10px;
+}
+
+.timeline-item {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.timeline-dot {
+  width: 15px;
+  height: 15px;
+  background: #0d6efd;
+  border-radius: 50%;
+  position: absolute;
+  left: -5px;
+  top: 3px;
+}
+
+.timeline-step {
+  font-size: 16px;
+  font-weight: 500;
+  padding-left: 15px;
+}
+
+/* ATTACHMENTS */
+.attachment-card {
+  border: 2px dashed #cfcfcf;
+  border-radius: 10px;
+  min-height: 180px;
+  transition: 0.2s ease;
+}
+
+.attachment-card:hover {
+  border-color: #0d6efd;
+  background: #f6faff;
+}
+
+.attachment-icon {
+  font-size: 45px;
+  color: #7a7a7a;
+  opacity: 0.7;
+}
+
+/* Responsive Fixes */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 0;
+  }
+}

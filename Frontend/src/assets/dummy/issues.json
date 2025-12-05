@@ -1,0 +1,13 @@
+[
+    { "id": "ISS-001", "title": "Road Repair", "ward": "05", "status": "In-Process", "date": "20 Nov 2025" },
+    { "id": "ISS-002", "title": "Drainage Block", "ward": "11", "status": "Approved", "date": "21 Nov 2025" },
+    { "id": "ISS-003", "title": "Street Light Not Working", "ward": "03", "status": "Rejected", "date": "18 Nov 2025" },
+    { "id": "ISS-004", "title": "Garbage Overflow", "ward": "07", "status": "Approved", "date": "19 Nov 2025" },
+    { "id": "ISS-005", "title": "Water Leakage", "ward": "04", "status": "In-Process", "date": "17 Nov 2025" },
+    { "id": "ISS-006", "title": "Tree Fallen", "ward": "12", "status": "Rejected", "date": "15 Nov 2025" },
+    { "id": "ISS-007", "title": "Footpath Broken", "ward": "02", "status": "Approved", "date": "14 Nov 2025" },
+    { "id": "ISS-008", "title": "Transformer Issue", "ward": "08", "status": "In-Process", "date": "12 Nov 2025" },
+    { "id": "ISS-009", "title": "Public Toilet Maintenance", "ward": "10", "status": "Rejected", "date": "10 Nov 2025" },
+    { "id": "ISS-010", "title": "Sewer Cleaning Required", "ward": "06", "status": "Approved", "date": "08 Nov 2025" }
+  ]
+  

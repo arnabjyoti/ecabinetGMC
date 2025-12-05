@@ -5,7 +5,6 @@ import { AuthGuardService as AuthGuard } from './auth/auth-gaurd.service';
 import { HomeComponent } from './client/pages/home/home.component';
 import { ClientLayoutComponent } from './client/client-layout/client-layout.component';
 import { LoginComponent } from './client/pages/login/login.component';
-import { RegisterComponent } from './client/pages/register/register.component';
 
 import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
 import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
@@ -14,13 +13,15 @@ import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.componen
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 // import { MapTestComponent } from './map-test/map-test.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
+import { ApplicationsComponent } from './admin/pages/applications/applications.component';
+import { ReportsComponent } from './admin/pages/reports/reports.component';
+import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details.component';
 const routes: Routes = [
   {
     path: '',
     component: ClientLayoutComponent,
     children: [
       { path: '', component: LoginComponent },
-      { path: 'register', component: RegisterComponent },
     ],
   },
   {
@@ -30,29 +31,27 @@ const routes: Routes = [
       {
         path: 'sa-dashboard',
         component: SaDashboardComponent,
-        canActivate: [RoleGuard],
-        data: { expectedRole: 'sa' },
       },
     ],
   },
-  {
-    path: '',
-    component: AdminLayoutComponent,
-    children: [
       {
         path: 'dashboard',
         component: DashboardComponent,
-        canActivate: [RoleGuard],
-        data: { expectedRole: 'admin' },
+      },
+      {
+        path: 'applications',
+        component: ApplicationsComponent,
+      },
+      { path: 'issue-details/:id', 
+        component: IssueDetailsComponent },
+      {
+        path: 'reports',
+        component: ReportsComponent,
       },
       {
         path: 'my-profile',
         component: AdminProfileComponent,
-        canActivate: [RoleGuard],
-        data: { expectedRole: 'admin' },
       },
-    ],
-  },
 
 
   { path: '**', redirectTo: 'home' },
