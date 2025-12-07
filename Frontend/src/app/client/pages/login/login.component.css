@@ -11,6 +11,11 @@
   padding-top: 10px;
 } */
 
+.content-wrapper{
+  margin-left: 0 !important;
+  padding-top: 100px
+}
+
 /* Full-page center alignment */
 .page-container {
   width: 100%;
