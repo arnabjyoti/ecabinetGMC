@@ -1,7 +1,8 @@
 <app-sidebar (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
 <div class="main-content" [class.collapsed]="sidebarCollapsed">
-<h3 class="fw-bold mb-4">Mayor in council(MIC) - Dashboard</h3>
+<!-- <h3 class="fw-bold mb-4">Mayor in council(MIC) - Dashboard</h3> -->
+<h3 class="fw-bold mb-4">{{user.branch_name}} - Dashboard</h3>
 
     <!-- SUMMARY CARDS -->
     <div class="row g-4 mb-4">
