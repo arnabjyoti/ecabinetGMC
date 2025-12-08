@@ -18,53 +18,53 @@ export class ApplicationsComponent implements OnInit {
 
   getIssueList() {
     const issueList = localStorage.getItem('issueList');
-    
+
     if (issueList) {
       this.issueList = JSON.parse(issueList);
-      console.log("issueList: ", this.issueList);
-      
+      console.log('issueList: ', this.issueList);
 
       const filteredIssues = this.issueList.filter((issue: any) => {
-        console.log("branch ", this.user.role);
-        
+        console.log('branch ', this.user.role);
+
         if (this.user.role === 'branch') {
           return issue.branch_name === this.user.branch_name;
         }
         return issue; // include everything else
       });
       // console.log("filteredIssues ", this.issueList);
-      
+
       this.tableData = filteredIssues.map((issue: any) => {
         return {
           id: issue.id,
           title: issue.title,
           ward: issue.ward,
           // status: (issue.status && issue?.status?.length > 0) && console.log("=>", issue.status && Array.isArray(issue?.status) ? issue?.status.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process') : 'no' ),
-          
+
           status: this.getStatus(issue),
           // status: issue?.status?.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process'),
           date: issue.date,
         };
       });
 
-      console.log("tableData ", this.tableData);
-      
+      console.log('tableData ', this.tableData);
     }
   }
 
-  getStatus(data:any){
-    const result = data && Array.isArray(data?.status)
-  ? data.status.find((e: any) =>
-      e.role === this.user.role &&
-      e.branch_name === this.user.branch_name
-    )?.status || 'In Process'
-  : 'In Process';
-    console.log("result ", result);
-    
+  getStatus(data: any) {
+    const result =
+      data && Array.isArray(data?.status)
+        ? data.status.find(
+            (e: any) =>
+              e.role === this.user.role &&
+              e.branch_name === this.user.branch_name
+          )?.status || 'In Process'
+        : 'In Process';
+    console.log('result ', result);
+
     return result;
   }
 
-  tableData:any;
+  tableData: any;
 
   sidebarCollapsed = false;
 
@@ -81,11 +81,11 @@ export class ApplicationsComponent implements OnInit {
     location: '',
     description: '',
     // status: 'In Process',
-    status : 'In Process',
+    status: 'In Process',
     timeline: [] as any[],
     attachments: [] as File[],
     role: '',
-    branch_name: ''
+    branch_name: '',
   };
 
   selectedFiles: File[] = [];
@@ -103,7 +103,7 @@ export class ApplicationsComponent implements OnInit {
     { field: 'date', header: 'Date' },
   ];
 
-  issueList:any = [];
+  issueList: any = [];
 
   onSidebarToggle(val: boolean) {
     this.sidebarCollapsed = val;
@@ -138,7 +138,7 @@ export class ApplicationsComponent implements OnInit {
       timeline: [],
       attachments: [],
       role: '',
-      branch_name: ''
+      branch_name: '',
     };
     this.selectedFiles = [];
   }
@@ -149,17 +149,15 @@ export class ApplicationsComponent implements OnInit {
     this.issue.attachments = this.selectedFiles;
   }
 
-  user:any;
+  user: any;
 
   // 💾 SAVE ISSUE
   submitIssue() {
-     
-
     if (this.user) {
       this.issue.role = this.user.role;
       this.issue.branch_name = this.user.branch_name;
     }
-    
+
     if (!this.issue.id || !this.issue.title) {
       alert('Issue ID & Title are required!');
       return;
@@ -170,18 +168,18 @@ export class ApplicationsComponent implements OnInit {
       title: this.issue.title,
       ward: this.issue.ward,
       // status: this.issue.status,
-      status : [
+      status: [
         {
           status: this.issue.status,
           date: this.issue.date,
           role: this.issue.role,
-          branch_name: this.issue.branch_name
-        }
+          branch_name: this.issue.branch_name,
+        },
       ],
       date: this.issue.date,
-      
+
       role: this.issue.role,
-      branch_name: this.issue.branch_name
+      branch_name: this.issue.branch_name,
     });
 
     this.saveIssue.emit(this.issue);

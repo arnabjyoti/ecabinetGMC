@@ -2,7 +2,7 @@
     {
         "id": "1",
         "name": "user1",
-        "email": "user1@gmail.com",
+        "email": "branch1@gmail.com",
         "password": "111111",
         "role": "branch",
         "mobile": "1234567890",
@@ -12,7 +12,7 @@
     {
         "id": "2",
         "name": "user2",
-        "email": "user2@gmail.com",
+        "email": "branch2@gmail.com",
         "password": "123456",
         "role": "branch",
         "mobile": "1234567890",
@@ -42,7 +42,7 @@
     {
         "id": "5",
         "name": "user5",
-        "email": "user5@gmail.com",
+        "email": "municipal.secretary@gmail.com",
         "password": "123456",
         "role": "municipal_secretary",
         "mobile": "1234567890",
@@ -52,7 +52,7 @@
     {
         "id": "6",
         "name": "user6",
-        "email": "user6@gmail.com",
+        "email": "commissioner@gmail.com",
         "password": "123456",
         "role": "commissioner",
         "mobile": "1234567890",

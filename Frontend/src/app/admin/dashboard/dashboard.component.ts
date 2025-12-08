@@ -11,6 +11,12 @@ declare var Chart: any;
 })
 export class DashboardComponent implements AfterViewInit {
 
+  user: any = null;
+  constructor(private appService: AppService, private authService: AuthService, private http: HttpClient) { 
+    let user = localStorage.getItem('user');
+    this.user = JSON.parse(user || '{}');
+  }
+
   issueList = [
     { id: 'ISS-001', title: 'Road Repair', ward: '05', status: 'In-Process', date: '20 Nov 2025' },
     { id: 'ISS-002', title: 'Drainage Block', ward: '11', status: 'Approved', date: '21 Nov 2025' },
