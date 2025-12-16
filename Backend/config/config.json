@@ -1,9 +1,9 @@
 {
     "development": {
-      "username": "",
+      "username": "root",
       "password": "",
-      "database": "",
-      "host": "",
+      "database": "ecabinet",
+      "host": "127.0.0.1",
       "dialect": "mysql",
         "dialectOptions": {
           "timezone": "local"
