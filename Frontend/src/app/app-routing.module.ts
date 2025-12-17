@@ -16,6 +16,7 @@ import { AdminProfileComponent } from './admin/admin-profile/admin-profile.compo
 import { ApplicationsComponent } from './admin/pages/applications/applications.component';
 import { ReportsComponent } from './admin/pages/reports/reports.component';
 import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details.component';
+import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
 const routes: Routes = [
   {
     path: '',
@@ -47,6 +48,10 @@ const routes: Routes = [
       {
         path: 'reports',
         component: ReportsComponent,
+      },
+      {
+        path: 'vote-page',
+        component: VotePageComponent,
       },
       {
         path: 'my-profile',
