@@ -3,110 +3,199 @@
 <div class="main-content" [class.collapsed]="sidebarCollapsed">
   <h3 class="page-title">Issue List</h3>
 
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#issueModal">
-  + Create New Issue
-</button>
+  <button
+    class="btn btn-primary"
+    data-bs-toggle="modal"
+    data-bs-target="#issueModal"
+  >
+    + Create New Issue
+  </button>
 
+  <div>
+    <div class="row">
+      <div class="col-md-3">
+        <div class="cus-card p-2 text-center border border-primary hover">
+          <strong>
+            Send/Create <br />
+          </strong>
+          <span class="text-primary fs-3 align-right">
+            <i class="bi bi-send-plus"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="cus-card p-2 text-center border border-primary hover">
+          <strong>
+            Inbox<br />
+          </strong>
+          <span class="text-primary fs-3 align-right">
+            <i class="bi bi-inbox"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="cus-card p-2 text-center border border-primary hover">
+          <strong>
+            Draft<br />
+          </strong>
+          <span class="text-primary fs-3 align-right">
+            <i class="bi bi-file-earmark"></i>
+          </span>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="cus-card p-2 text-center border border-primary hover">
+          <strong>
+            Archive<br />
+          </strong>
+          <span class="text-primary fs-3 align-right">
+            <i class="bi bi-archive"></i>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-
-  <app-table 
-    [columns]="columns"
-    [rows]="tableData"
-    (view)="onView($event)">
+  <app-table [columns]="columns" [rows]="tableData" (view)="onView($event)">
   </app-table>
 
-
   <!-- Bootstrap Modal -->
-<div class="modal fade" id="issueModal" tabindex="-1">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content shadow-lg border-0 rounded-3">
-
-      <!-- HEADER -->
-      <div class="modal-header bg-primary text-white py-3">
-        <h5 class="modal-title fw-bold">Create New Issue</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- BODY -->
-      <div class="modal-body px-4">
-
-        <div class="row g-3">
-
-          <!-- ISSUE TITLE -->
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Issue Title *</label>
-            <input type="text" class="form-control form-control-sm" [(ngModel)]="issue.title">
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Issue ID *</label>
-            <input type="text" class="form-control form-control-sm" [(ngModel)]="issue.id">
-          </div>
-
-          <div class="col-md-3">
-            <label class="form-label fw-semibold">Ward No *</label>
-            <input type="number" class="form-control form-control-sm" [(ngModel)]="issue.ward">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Submitted By *</label>
-            <input type="text" class="form-control form-control-sm" [(ngModel)]="issue.submittedBy">
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Date Submitted *</label>
-            <input type="date" class="form-control form-control-sm" [(ngModel)]="issue.date">
-          </div>
-
-          <div class="col-md-12">
-            <label class="form-label fw-semibold">Location *</label>
-            <input type="text" class="form-control form-control-sm" [(ngModel)]="issue.location">
-          </div>
-
-          <div class="col-md-12">
-            <label class="form-label fw-semibold">Description *</label>
-            <textarea class="form-control form-control-sm" rows="3" [(ngModel)]="issue.description"></textarea>
-          </div>
-
-          <div class="col-md-6">
-            <label class="form-label fw-semibold">Status *</label>
-            <select class="form-select form-select-sm" [(ngModel)]="issue.status">
-              <option>In Process</option>
-              <option>Pending</option>
-              <option>Accepted</option>
-              <option>Rejected</option>
-            </select>
-          </div>
+  <div class="modal fade" id="issueModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content shadow-lg border-0 rounded-3">
+        <!-- HEADER -->
+        <div class="modal-header bg-primary text-white py-3">
+          <h5 class="modal-title fw-bold">Create New Issue</h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white"
+            data-bs-dismiss="modal"
+          ></button>
         </div>
 
-        <!-- TIMELINE -->
-        <hr>
+        <!-- BODY -->
+        <div class="modal-body px-4">
+          <div class="row g-3">
+            <!-- ISSUE TITLE -->
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Issue Title *</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.title"
+              />
+            </div>
 
-        <!-- ATTACHMENTS -->
-        <hr>
-        <h5 class="fw-bold text-primary mb-2">Attachments</h5>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Issue ID *</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.id"
+              />
+            </div>
 
-        <input type="file" class="form-control form-control-sm mb-3" multiple (change)="onFileSelect($event)" />
+            <div class="col-md-3">
+              <label class="form-label fw-semibold">Ward No *</label>
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.ward"
+              />
+            </div>
 
-        <div class="row g-3">
-          <div class="col-md-3" *ngFor="let f of selectedFiles">
-            <div class="border p-3 text-center rounded-3 shadow-sm bg-white">
-              <i class="bi bi-file-earmark-text fs-1 text-secondary opacity-75"></i>
-              <p class="mt-2 small fw-semibold">{{ f.name }}</p>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Submitted By *</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.submittedBy"
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Date Submitted *</label>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.date"
+              />
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Location *</label>
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                [(ngModel)]="issue.location"
+              />
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label fw-semibold">Description *</label>
+              <textarea
+                class="form-control form-control-sm"
+                rows="3"
+                [(ngModel)]="issue.description"
+              ></textarea>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label fw-semibold">Status *</label>
+              <select
+                class="form-select form-select-sm"
+                [(ngModel)]="issue.status"
+              >
+                <option>In Process</option>
+                <option>Pending</option>
+                <option>Accepted</option>
+                <option>Rejected</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- TIMELINE -->
+          <hr />
+
+          <!-- ATTACHMENTS -->
+          <hr />
+          <h5 class="fw-bold text-primary mb-2">Attachments</h5>
+
+          <input
+            type="file"
+            class="form-control form-control-sm mb-3"
+            multiple
+            (change)="onFileSelect($event)"
+          />
+
+          <div class="row g-3">
+            <div class="col-md-3" *ngFor="let f of selectedFiles">
+              <div class="border p-3 text-center rounded-3 shadow-sm bg-white">
+                <i
+                  class="bi bi-file-earmark-text fs-1 text-secondary opacity-75"
+                ></i>
+                <p class="mt-2 small fw-semibold">{{ f.name }}</p>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- FOOTER -->
+        <div class="modal-footer bg-light py-3">
+          <button
+            class="btn btn-secondary px-4 rounded-pill"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button
+            class="btn btn-primary px-4 rounded-pill"
+            (click)="submitIssue()"
+          >
+            Submit Issue
+          </button>
+        </div>
       </div>
-
-      <!-- FOOTER -->
-      <div class="modal-footer bg-light py-3">
-        <button class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">Cancel</button>
-        <button class="btn btn-primary px-4 rounded-pill" (click)="submitIssue()">Submit Issue</button>
-      </div>
-
     </div>
   </div>
-</div>
-
 </div>
