@@ -20,9 +20,7 @@ const routes: Routes = [
   {
     path: '',
     component: ClientLayoutComponent,
-    children: [
-      { path: '', component: LoginComponent },
-    ],
+    children: [{ path: '', component: LoginComponent }],
   },
   {
     path: '',
@@ -34,25 +32,23 @@ const routes: Routes = [
       },
     ],
   },
-      {
-        path: 'dashboard',
-        component: DashboardComponent,
-      },
-      {
-        path: 'applications',
-        component: ApplicationsComponent,
-      },
-      { path: 'issue-details/:id', 
-        component: IssueDetailsComponent },
-      {
-        path: 'reports',
-        component: ReportsComponent,
-      },
-      {
-        path: 'my-profile',
-        component: AdminProfileComponent,
-      },
-
+  {
+    path: 'dashboard',
+    component: DashboardComponent,
+  },
+  {
+    path: 'applications',
+    component: ApplicationsComponent,
+  },
+  { path: 'issue-details/:id', component: IssueDetailsComponent },
+  {
+    path: 'reports',
+    component: ReportsComponent,
+  },
+  {
+    path: 'my-profile',
+    component: AdminProfileComponent,
+  },
 
   { path: '**', redirectTo: 'home' },
 ];

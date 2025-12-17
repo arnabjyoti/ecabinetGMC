@@ -13,11 +13,9 @@ import issues from 'src/assets/dummy/issues.json';
   styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
-  // useEmail = true;
-  // mobile = '';
-  // email = '';
-  // otp = '';
-  // otpSent = false;
+  email:any = '';
+  otp:any = '';
+  otpSent:any = false;
   // message = '';
 
   constructor(
@@ -27,50 +25,72 @@ export class LoginComponent {
     private spinner: NgxSpinnerService
   ) {}
 
-  email: string = '';
-  password: string = '';
-  otp: string = '';
-
   sendOtp() {
     console.log('OTP sent to', this.email);
+    if(!this.email){
+      this.toastr.warning('Please enter your registered email id','Warning Message');
+      return;
+    }
+    this.spinner.show();
+    this.authService.requestOtp("", this.email).subscribe({
+      next: (res) => {
+        console.log('RES==', res);
+        if (res?.status) {
+          this.otpSent = true;
+          this.toastr.success(res.message, 'Success Message');
+        } else {
+          this.otpSent = false;
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.otpSent = false;
+        this.toastr.error('Failed to send OTP','Error Message');
+        this.spinner.hide();
+      },
+    });
+  }
+
+  verifyOtp(){
+console.log('Verify OTP entered', this.email);
     // Call API here
   }
 
-  onSubmit() {
-    console.log('Login form submitted', {
-      email: this.email,
-      password: this.password,
-      otp: this.otp,
-    });
+  // onSubmit() {
+  //   console.log('Login form submitted', {
+  //     email: this.email,
+  //     password: this.password,
+  //     otp: this.otp,
+  //   });
 
-    // Example login check
-    const found = users.find(
-      (u) => u.email === this.email && u.password === this.password
-    );
+  //   // Example login check
+  //   const found = users.find(
+  //     (u) => u.email === this.email && u.password === this.password
+  //   );
 
-    if (found) {
-      console.log('LOGIN SUCCESS', found);
+  //   if (found) {
+  //     console.log('LOGIN SUCCESS', found);
 
-      localStorage.setItem('user', JSON.stringify(found));
-      // sessionStorage.setItem('issues', JSON.stringify(issues));
+  //     localStorage.setItem('user', JSON.stringify(found));
+  //     // sessionStorage.setItem('issues', JSON.stringify(issues));
 
+  //     this.toastr.success('Login Successful');
 
-      this.toastr.success('Login Successful');
+  //     if (found.role === 'branch') {
+  //       this.router.navigate(['/dashboard']);
+  //     }
+  //     if (found.role === 'municipal_secretary') {
+  //       this.router.navigate(['/dashboard']);
+  //     }
+  //     if (found.role === 'commissioner') {
+  //       this.router.navigate(['/dashboard']);
+  //     }
+  //   } else {
+  //     console.log('LOGIN FAILED');
+  //     this.toastr.error('Invalid email or password', 'Error');
+  //   }
 
-      if (found.role === 'branch') {
-        this.router.navigate(['/dashboard']);
-      }
-      if (found.role === 'municipal_secretary') {
-        this.router.navigate(['/dashboard']);
-      }
-      if (found.role === 'commissioner') {
-        this.router.navigate(['/dashboard']);
-      }
-    } else {
-      console.log('LOGIN FAILED');
-      this.toastr.error('Invalid email or password', 'Error');
-    }
-
-    // Login API call here
-  }
+  //   // Login API call here
+  // }
 }
