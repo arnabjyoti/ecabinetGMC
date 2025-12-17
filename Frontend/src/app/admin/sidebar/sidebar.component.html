@@ -41,6 +41,11 @@
             <span *ngIf="!isCollapsed"> Issue List</span>
         </a>
 
+        <a routerLink="/vote-page" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-hand-thumbs-up"></i>
+            <span *ngIf="!isCollapsed"> Vote Page</span>
+        </a>
+
         <a routerLink="/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
             <i class="bi bi-bar-chart-line"></i>
             <span *ngIf="!isCollapsed"> Reports</span>

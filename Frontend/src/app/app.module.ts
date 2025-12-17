@@ -51,6 +51,7 @@ import { ApplicationsComponent } from './admin/pages/applications/applications.c
 import { ReportsComponent } from './admin/pages/reports/reports.component';
 import { TableComponent } from './components/table/table.component';
 import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details.component';
+import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -76,6 +77,7 @@ import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details
     ReportsComponent,
     TableComponent,
     IssueDetailsComponent,
+    VotePageComponent,
   ],
   imports: [
     FormsModule,
