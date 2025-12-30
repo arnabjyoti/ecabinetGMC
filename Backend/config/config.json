@@ -31,7 +31,7 @@
         "logging": false,
         "timezone": "+05:30",
         "operatorsAliases": false,
-        "FILE_UPLOAD_PATH":"image",
+        "FILE_UPLOAD_PATH":"C:/Users/mithu/Documents/MyProjects/ecabinetGMC/Backend/uploads",
         "JWT_SECRET":"supersecretkey123!@#",
         "JWT_REFRESH_SECRET": "supersecretkey123!@#",
         "cert": {

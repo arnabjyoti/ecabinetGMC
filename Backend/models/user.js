@@ -8,6 +8,10 @@ module.exports = (sequelize, type) => {
       allowNull: false,
       primaryKey: true,
     },
+    name: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
     mobile: {
       type: DataTypes.STRING(15),
       allowNull: true,
@@ -18,6 +22,14 @@ module.exports = (sequelize, type) => {
     },
     role: {
       type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    department: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    isVoter: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     otp: {

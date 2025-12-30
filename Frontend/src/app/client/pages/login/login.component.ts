@@ -52,9 +52,26 @@ export class LoginComponent {
     });
   }
 
-  verifyOtp(){
-console.log('Verify OTP entered', this.email);
-    // Call API here
+  verifyOtp() {
+    this.authService.verifyOtp("", this.email, this.otp).subscribe({
+      next: (res) => {
+        this.authService.storeTokens(res.accessToken, res.refreshToken);
+        this.toastr.success('Login successful!', 'Success Message');
+        const role = this.authService.getRole();
+        if (role === 'branch_user') {
+           this.router.navigate(['/dashboard']);
+        } else if (role === 'municipal_secretary') {
+          this.router.navigate(['/dashboard']);
+        } else if (role === 'commissioner') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/unknown-role']);
+        }
+      },
+      error: () => {
+        this.toastr.error('Invalid or expired OTP','Error Message');
+      },
+    });
   }
 
   // onSubmit() {

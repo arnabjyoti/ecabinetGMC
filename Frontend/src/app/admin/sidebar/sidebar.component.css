@@ -1,4 +1,5 @@
 .sidebar {
+  top:68px;
   width: 250px;
   height: 100vh;
   position: fixed;
@@ -84,3 +85,109 @@ nav a.active {
     display: none !important;
   }
 }
+
+
+/* Topbar */
+
+.admin-container {
+  height: 100vh;
+}
+
+.admin-sidenav {
+  width: 240px;
+  background-color: rgb(27 43 72);
+  color: #ffffff;
+  padding-top: 10px;
+  border-right: 1px solid rgb(27 43 72);
+}
+
+.sidenav-header {
+  /* padding: 20px 16px; */
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  border-bottom: 1px solid rgb(27 43 72);
+}
+
+mat-nav-list a {
+  color: white !important;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  text-decoration: none;
+}
+
+mat-nav-list a:hover {
+  background-color: #2e2e42;
+  color: #ffffff;
+}
+
+mat-nav-list a mat-icon {
+  color: #ffffff !important;
+  margin-right: 12px;
+}
+
+mat-nav-list a:hover {
+  background-color: rgb(27 43 72);
+  color: #ffffff;
+}
+
+mat-toolbar {
+  background-color: rgb(27 43 72);
+   /* #3f51b5; */
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgb(27 43 72);
+}
+
+.admin-content {
+  /* padding: 24px; */
+  background-color: #f4f6f8;
+  min-height: calc(100vh - 64px); /* adjust height minus toolbar */
+}
+
+.admin-sidenav {
+  background-color: rgb(27 43 72);
+  color: white;
+  height: 100vh;
+  padding-top: 20px;
+  --mdc-list-list-item-label-text-color: white;
+}
+
+.admin-sidenav a.mat-list-item {
+  color: white !important;
+  font-weight: 500;
+}
+
+.admin-sidenav mat-icon {
+  color: white !important;
+  margin-right: 10px;
+}
+
+.admin-sidenav a.mat-list-item:hover {
+  background-color: #2d2d44;
+}
+ 
+ 
+
+
+.toolbar-title {
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.welcome-text {
+  text-align: center !important;
+}
+
+.spacer {
+  flex: 1 1 auto;
+  text-align: center;
+}
+
+
+

@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 
 const generateAccessToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role, mobile: user.mobile, email: user.email },
+    { id: user.id, name: user.name, role: user.role, department:user.department, mobile: user.mobile, email: user.email, isVoter: user.isVoter },
     config.JWT_SECRET,
     {
       expiresIn: "15m",
@@ -59,8 +59,6 @@ module.exports = {
   // Request OTP
   async requestOTP(req, res) {
     const { mobile, email } = req.body;
-    console.log("mobile=", mobile);
-    console.log("emai=", email);
     if (!mobile && !email)
       return res
         .status(200)
@@ -105,7 +103,7 @@ module.exports = {
                 <tr><td align="center">
                   <table width="480" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;">
                     <tr><td align="center" style="padding:30px 20px 10px;">
-                      <h2 style="color:#5b3fd4; margin:0;">Celebrate7</h2>
+                      <h2 style="color:#5b3fd4; margin:0;">eCabinet</h2>
                     </td></tr>
                     <tr><td align="center" style="padding:10px 30px;">
                       <h3 style="color:#5b3fd4; font-size:22px;">2FA code</h3>
@@ -117,7 +115,7 @@ module.exports = {
                       <p style="color:#333; font-size:13px;"><strong>Note:</strong> The code will expire in 5 minutes.</p>
                     </td></tr>
                     <tr><td align="center" style="padding:25px; background-color:#f5f6ff;">
-                      <p style="font-size:13px; color:#777;">© 2025 Celebrate7. All rights reserved.</p>
+                      <p style="font-size:13px; color:#777;">© 2025 eCabinet. All rights reserved.</p>
                     </td></tr>
                   </table>
                 </td></tr>
@@ -127,9 +125,9 @@ module.exports = {
             `;
         // Email options
         const mailOptions = {
-          from: '"Celebrate7" <mithuzaman2020@gmail.com>',
+          from: '"eCabinet" <mithuzaman2020@gmail.com>',
           to: email,
-          subject: "Celebrate7 - Your login verification code",
+          subject: "eCabinet - Your login verification code",
           text: "2FA code",
           html: htmlTemplate,
         };
@@ -147,7 +145,7 @@ module.exports = {
             res.json({
               status: true,
               message: "OTP sent to your registerd email id",
-              // otp: otp,
+              otp: otp,
             });
           }
         });

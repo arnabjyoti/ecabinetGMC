@@ -73,9 +73,24 @@ export class AuthService {
     return null;
   }
 
+  getUserId(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.id || null;
+  }
+
+  getUserName(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.name || null;
+  }
+
   getRole(): string | null {
     const decoded = this.getDecodedToken();
     return decoded?.role || null;
+  }
+
+  getDepartment(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.department || null;
   }
 
   getEmail(): string | null {
@@ -86,6 +101,11 @@ export class AuthService {
   getMobile(): string | null {
     const decoded = this.getDecodedToken();
     return decoded?.mobile || null;
+  }
+
+  getIsVoter(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.isVoter || null;
   }
 
   getRefreshToken() {

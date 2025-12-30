@@ -1,0 +1,75 @@
+<div class="page-container">
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-title w-100 text-center">
+      e-Cabinet MIC Portal – Guwahati Municipal Corporation
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <div class="logo">
+        <img
+          src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Guwahati_Municipal_Corporation_logo.svg/250px-Guwahati_Municipal_Corporation_logo.svg.png"
+          alt="GMC Logo"
+        />
+      </div>
+    <div class="login-box">      
+      <h2>eCabinet MIC Login</h2>
+      <div class="input-group">
+        <label>Email</label>
+        <input
+          type="email"
+          placeholder="Enter your registered email id"
+          [(ngModel)]="email"
+          name="email"
+          [disabled]="otpSent"
+        />
+      </div>
+      <button
+        *ngIf="!otpSent"
+        type="button"
+        class="send-otp"
+        (click)="sendOtp()"
+      >
+        Send OTP
+      </button>
+      <div *ngIf="otpSent" class="input-group" style="margin-top: 10px">
+        <label>Enter OTP</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="otp"
+          placeholder="6-digit OTP"
+          required
+        />
+      </div>
+      <button
+        *ngIf="otpSent"
+        type="submit"
+        (click)="verifyOtp()"
+        class="send-otp"
+      >
+        Verify OTP
+      </button>
+    </div>
+
+    <!-- FOOTER -->
+    <!-- <footer>
+        <div class="footer-content">
+          <span class="footer-text">Developed By:</span>
+          <img
+            src="https://skaplinktechnologies.com/images/logo/logo.png"
+            class="footer-logo"
+          />
+        </div>
+      </footer> -->
+  </div>
+</div>
+
+<ngx-spinner
+  bdColor="rgba(51,51,51,0.8)"
+  size="medium"
+  color="#fff"
+  type="ball-spin-clockwise"  style="background-color: aliceblue;">
+  <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending OTP...Please Wait</p>
+</ngx-spinner>

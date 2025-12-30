@@ -1,7 +1,7 @@
 const { sendMail, eventController} = require('../controllers');
 
 const AuthController = require('../controllers').AuthController;
-const OrganizerController = require('../controllers').OrganizerController;
+const IssuesController = require('../controllers').IssuesController;
 
 const upload = require('../middlewares/multer');
 //Api's
@@ -23,6 +23,13 @@ module.exports = (app) => {
 	app.post('/api/authenticate', AuthController.authenticate);
 	app.post('/api/verifyEmail', AuthController.verifyEmail);
 	app.post('/api/sendOtp', sendMail.sendOtp);
-	// Organizer API's
-	
-	};
+
+	// Issues API's
+	app.post('/api/get-issue-list', IssuesController.getIssueList);
+	app.post('/api/get-voting-ready-issue-list', IssuesController.getVotingReadyIssueList);
+	app.post('/api/create-issue', IssuesController.createIssue);
+	app.post('/api/update-issue', IssuesController.updateIssue);
+	app.post('/api/get-issue-attachments', IssuesController.getIssueAttachments);
+	app.post("/api/upload-issue-attachment", IssuesController.upload_config.single('file'), IssuesController.saveIssueAttachmentData);
+	app.post('/api/update-voting-status', IssuesController.updateVotingStatus);	
+};

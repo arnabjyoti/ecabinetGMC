@@ -1,0 +1,64 @@
+<div class="sidebar" [class.collapsed]="isCollapsed">
+
+    <div class="sidebar-header">
+        <h4 *ngIf="!isCollapsed" class="fw-bold"> e-Cabinet GMC</h4>
+
+        <!-- Toggle Button -->
+        <button class="toggle-btn" (click)="toggleSidebar()">
+            <i *ngIf="isCollapsed" class="bi bi-list pl-2"></i>
+            <i *ngIf="!isCollapsed" class="bi bi-caret-left"></i>
+        </button>
+    </div>
+
+    <nav>
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-speedometer2"></i>
+            <span *ngIf="!isCollapsed"> Dashboard</span>
+        </a>
+
+        <a routerLink="/applications" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-file-earmark-text"></i>
+            <span *ngIf="!isCollapsed"> Applications</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-hourglass-split"></i>
+            <span *ngIf="!isCollapsed"> In-Process</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-check-circle"></i>
+            <span *ngIf="!isCollapsed"> Approved</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-x-circle"></i>
+            <span *ngIf="!isCollapsed"> Rejected</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span *ngIf="!isCollapsed"> Issue List</span>
+        </a>
+
+        <a routerLink="/vote-page" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-hand-thumbs-up"></i>
+            <span *ngIf="!isCollapsed"> Vote Page</span>
+        </a>
+
+        <a routerLink="/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-bar-chart-line"></i>
+            <span *ngIf="!isCollapsed"> Reports</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-gear"></i>
+            <span *ngIf="!isCollapsed"> Settings</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-box-arrow-right"></i>
+            <span *ngIf="!isCollapsed"> Logout</span>
+        </a>
+    </nav>
+</div>

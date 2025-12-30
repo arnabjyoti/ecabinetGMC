@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { IssueDetailsService } from './issue-details.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import Swal from 'sweetalert2';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-issue-details',
@@ -7,14 +12,9 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./issue-details.component.css'],
 })
 export class IssueDetailsComponent implements OnInit {
-  issue: any = null;
   remarks: string = '';
   status: string = '';
-
-  // Local JSON — will be replaced by API later
-
   issueData: any[] = [];
-  user: any = null;
   currentStatus: any = [];
   // issueData: any[] = [
   //   {
@@ -58,74 +58,318 @@ export class IssueDetailsComponent implements OnInit {
   //     ]
   //   }
   // ];
-
-  constructor(private route: ActivatedRoute) {
-    let u = localStorage.getItem('issueList');
-    let user = localStorage.getItem('user');
-    this.user = JSON.parse(user || '{}');
-    this.issueData = JSON.parse(u || '[]');
+  @Input() issue: any = null;
+  @Input() activeTab: any = null;
+  @Input() user: any = null;
+  @Output() onSent = new EventEmitter<any>();
+  endpoint: any;
+  constructor(
+    private route: ActivatedRoute,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private issueDetailsService: IssueDetailsService
+  ) {
+    this.endpoint = environment.BASE_URL;
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    console.log('iddddddddd', id);
-
-    this.issue = this.issueData.find((x) => x.id === id);
-    this.currentStatus = this.issue.status[0].status;
-    // this.issue = JSON.parse(JSON.stringify(this.issue));
     console.log('issue', this.issue);
+    console.log('active tab', this.activeTab);
+    // this.issue.attachments = [
+    //   { name: 'Road Image 1', src: 'https://via.placeholder.com/120' },
+    //   { name: 'Report.pdf', src: 'https://via.placeholder.com/120' },
+    // ];
+    this.issue.timeline = this.getTimeLineStatus();
+    this.getIssueAttachments();
+  }
+
+  getTimeLineStatus() {
+    let timeline: any = [];
+    if (this.issue) {
+      if (this.issue.createdAt) {
+        timeline.push({
+          step: 'Issue Drafted → Branch Office',
+          date: this.issue.createdAt,
+        });
+      }
+      if (this.issue.branchAction == 'Sent' && this.issue.branchActionDate) {
+        timeline.push({
+          step: 'Sent to Municipal Secretary',
+          date: this.issue.branchActionDate,
+        });
+      }
+      if (
+        this.issue.municipalAction == 'Approved' &&
+        this.issue.municipalActionDate
+      ) {
+        timeline.push({
+          step: 'Sent to Commissioner',
+          date: this.issue.municipalActionDate,
+        });
+      }
+      if (
+        this.issue.municipalAction == 'Rejected' &&
+        this.issue.municipalActionDate
+      ) {
+        timeline.push({
+          step: 'Issue Rejected by Municipal Secretary',
+          date: this.issue.municipalActionDate,
+        });
+      }
+      if (
+        this.issue.commissionerAction == 'Approved' &&
+        this.issue.commissionerActionDate
+      ) {
+        timeline.push({
+          step: 'Approved by Commissioner for MIC Review',
+          date: this.issue.commissionerActionDate,
+        });
+      }
+      if (
+        this.issue.commissionerAction == 'Rejected' &&
+        this.issue.commissionerActionDate
+      ) {
+        timeline.push({
+          step: 'Issue Rejected by Commissioner',
+          date: this.issue.commissionerActionDate,
+        });
+      }
+      if (this.issue.voting == 'Started' && this.issue.votingDate) {
+        timeline.push({
+          step: 'Voting Started',
+          date: this.issue.votingDate,
+        });
+      }
+      if (this.issue.voting == 'Completed' && this.issue.votingDate) {
+        timeline.push({
+          step: 'Voting Completed',
+          date: this.issue.votingDate,
+        });
+      }
+      if (this.issue.status == 'Pending' && this.issue.votingDate) {
+        timeline.push({
+          step: 'Issue Acceptance Pending',
+          date: this.issue.votingDate,
+        });
+      }
+      if (this.issue.status == 'Accepted' && this.issue.votingDate) {
+        timeline.push({ step: 'Issue Accepted', date: this.issue.votingDate });
+      }
+      if (this.issue.status == 'Rejected' && this.issue.votingDate) {
+        timeline.push({ step: 'Issue Rejected', date: this.issue.votingDate });
+      }
+    }
+    return timeline;
+  }
+
+  issueAttachments: any = [];
+  getIssueAttachments() {
+    this.spinner.show();
+    let requestObject: any = {
+      issueId: this.issue.id,
+    };
+    this.issueDetailsService.getIssueAttachments(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.issueAttachments = res.data;
+          this.issue.attachments = this.mapAttachments(res.data);
+          console.log('ATTACHMENTS==', this.issueAttachments);
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
+
+  mapAttachments(data: any) {
+    let attachments: any = [];
+    if (data?.length > 0) {
+      data?.map((item: any) => {
+        attachments.push({
+          name: item?.doc_name,
+          src: this.endpoint + '/docs/' + item?.doc_path,
+        });
+      });
+    }
+    return attachments;
+  }
+
+  confirmMe(role: any) {
+    let confMsg: any = 'Are you sure?';
+    switch (role) {
+      case 'branch_user':
+        confMsg = 'Sending it to Municipal Secretary. Is that okay?';
+        break;
+      case 'municipal_secretary':
+        confMsg = 'Sending it to Commissioner. Is that okay?';
+        break;
+      case 'commissioner':
+        confMsg = 'Approving it to place in MIC meeting. Is that okay?';
+        break;
+    }
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.submitIssue();
+      }
+    });
   }
 
   submitIssue() {
-    console.log('remarks: ', this.remarks);
-    console.log('status: ', this.status);
-
-    console.log("user ", this.user);
-    
-
-    const id = this.user.id;
-
-    // console.log("issue ==>>", this.issue);
-    
-
-    const newStatus = {
-      status: this.status,
-      date: new Date().toISOString(),
-      role: this.user.role,
-      branch_name: this.user.branch_name,
-      remarks: this.remarks
+    let requestObject: any = {
+      user: this.user,
+      issue: this.issue,
+      action: {
+        status: 'Positive',
+        remarks: '',
+      },
     };
-
-    const updatedList = this.issueData.map((item) => {
-      if (item.id == this.issue.id) {
-        // Find matching status entry
-        const index = item.status.findIndex(
-          (s: any) => s.role === this.user.role && s.branch_name === this.user.branch_name
-        );
-        // console.log("indexindex ", index);
-        // console.log("itemitemitem ", item);
-
-        if (index !== -1) {
-          // Update existing status
-          item.status[index].status = newStatus.status;
-          item.status[index].date = newStatus.date;
-          item.status[index].remarks = newStatus.remarks;
+    this.spinner.show();
+    this.issueDetailsService.updateIssue(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          this.onSent.emit('IssueSentToMunicipalSecretary');
         } else {
-          // Add a new status entry
-          item.status.push(newStatus);
+          this.toastr.error(res.message, 'Error Message');
         }
-
-        // console.log("item.status ", item);
-        
-      }
-
-      return item;
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
     });
+  }
 
-    console.log(updatedList);
+  rejectionReason: any = '';
+  rejectMe() {
+    if (!this.rejectionReason) {
+      this.toastr.warning(
+        'Please specify reason for rejection as it is mandatory',
+        'Success Message'
+      );
+      return;
+    }
+    let requestObject: any = {
+      user: this.user,
+      issue: this.issue,
+      action: {
+        status: 'Negative',
+        remarks: this.rejectionReason,
+      },
+    };
+    this.spinner.show();
+    this.issueDetailsService.updateIssue(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          this.onSent.emit('IssueSentToMunicipalSecretary');
+          let ele: any = document.getElementById('issueRejectModalClose');
+          ele.click();
+          this.rejectionReason = '';
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
 
-    this.issueData = updatedList;
-    localStorage.setItem('issueList', JSON.stringify(updatedList));
-    this.currentStatus = newStatus.status;
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File must be under 5MB');
+      this.toastr.warning('File size must be under 5MB', 'Warning Message');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('issue', JSON.stringify(this.issue));
+    formData.append('user', JSON.stringify(this.user));
+    formData.append('file', file);
+    this.issueDetailsService.uploadIssueAttachment(formData).subscribe({
+      next: (res) => {
+        console.log('RES==', res);
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          this.getIssueAttachments();
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.toastr.error(
+          'Oops! something went wrong. Please try again',
+          'Error Message'
+        );
+        this.spinner.hide();
+      },
+    });
+  }
+
+  commentText: string = '';
+
+  sendComment() {
+    if (!this.commentText.trim()) return;
+
+    console.log('Comment:', this.commentText);
+
+    // TODO: API call here
+
+    this.commentText = '';
+  }
+
+  startVoting() {
+    let confMsg: any = 'Are you sure! You want start voting?';
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.updateVotingStatus();
+      }
+    });
+  }
+
+  updateVotingStatus() {
+    let requestObject: any = {
+      user: this.user,
+      issue: this.issue
+    };
+    this.spinner.show();
+    this.issueDetailsService.updateVotingStatus(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          this.onSent.emit('VotingStarted');
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
   }
 }

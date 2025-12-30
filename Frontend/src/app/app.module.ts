@@ -16,9 +16,6 @@ import { ClientNavbarComponent } from './client/client-navbar/client-navbar.comp
 import { ClientFooterComponent } from './client/client-footer/client-footer.component';
 import { HomeComponent } from './client/pages/home/home.component';
 import { LoginComponent } from './client/pages/login/login.component';
-import { AdminLayoutComponent } from './admin/admin-layout/admin-layout.component';
-import { AdminNavbarComponent } from './admin/admin-navbar/admin-navbar.component';
-import { AdminFooterComponent } from './admin/admin-footer/admin-footer.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { RegisterComponent } from './client/pages/register/register.component';
 
@@ -42,8 +39,6 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth/auth.interceptor';
-import { SaDashboardComponent } from './super-admin/sa-dashboard/sa-dashboard.component';
-import { SaAdminLayoutComponent } from './super-admin/sa-admin-layout/sa-admin-layout.component';
 import { AdminProfileComponent } from './admin/admin-profile/admin-profile.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import { SidebarComponent } from './admin/sidebar/sidebar.component';
@@ -52,6 +47,9 @@ import { ReportsComponent } from './admin/pages/reports/reports.component';
 import { TableComponent } from './components/table/table.component';
 import { IssueDetailsComponent } from './admin/pages/issue-details/issue-details.component';
 import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
+import { MuniSecIssueBucketComponent } from './municipal-secretary/muni-sec-issue-bucket/muni-sec-issue-bucket.component';
+import { CommissionerIssueBucketComponent } from './commissioner/commissioner-issue-bucket/commissioner-issue-bucket.component';
+import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -62,13 +60,8 @@ import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
     ClientFooterComponent,
     HomeComponent,
     LoginComponent,
-    AdminLayoutComponent,
-    AdminNavbarComponent,
-    AdminFooterComponent,
     DashboardComponent,
     RegisterComponent,
-    SaDashboardComponent,
-    SaAdminLayoutComponent,
     FileUploadComponent,
     AdminProfileComponent,
     LoaderComponent,
@@ -78,6 +71,9 @@ import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
     TableComponent,
     IssueDetailsComponent,
     VotePageComponent,
+    MuniSecIssueBucketComponent,
+    CommissionerIssueBucketComponent,
+    VotingZoneComponent
   ],
   imports: [
     FormsModule,

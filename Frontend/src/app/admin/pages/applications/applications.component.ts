@@ -1,6 +1,12 @@
 import { Component, EventEmitter, Output, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import { ApplicationsService } from './applications.service';
+import { AuthService } from '../../../auth/auth.service';
 import issues from 'src/assets/dummy/issues.json';
+
+type MailType = 'inbox' | 'sent' | 'draft';
 
 @Component({
   selector: 'app-applications',
@@ -8,187 +14,184 @@ import issues from 'src/assets/dummy/issues.json';
   styleUrls: ['./applications.component.css'],
 })
 export class ApplicationsComponent implements OnInit {
-  @Output() saveIssue = new EventEmitter<any>();
+  sidebarCollapsed = false;
+  activeTab: MailType = 'inbox';
+  issues: any = {
+    inbox: [],
+    sent: [],
+    draft: [],
+  };
+  // issues: any = {
+  //   inbox: [
+  //     { from: 'HR Team', subject: 'Interview Update', time: '10:30 AM' },
+  //     { from: 'Admin', subject: 'Policy Update', time: 'Yesterday' },
+  //   ],
+  //   sent: [{ to: 'Manager', subject: 'Weekly Report', time: 'Mon' }],
+  //   draft: [{ subject: 'Unfinished Proposal', time: 'Saved' }],
+  // };
 
-  ngOnInit(): void {
-    // this.issueList = issues;
-    // localStorage.setItem('issueList', JSON.stringify(this.issueList));
-    this.getIssueList();
-  }
-
-  getIssueList() {
-    const issueList = localStorage.getItem('issueList');
-
-    if (issueList) {
-      this.issueList = JSON.parse(issueList);
-      console.log('issueList: ', this.issueList);
-
-      const filteredIssues = this.issueList.filter((issue: any) => {
-        console.log('branch ', this.user.role);
-
-        if (this.user.role === 'branch') {
-          return issue.branch_name === this.user.branch_name;
-        }
-        return issue; // include everything else
-      });
-      // console.log("filteredIssues ", this.issueList);
-
-      this.tableData = filteredIssues.map((issue: any) => {
-        return {
-          id: issue.id,
-          title: issue.title,
-          ward: issue.ward,
-          // status: (issue.status && issue?.status?.length > 0) && console.log("=>", issue.status && Array.isArray(issue?.status) ? issue?.status.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process') : 'no' ),
-
-          status: this.getStatus(issue),
-          // status: issue?.status?.map((e:any)=> e.role === this.user.role && e.branch_name === this.user.branch_name ? e.status : 'In Process'),
-          date: issue.date,
-        };
-      });
-
-      console.log('tableData ', this.tableData);
+  issue: any = {
+    title: '',
+    ward: '',
+    location: '',
+    description: '',
+  };
+  user:any="";
+  isDetailView:boolean=false;
+  constructor(
+    private router: Router,
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private authService:AuthService,
+    private applicationsService: ApplicationsService
+  ) {
+    this.user={
+      userId: this.authService.getUserId(),
+      name: this.authService.getUserName(),
+      email: this.authService.getEmail(),
+      role: this.authService.getRole(),
+      department: this.authService.getDepartment()
     }
   }
 
-  getStatus(data: any) {
-    const result =
-      data && Array.isArray(data?.status)
-        ? data.status.find(
-            (e: any) =>
-              e.role === this.user.role &&
-              e.branch_name === this.user.branch_name
-          )?.status || 'In Process'
-        : 'In Process';
-    console.log('result ', result);
-
-    return result;
+  ngOnInit(): void {
+    console.log("USERRR=>",this.user);
+    this.getIssueList();
   }
-
-  tableData: any;
-
-  sidebarCollapsed = false;
-
-  // 🔥 Popup visibility
-  showPopup = false;
-
-  // 🔥 Issue model for NG-MODEL
-  issue = {
-    title: '',
-    id: '',
-    ward: '',
-    submittedBy: '',
-    date: '',
-    location: '',
-    description: '',
-    // status: 'In Process',
-    status: 'In Process',
-    timeline: [] as any[],
-    attachments: [] as File[],
-    role: '',
-    branch_name: '',
-  };
-
-  selectedFiles: File[] = [];
-
-  constructor(private router: Router) {
-    let u = localStorage.getItem('user');
-    this.user = JSON.parse(u || '{}');
-  }
-
-  columns = [
-    { field: 'id', header: 'ID' },
-    { field: 'title', header: 'Issue Title' },
-    { field: 'ward', header: 'Ward No.' },
-    { field: 'status', header: 'Status' },
-    { field: 'date', header: 'Date' },
-  ];
-
-  issueList: any = [];
 
   onSidebarToggle(val: boolean) {
     this.sidebarCollapsed = val;
   }
 
-  onView(row: any) {
-    this.router.navigate(['/issue-details', row.id]);
+  selectTab(tab: MailType) {
+    this.activeTab = tab;
+    this.isDetailView = false;
   }
 
-  // 🔥 OPEN POPUP
-  openAddIssue() {
-    this.resetForm();
-    this.showPopup = true;
-  }
-
-  // ❌ CLOSE POPUP
-  closePopup() {
-    this.showPopup = false;
-  }
-
-  // 🔄 RESET FORM FIELDS
-  resetForm() {
-    this.issue = {
-      title: '',
-      id: '',
-      ward: '',
-      submittedBy: '',
-      date: '',
-      location: '',
-      description: '',
-      status: 'In Process',
-      timeline: [],
-      attachments: [],
-      role: '',
-      branch_name: '',
+  getIssueList() {
+    let requestObject: any = {
+      role: this.user.role,
+      department: this.user.department,
     };
-    this.selectedFiles = [];
+    this.spinner.show();
+    this.applicationsService.getIssueList(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.issues = this.issueClassifier(res.data);
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
   }
 
-  // 📁 File Select Handler
-  onFileSelect(event: any) {
-    this.selectedFiles = Array.from(event.target.files);
-    this.issue.attachments = this.selectedFiles;
-  }
-
-  user: any;
-
-  // 💾 SAVE ISSUE
-  submitIssue() {
-    if (this.user) {
-      this.issue.role = this.user.role;
-      this.issue.branch_name = this.user.branch_name;
+  issueClassifier(data: any) { 
+    let issues:any = {inbox:[], sent:[], draft:[]}   
+    if(data?.length>0){
+      data?.map((item:any)=>{
+        console.log('ITEM==', item);
+        if(item?.branchAction=='Draft' && item?.raisedBy==this.user.userId){
+          item.subject=item?.title;
+          item.time='Saved';
+          issues.draft.push(item);
+        }
+        if(item?.branchAction=='Sent' && item?.raisedBy==this.user.userId){
+          item.to='Municipal Secretary';
+          item.subject=item?.title;
+          item.time=item?.branchActionDate;
+          issues.sent.push(item);
+        }
+        if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
+          item.from='Branch User';
+          item.subject=item?.title;
+          item.time=item?.createdAt;
+          issues.inbox.push(item);
+        }
+      });
     }
+    return issues;
+  }
 
-    if (!this.issue.id || !this.issue.title) {
-      alert('Issue ID & Title are required!');
+  submitIssue() {
+    if (!this.issue.title) {
+      this.toastr.warning('Issue title is mandatory', 'Warning Message');
+      return;
+    }
+    if (!this.issue.ward) {
+      this.toastr.warning('Ward is mandatory', 'Warning Message');
       return;
     }
 
-    this.issueList.unshift({
-      id: this.issue.id,
+    if (!this.issue.location) {
+      this.toastr.warning('Location is mandatory', 'Warning Message');
+      return;
+    }
+
+    if (!this.issue.description) {
+      this.toastr.warning('Description is mandatory', 'Warning Message');
+      return;
+    }
+    this.spinner.show();
+    let requestObject: any = {
       title: this.issue.title,
       ward: this.issue.ward,
-      // status: this.issue.status,
-      status: [
-        {
-          status: this.issue.status,
-          date: this.issue.date,
-          role: this.issue.role,
-          branch_name: this.issue.branch_name,
-        },
-      ],
-      date: this.issue.date,
-
-      role: this.issue.role,
-      branch_name: this.issue.branch_name,
+      location: this.issue.location,
+      description: this.issue.description,
+      department: this.user.department,
+      userId: this.user.userId,
+      userName: this.user.name,
+    };
+    this.applicationsService.createIssue(requestObject).subscribe({
+      next: (res) => {
+        console.log('RES==', res);
+        if (res?.status) {
+          this.activeTab = 'draft';
+          this.toastr.success(res.message, 'Success Message');          
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+        this.getIssueList();
+        this.closePopup();
+      },
+      error: (err) => {
+        this.toastr.error('Failed to save data', 'Error Message');
+        this.spinner.hide();
+      },
     });
+  }
 
-    this.saveIssue.emit(this.issue);
-    console.log('issueList : ', this.issueList);
-    localStorage.setItem('issueList', JSON.stringify(this.issueList));
+  selectedIssue:any={};
+  onView(issue: any) {
+    console.log(issue);
+    this.selectedIssue = issue;
+    this.isDetailView = true;
+  }
 
-    // sessionStorage.setItem('user', JSON.stringify(found));
+  onBack(){
+    this.isDetailView = false;
+  }
+
+  closePopup() {
+    let ele: any = document.getElementById('issueModalClose');
+    ele.click();
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.issue = {
+      title: '',
+      ward: '',
+      location: '',
+      description: '',
+    };
+  }
+
+  onSent(e:any){
     this.getIssueList();
-
-    this.closePopup();
+    this.activeTab = 'sent';
+    this.isDetailView = false;
   }
 }
