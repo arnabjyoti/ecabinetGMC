@@ -81,6 +81,7 @@ export class IssueDetailsComponent implements OnInit {
     // ];
     this.issue.timeline = this.getTimeLineStatus();
     this.getIssueAttachments();
+    this.getAllComments();
   }
 
   getTimeLineStatus() {
@@ -330,9 +331,57 @@ export class IssueDetailsComponent implements OnInit {
     console.log('Comment:', this.commentText);
 
     // TODO: API call here
+    console.log('JSON.stringify(this.user) ', this.user);
+    let requestObject: any = {
+      user: this.user,
+      issue: this.issue,
+      comment: this.commentText,
+    };
+
+    console.log('requestObject ', requestObject);
+
+    this.issueDetailsService.addComment(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          // this.getIssueComments();
+          this.getAllComments();
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
 
     this.commentText = '';
   }
+
+  allComments: any[] = [];
+
+  getAllComments() {
+    let requestObject: any = {
+      issue: this.issue,
+      user: this.user,
+    };
+    this.issueDetailsService.getAllComments(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.allComments = res.data;
+          
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
+
 
   startVoting() {
     let confMsg: any = 'Are you sure! You want start voting?';
@@ -354,7 +403,7 @@ export class IssueDetailsComponent implements OnInit {
   updateVotingStatus() {
     let requestObject: any = {
       user: this.user,
-      issue: this.issue
+      issue: this.issue,
     };
     this.spinner.show();
     this.issueDetailsService.updateVotingStatus(requestObject).subscribe({
