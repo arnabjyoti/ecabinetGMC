@@ -20,10 +20,10 @@ attachments: [
 
 
 members = [
-{ id: 1, name: 'Chief Secretary', vote: null },
-{ id: 2, name: 'Finance Secretary', vote: null },
-{ id: 3, name: 'Transport Secretary', vote: null },
-{ id: 4, name: 'Law Secretary', vote: null },
+{ id: 1, name: 'Member 1', vote: null },
+{ id: 2, name: 'Member 2', vote: null },
+{ id: 3, name: 'Member 3', vote: null },
+{ id: 4, name: 'Member 4', vote: null },
 { id: 5, name: 'Power Secretary', vote: null },
 { id: 6, name: 'Planning Secretary', vote: null },
 { id: 7, name: 'Environment Secretary', vote: null },
