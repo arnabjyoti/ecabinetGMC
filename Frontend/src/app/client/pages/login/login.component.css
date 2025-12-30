@@ -23,16 +23,36 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  background-image: url('../../../../assets/login/cm.png');
+  background-repeat: no-repeat;
+  background-position: 90% bottom;
+  /* background-size: contain; */
+  background-size: 250px auto;
+
+  /* White background */
+  background-color: #ffffff;
+}
+
+
+
+@media (max-width: 768px) {
+  .page-container {
+    background-position: 55% bottom;
+    background-size: 80%;
+  }
 }
 
 /* Content wrapper so content stays centered under navbar */
 .content-wrapper {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-left: 0 !important;
+  background-color: transparent;
 }
 
 
@@ -189,3 +209,5 @@ footer {
   width: 150px;
   opacity: 0.9;
 }
+
+/* for bg image */
