@@ -26,7 +26,7 @@
     <div class="content" *ngIf="isDetailView">
         <h4><strong><a href="javascript:;" (click)="onBack()"><i class="bi bi-arrow-left"></i> </a>&nbsp;{{ selectedIssue?.title }}</strong></h4>
         <!-- <app-issue-details [issue]="selectedIssue" [activeTab]="activeTab" [user]="user" (onSent)="onSent($event)"></app-issue-details> -->
-         <app-vote-page></app-vote-page>
+         <app-vote-page [selectedIssue]="selectedIssue"></app-vote-page>
     </div>
   </div>
 </div>

@@ -2,6 +2,7 @@ const async = require("async");
 const usersModel = require("../models").users;
 const issuesModel = require("../models").issues;
 const attachmentsModel = require("../models").attachments;
+const votingTrackersModel = require("../models").voting_trackers;
 var request = require("request");
 const Op = require("sequelize").Op;
 const jwt = require("jsonwebtoken");
@@ -301,12 +302,25 @@ module.exports = {
           .status(404)
           .json({ status: false, message: "Issue not found" });
       }
-      issue.voting = "Started";
-      issue.votingDate = new Date();
-      await issue.save();
-      return res.status(200).send({
-        status: true,
-        message: "Voting started successfully",
+      const newVotingTracker = {
+        issue_id: id,
+        total_voter: 0,
+        vote_polled: 0,
+        accepted: 0,
+        rejected: 0,
+        abstained: 0,
+        voting_status: "Open",
+        record_status: "Active",
+        isDeleted: false,
+      };
+      votingTrackersModel.create(newVotingTracker).then(async (r) => {
+        issue.voting = "Started";
+        issue.votingDate = new Date();
+        await issue.save();
+        return res.status(200).send({
+          status: true,
+          message: "Voting started successfully",
+        });
       });
     } catch (error) {
       console.error("Error updating issue:", error);

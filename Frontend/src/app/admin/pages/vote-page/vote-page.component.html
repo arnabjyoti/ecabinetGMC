@@ -10,7 +10,8 @@
 <h4>Attachments</h4>
 <ul>
 <li *ngFor="let file of issue.attachments">
-📄 {{ file.name }}
+<!-- 📄 {{ file.name }} -->
+ <a [href]="file.src" target="_blank">{{ file.name }}</a>
 </li>
 </ul>
 </div>
