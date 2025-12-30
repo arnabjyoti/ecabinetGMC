@@ -2,6 +2,7 @@ const async = require("async");
 const usersModel = require("../models").users;
 const issuesModel = require("../models").issues;
 const attachmentsModel = require("../models").attachments;
+const commentsModel = require("../models").comments;
 var request = require("request");
 const Op = require("sequelize").Op;
 const jwt = require("jsonwebtoken");
@@ -307,6 +308,88 @@ module.exports = {
       return res.status(200).send({
         status: true,
         message: "Voting started successfully",
+      });
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+
+  async addComment(req, res) {
+    let requestObject = req.body.requestObject;
+    if (!requestObject.user || !requestObject.issue) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to update issue. Please check the values provided",
+      });
+    }
+    try {
+      const id = requestObject.issue.id;
+      const issue = await issuesModel.findByPk(id);
+      if (!issue) {
+        return res
+          .status(404)
+          .json({ status: false, message: "Issue not found" });
+      }
+
+      // commentsModel.create({
+      //   issueId: id,
+      //   userId: requestObject.user.userId,
+      //   comment: requestObject.comment
+      // })
+
+      let obj = {
+        // issueId: id,
+        commentByName: requestObject.user.name,
+        commentByRole: requestObject.user.role,
+        commentBy: requestObject.user.userId,
+        issue_id: id,
+        comment: requestObject.comment,
+        status: "Active",
+        isDeleted: false,
+      };
+
+      commentsModel.create(obj).then((r) => {
+        return res.status(200).send({
+          status: true,
+          message: "Comment added successfully",
+        });
+      });
+      // issue.comments = requestObject.comments;
+      // await issue.save();
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+
+  async getAllComments(req, res) {
+    let requestObject = req.body.requestObject;
+    if (!requestObject.user || !requestObject.issue) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to update issue. Please check the values provided",
+      });
+    }
+    try {
+      const id = requestObject.issue.id;
+      const issue = await issuesModel.findByPk(id);
+      if (!issue) {
+        return res
+          .status(404)
+          .json({ status: false, message: "Issue not found" });
+      }
+      const comments = await commentsModel.findAll({
+        where: {
+          issue_id: id,
+          status: "Active",
+          isDeleted: false,
+        },
+      });
+      return res.status(200).send({
+        status: true,
+        data: comments,
+        message: "Success",
       });
     } catch (error) {
       console.error("Error updating issue:", error);

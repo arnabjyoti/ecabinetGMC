@@ -31,4 +31,16 @@ export class IssueDetailsService {
       requestObject,
     });
   }
+  
+  addComment(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/add-comment`, {
+      requestObject,
+    });
+  }
+
+  getAllComments(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/get-all-comments`, {
+      requestObject,
+    });
+  }
 }

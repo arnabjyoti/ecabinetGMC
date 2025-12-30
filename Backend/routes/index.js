@@ -32,4 +32,7 @@ module.exports = (app) => {
 	app.post('/api/get-issue-attachments', IssuesController.getIssueAttachments);
 	app.post("/api/upload-issue-attachment", IssuesController.upload_config.single('file'), IssuesController.saveIssueAttachmentData);
 	app.post('/api/update-voting-status', IssuesController.updateVotingStatus);	
+	
+	app.post('/api/add-comment', IssuesController.addComment);	
+	app.post('/api/get-all-comments', IssuesController.getAllComments);	
 };
