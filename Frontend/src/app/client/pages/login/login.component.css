@@ -17,29 +17,37 @@
 } */
 
 /* Full-page center alignment */
+
+html, body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* 🚫 stop scrolling */
+  font-family: "Segoe UI", sans-serif;
+}
+
 .page-container {
   width: 100%;
   height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background-image: url('../../../../assets/login/cm.png');
+  padding-top: 60px;
+  background-image: url('../../../../assets/login/bg.png');
   background-repeat: no-repeat;
-  background-position: 90% bottom;
-  /* background-size: contain; */
-  background-size: 250px auto;
+  background-position: center;
+  background-size: contain;
+  background-size: cover;
 
   /* White background */
   background-color: #ffffff;
+  overflow: hidden;
 }
 
 
 
 @media (max-width: 768px) {
   .page-container {
-    background-position: 55% bottom;
-    background-size: 80%;
+    background-image: url('../../../../assets/login/bgg.png');
   }
 }
 
@@ -89,7 +97,7 @@
 
 .login-box {
   margin-top: 60px;
-  background: #ffffff;
+  background: #ffffff26;
   padding: 40px 35px;
   width: 380px;
   border-radius: 18px;
