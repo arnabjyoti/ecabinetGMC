@@ -24,8 +24,7 @@
       </ng-template>
     </div>
     <div class="content" *ngIf="isDetailView">
-        <h4><strong><a href="javascript:;" (click)="onBack()"><i class="bi bi-arrow-left"></i> </a>&nbsp;{{ selectedIssue?.title }}</strong></h4>
-        <!-- <app-issue-details [issue]="selectedIssue" [activeTab]="activeTab" [user]="user" (onSent)="onSent($event)"></app-issue-details> -->
+        <h4><strong><a href="javascript:;" (click)="onBack()"><i class="bi bi-arrow-left"></i> </a>&nbsp;{{ selectedIssue?.title }}</strong> <button *ngIf="user.role=='commissioner' && selectedIssue.voting=='Started'" class="btn btn-primary" (click)="stopVoting()" style="float: right;background-color: brown;"><i class="bi bi-x-square"></i> Stop Voting</button></h4>
          <app-vote-page [selectedIssue]="selectedIssue"></app-vote-page>
     </div>
   </div>

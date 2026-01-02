@@ -28,9 +28,10 @@ export class MuniSecIssueBucketComponent implements OnInit {
   ) {
     this.user = {
       userId: this.authService.getUserId(),
+      name: this.authService.getUserName(),
       email: this.authService.getEmail(),
       role: this.authService.getRole(),
-      department: this.authService.getDepartment(),
+      department: this.authService.getDepartment()
     };
   }
   ngOnInit(): void {

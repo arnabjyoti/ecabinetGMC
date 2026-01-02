@@ -22,6 +22,7 @@ export class VotingZoneComponent {
   activeTab: MailType = 'inbox';
   user: any = '';
   constructor(
+    private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private authService: AuthService,
     private votingZoneService: VotingZoneService
@@ -60,7 +61,6 @@ export class VotingZoneComponent {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
       data?.map((item: any) => {
-        console.log('ITEM==', item);
         item.from = 'Branch User';
         item.subject = item?.title;
         item.time = item?.createdAt;
@@ -72,7 +72,6 @@ export class VotingZoneComponent {
 
   selectedIssue: any = {};
   onView(issue: any) {
-    console.log(issue);
     this.selectedIssue = issue;
     this.isDetailView = true;
   }
@@ -89,5 +88,28 @@ export class VotingZoneComponent {
 
   onSidebarToggle(val: boolean) {
     this.sidebarCollapsed = val;
+  }
+
+   stopVoting() {
+    this.spinner.show();
+    let requestObject: any = {
+      issueId: this.selectedIssue.id,
+      userId: this.user.userId,
+      role: this.user.role
+    };
+    this.votingZoneService.stopVoting(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          location.reload();
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
   }
 }

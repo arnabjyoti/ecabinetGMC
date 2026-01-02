@@ -29,7 +29,14 @@ module.exports = (app) => {
 	app.post('/api/get-voting-ready-issue-list', IssuesController.getVotingReadyIssueList);
 	app.post('/api/create-issue', IssuesController.createIssue);
 	app.post('/api/update-issue', IssuesController.updateIssue);
+	app.post('/api/get-vote-page-data', IssuesController.getVotePageData);
 	app.post('/api/get-issue-attachments', IssuesController.getIssueAttachments);
 	app.post("/api/upload-issue-attachment", IssuesController.upload_config.single('file'), IssuesController.saveIssueAttachmentData);
 	app.post('/api/update-voting-status', IssuesController.updateVotingStatus);	
+	app.post('/api/get-voters', IssuesController.getVoters);
+	app.post('/api/cast-vote', IssuesController.castVote);
+	app.post('/api/stop-voting', IssuesController.stopVoting);
+
+	app.post('/api/add-comment', IssuesController.addComment);	
+	app.post('/api/get-all-comments', IssuesController.getAllComments);	
 };

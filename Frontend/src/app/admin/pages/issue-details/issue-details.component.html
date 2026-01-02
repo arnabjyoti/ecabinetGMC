@@ -35,9 +35,7 @@
         </div>
       </div>
       <!-- ATTACHMENTS -->
-      <div class="ccard sshadow-sm ssection-card"
-        style="min-height: 20vh"
-      >
+      <div class="ccard sshadow-sm ssection-card" style="min-height: 20vh">
         <div class="ccard-body">
           <h5 class="fw-bold mb-3">
             Attachments
@@ -73,7 +71,12 @@
                 <i class="bi bi-file-earmark-text attachment-icon"></i>
                 <p class="fw-semibold mt-2">{{ a.name }}</p>
 
-                <a [href]="a.src" target="_blank" download class="btn btn-primary btn-sm w-100">
+                <a
+                  [href]="a.src"
+                  target="_blank"
+                  download
+                  class="btn btn-primary btn-sm w-100"
+                >
                   <i class="bi bi-download"></i> View
                 </a>
               </div>
@@ -230,52 +233,86 @@
   </div>
 
   <!-- COMMENTS -->
-  <div
-    class="row mb-5"
-    *ngIf="
-      activeTab != 'draft' &&
-      issue.status != 'Accepted' &&
-      issue.status != 'Rejected'
-    "
-  >
-    <div class="col-md-12">
-      <div class="ccard sshadow-sm ssection-card mb-5"></div>
-      <div class="ccard-body">
-        <h5 class="fw-bold mb-3"><i class="bi bi-chat me-1"></i> Comments</h5>
-        <div class="comment-box">
-          <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->
+  <div class="ccard sshadow-sm ssection-card">
+    <div
+      class="row mb-5"
+      *ngIf="activeTab != 'draft'"
+    >
+      <div class="col-md-12">
+        <div class="ccard sshadow-sm ssection-card mb-5"></div>
+        <div class="ccard-body">
+          <h5 class="fw-bold mb-3"><i class="bi bi-chat me-1"></i> Comments</h5>
 
-          <div class="input-wrapper">
-            <input
-              type="text"
-              class="comment-input"
-              placeholder="Write a comment..."
-              [(ngModel)]="commentText"
-              (keyup.enter)="sendComment()"
-            />
+          <div>
+            <div class="comments-wrapper">
+              <div
+                class="comment"
+                *ngFor="let comment of allComments"
+                [ngClass]="{
+                  'my-comment': comment.commentBy === user.userId,
+                  'other-comment': comment.commentBy !== user.userId
+                }"
+              >
+                <div class="comment-bubble">
+                  <div class="comment-header">
+                    <span class="comment-author">
+                      {{
+                        comment.commentBy === user.userId
+                          ? "Me"
+                          : comment.commentByName
+                      }}
+                    </span>
+                    <span class="comment-date">
+                      {{ comment.createdAt | date : "short" }}
+                    </span>
+                  </div>
 
-            <button
-              class="send-btn"
-              [disabled]="!commentText?.trim()"
-              (click)="sendComment()"
-            >
-              <i class="bi bi-send-fill"></i>
-            </button>
+                  <div class="comment-content">
+                    {{ comment.comment }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="comment-box"  *ngIf="
+        activeTab != 'draft' &&
+        issue.status != 'Accepted' &&
+        issue.status != 'Rejected'
+      ">
+            <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->
+
+            <div class="input-wrapper">
+              <input
+                type="text"
+                class="comment-input"
+                placeholder="Write a comment..."
+                [(ngModel)]="commentText"
+                (keyup.enter)="sendComment()"
+              />
+
+              <button
+                class="send-btn"
+                [disabled]="!commentText?.trim()"
+                (click)="sendComment()"
+              >
+                <i class="bi bi-send-fill"></i>
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row" *ngIf="user.role == 'branch_user' && activeTab == 'draft'">
-    <div class="col-md-12">
-      <button
-        class="btn btn-primary px-4"
-        (click)="confirmMe('branch_user')"
-        style="float: right"
-      >
-        <i class="bi bi-send"></i> Send
-      </button>
+    <div class="row" *ngIf="user.role == 'branch_user' && activeTab == 'draft'">
+      <div class="col-md-12">
+        <button
+          class="btn btn-primary px-4"
+          (click)="confirmMe('branch_user')"
+          style="float: right"
+        >
+          <i class="bi bi-send"></i> Send
+        </button>
+      </div>
     </div>
   </div>
 
@@ -335,9 +372,11 @@
     </div>
   </div>
 
-   <div
+  <div
     class="row"
-    *ngIf="user.role == 'commissioner' && issue.commissionerAction == 'Approved'"
+    *ngIf="
+      user.role == 'commissioner' && issue.commissionerAction == 'Approved'
+    "
   >
     <div class="col-md-12">
       <button

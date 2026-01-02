@@ -15,4 +15,10 @@ constructor(private http: HttpClient) {}
       requestObject,
     });
   }
+
+   stopVoting(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/stop-voting`, {
+      requestObject,
+    });
+  }
 }
