@@ -10,7 +10,8 @@
 <h4>Attachments</h4>
 <ul>
 <li *ngFor="let file of issue.attachments">
-📄 {{ file.name }}
+<!-- 📄 {{ file.name }} -->
+ <a [href]="file.src" target="_blank">{{ file.name }}</a>
 </li>
 </ul>
 </div>
@@ -23,24 +24,25 @@
 <!-- Result Section -->
 <div class="result-card">
 <h3>Final Result</h3>
-<p><strong>Members Voted:</strong> {{ votedCount }}/9</p>
+<p><strong>Members Voted:</strong> {{ votedCount }}/{{members.length}}</p>
 <h2 class="result">{{ result }}</h2>
 </div>
 
 
 <div class="members-grid">
 <div class="member-card" *ngFor="let m of members">
-<h4>{{ m.name }}</h4>
+<h4 [class.disabled-div]="user.userId!=m.id" style="padding-bottom: 0px;margin-bottom: 0px;text-align: center;">{{ m?.name }}</h4>
+<h6 [class.disabled-div]="user.userId!=m.id" style="padding: 0px;text-align: center;">{{ m?.roleName }}</h6>
 
 
-<div *ngIf="!m.vote" class="vote-buttons">
-<button class="approve" (click)="castVote(m, 'Approve')">Approve</button>
-<button class="reject" (click)="castVote(m, 'Reject')">Reject</button>
-<button class="abstain" (click)="castVote(m, 'Abstain')">Abstain</button>
+<div *ngIf="!m?.vote" class="vote-buttons" [class.disabled-div]="user.userId!=m.id">
+<button [disabled]="user.userId!=m.id" class="approve" (click)="castVote(m, 'Approved')">Approve</button>
+<button [disabled]="user.userId!=m.id" class="reject" (click)="castVote(m, 'Rejected')">Reject</button>
+<button [disabled]="user.userId!=m.id" class="abstain" (click)="castVote(m, 'Abstained')">Abstain</button>
 </div>
 
 
-<div *ngIf="m.vote" class="voted">✔ Voted: {{ m.vote }}</div>
+<div *ngIf="m?.vote" class="voted" style="text-align: center;">✔ Vote: {{ user.userId==m.id ? m.vote : 'Polled' }}</div>
 </div>
 </div>
 

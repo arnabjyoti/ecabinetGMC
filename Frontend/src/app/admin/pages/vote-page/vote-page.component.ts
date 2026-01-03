@@ -1,55 +1,119 @@
-import { Component } from '@angular/core';
-
-
+import { Component, Input, OnInit } from '@angular/core';
+import { AuthService } from '../../../auth/auth.service';
+import { VotePageService } from './vote-page.service';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import { environment } from 'src/environments/environment';
 @Component({
-selector: 'app-vote-page',
-templateUrl: './vote-page.component.html',
-styleUrls: ['./vote-page.component.css']
+  selector: 'app-vote-page',
+  templateUrl: './vote-page.component.html',
+  styleUrls: ['./vote-page.component.css'],
 })
-export class VotePageComponent {
+export class VotePageComponent implements OnInit {
+  @Input() selectedIssue: any = null;
+  issue: any = {};
+  user: any = {};
+  members: any = [];
+  endpoint: any = '';
+  constructor(
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+    private authService: AuthService,
+    private votePageService: VotePageService
+  ) {
+    this.endpoint = environment.BASE_URL;
+    this.user = {
+      userId: this.authService.getUserId(),
+      name: this.authService.getUserName(),
+      email: this.authService.getEmail(),
+      role: this.authService.getRole(),
+      department: this.authService.getDepartment(),
+    };
+  }
 
+  ngOnInit(): void {
+    this.getIssueDetails();
+    this.getVotePageData();
+  }
 
-issue = {
-title: 'Approval of State EV Bus Procurement Policy – 2025',
-description: 'Proposal to approve procurement of 200 electric buses under green mobility mission.',
-attachments: [
-{ name: 'Cabinet_Note.pdf' },
-{ name: 'Financial_Implication.xlsx' }
-]
-};
+  getVotePageData() {
+    this.spinner.show();
+    let requestObject: any = {
+      issueId: this.selectedIssue.id,
+      userId: this.user.userId,
+    };
+    this.votePageService.getVotePageData(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.members = res.data.members;
+          this.issue.attachments = this.mapAttachments(res.data.attachments);
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
 
+  getIssueDetails() {
+    this.issue = {
+      title: this.selectedIssue?.title ?? '',
+      description: this.selectedIssue?.description ?? '',
+      attachments: [],
+    };
+  }
 
-members = [
-{ id: 1, name: 'Member 1', vote: null },
-{ id: 2, name: 'Member 2', vote: null },
-{ id: 3, name: 'Member 3', vote: null },
-{ id: 4, name: 'Member 4', vote: null },
-{ id: 5, name: 'Power Secretary', vote: null },
-{ id: 6, name: 'Planning Secretary', vote: null },
-{ id: 7, name: 'Environment Secretary', vote: null },
-{ id: 8, name: 'Urban Development Secretary', vote: null },
-{ id: 9, name: 'IT Secretary', vote: null }
-];
+  mapAttachments(data: any) {
+    let attachments: any = [];
+    if (data?.length > 0) {
+      data?.map((item: any) => {
+        attachments.push({
+          name: item?.doc_name,
+          src: this.endpoint + '/docs/' + item?.doc_path,
+        });
+      });
+    }
+    return attachments;
+  }
 
+  castVote(member: any, decision: string) {
+    this.spinner.show();
+    let requestObject: any = {
+      issueId: this.selectedIssue.id,
+      userId: member.id,
+      vote: decision,
+    };
+    this.votePageService.castVote(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          member.vote = decision;
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
 
-castVote(member: any, decision: string) {
-member.vote = decision;
-}
+  get votedCount() {
+    return this.members.filter((m: any) => m.vote !== null).length;
+  }
 
+  get result() {
+    const approve = this.members.filter(
+      (m: any) => m.vote === 'Approved'
+    ).length;
+    const reject = this.members.filter((m: any) => m.vote === 'Rejected').length;
 
-get votedCount() {
-return this.members.filter(m => m.vote !== null).length;
-}
-
-
-get result() {
-const approve = this.members.filter(m => m.vote === 'Approve').length;
-const reject = this.members.filter(m => m.vote === 'Reject').length;
-
-
-if (this.votedCount < this.members.length) {
-return 'Voting In Progress';
-}
-return approve > reject ? 'APPROVED' : 'REJECTED';
-}
+    if (this.votedCount < this.members.length) {
+      return 'Voting In Progress';
+    }
+    return approve > reject ? 'APPROVED' : 'REJECTED';
+  }
 }

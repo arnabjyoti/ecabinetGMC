@@ -2,6 +2,8 @@ const async = require("async");
 const usersModel = require("../models").users;
 const issuesModel = require("../models").issues;
 const attachmentsModel = require("../models").attachments;
+const votingTrackersModel = require("../models").voting_trackers;
+const evmModel = require("../models").evms;
 const commentsModel = require("../models").comments;
 var request = require("request");
 const Op = require("sequelize").Op;
@@ -35,6 +37,22 @@ const fileFilter = (req, file, cb) => {
     return cb(new Error("Only JPG, PNG or PDF allowed"));
   }
   cb(null, true);
+};
+
+const getRoleName = (role) => {
+  let userRole = "";
+  switch (role) {
+    case "branch_user":
+      userRole = "Branch User";
+      break;
+    case "municipal_secretary":
+      userRole = "Municipal Secretary";
+      break;
+    case "commissioner":
+      userRole = "Commissioner";
+      break;
+  }
+  return userRole;
 };
 
 module.exports = {
@@ -263,6 +281,102 @@ module.exports = {
       });
     }
   },
+  getVotePageData(req, res) {
+    try {
+      let requestObject = req.body.requestObject;
+      let responseObject = { attachments: [], voters: [], members: [] };
+      async.waterfall(
+        [
+          (fn) => {
+            let whereClause = {
+              issue_id: requestObject.issueId,
+              isDeleted: false,
+              status: "Active",
+            };
+            return attachmentsModel
+              .findAll({
+                where: whereClause,
+              })
+              .then((docs) => {
+                responseObject.attachments = docs;
+                return fn(null, responseObject);
+              })
+              .catch((error) => {
+                return fn(null, responseObject);
+              });
+          },
+          (responseObject, fn) => {
+            let whereClause = {
+              isDeleted: false,
+              isVoter: true,
+              status: "Active",
+            };
+            return usersModel
+              .findAll({
+                where: whereClause,
+              })
+              .then((voters) => {
+                responseObject.voters = voters;
+                return fn(null, responseObject);
+              })
+              .catch((error) => {
+                return fn(null, responseObject);
+              });
+          },
+          (responseObject, fn) => {
+            if (responseObject.voters.length > 0) {
+              let count = 0;
+              responseObject.voters.map(async (item) => {
+                let whereClause = {
+                  issue_id: requestObject.issueId,
+                  user_id: item.id,
+                  status: "Active",
+                  isDeleted: false,
+                };
+                const doc = await evmModel.findOne({ where: whereClause });
+                const roleName = getRoleName(item?.role);
+                if (doc) {
+                  responseObject.members.push({
+                    id: item?.id,
+                    name: item?.name,
+                    role: item?.role,
+                    roleName: roleName,
+                    vote: doc.vote,
+                  });
+                } else {
+                  responseObject.members.push({
+                    id: item?.id,
+                    name: item?.name,
+                    role: item?.role,
+                    roleName: roleName,
+                    vote: null,
+                  });
+                }
+                count++;
+                if (responseObject.voters.length == count) {
+                  return fn(null, responseObject);
+                }
+              });
+            } else {
+              return fn(null, responseObject);
+            }
+          },
+        ],
+        (error, result) => {
+          if (error) {
+            console.error(err);
+            return;
+          }
+          return res
+            .status(200)
+            .send({ status: true, data: result, message: "Success" });
+        }
+      );
+    } catch (error) {
+      console.error("Error in getVotePageData:", error);
+      return res.status(500).send({ status: false, data: [], message: error });
+    }
+  },
   getIssueAttachments(req, res) {
     const issueId = req.body.requestObject.issueId;
     let whereClause = {
@@ -302,16 +416,221 @@ module.exports = {
           .status(404)
           .json({ status: false, message: "Issue not found" });
       }
-      issue.voting = "Started";
-      issue.votingDate = new Date();
-      await issue.save();
-      return res.status(200).send({
-        status: true,
-        message: "Voting started successfully",
-      });
+      let whereClause = {
+        status: "Active",
+        isDeleted: false,
+        isVoter: true,
+      };
+      await usersModel
+        .count({
+          where: whereClause,
+        })
+        .then((totalCount) => {
+          const newVotingTracker = {
+            issue_id: id,
+            total_voter: totalCount,
+            vote_polled: 0,
+            accepted: 0,
+            rejected: 0,
+            abstained: 0,
+            voting_status: "Open",
+            record_status: "Active",
+            isDeleted: false,
+          };
+          votingTrackersModel.create(newVotingTracker).then(async (r) => {
+            issue.voting = "Started";
+            issue.votingDate = new Date();
+            await issue.save();
+            return res.status(200).send({
+              status: true,
+              message: "Voting started successfully",
+            });
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).send({
+            status: false,
+            message: error,
+          });
+        });
     } catch (error) {
       console.error("Error updating issue:", error);
       return res.status(500).send({ status: false, message: error });
+    }
+  },
+
+  getVoters(req, res) {
+    const issueId = req.body.requestObject.issueId;
+    let whereClause = {
+      isDeleted: false,
+      isVoter: true,
+      status: "Active",
+    };
+    return usersModel
+      .findAll({
+        where: whereClause,
+      })
+      .then((voters) => {
+        return res
+          .status(200)
+          .send({ status: true, data: voters, message: "Success" });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res
+          .status(500)
+          .send({ status: false, data: [], message: error });
+      });
+  },
+
+  async castVote(req, res) {
+    let requestObject = req.body.requestObject;
+    if (
+      !requestObject.issueId ||
+      !requestObject.userId ||
+      !requestObject.vote
+    ) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to vote. Please check ! something went wrong",
+      });
+    }
+    try {
+      let whereClause = {
+        issue_id: requestObject.issueId,
+        user_id: requestObject.userId,
+        status: "Active",
+        isDeleted: false,
+      };
+      await evmModel
+        .count({
+          where: whereClause,
+        })
+        .then((c) => {
+          if (c > 0) {
+            return res.status(200).send({
+              status: false,
+              message: "Vote polled already",
+            });
+          } else {
+            const newVote = {
+              issue_id: requestObject.issueId,
+              user_id: requestObject.userId,
+              vote: requestObject.vote,
+              status: "Active",
+              isDeleted: false,
+            };
+            evmModel.create(newVote).then(async (r) => {
+              return res.status(200).send({
+                status: true,
+                message: "Vote polled successfully",
+              });
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(500).send({
+            status: false,
+            message: error,
+          });
+        });
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+
+  async stopVoting(req, res) {
+    console.log("Stop Voting---Backend==", req.body.requestObject);
+    let requestObject = req.body.requestObject;
+    if (!requestObject.role == "commissioner" || !requestObject.issueId) {
+      return res.status(200).send({
+        status: false,
+        message:
+          "Unable to stop voting. Something went wrong, please try again",
+      });
+    }
+    try {
+      const id = requestObject.issueId;
+      const issue = await issuesModel.findByPk(id);
+      let whereClause1 = {
+        issue_id: id,
+        record_status: "Active",
+        voting_status: "Open",
+        isDeleted: false,
+      };
+      const voting_tracker = await votingTrackersModel.findOne({
+        where: whereClause1,
+      });
+      if (!issue || !voting_tracker) {
+        return res
+          .status(200)
+          .json({ status: false, message: "Issue/voting details not found" });
+      }
+      let whereClause2 = {
+        issue_id: id,
+        status: "Active",
+        isDeleted: false,
+      };
+      await evmModel
+        .findAll({
+          where: whereClause2,
+        })
+        .then(async (votes) => {
+          let total_voter = voting_tracker.total_voter;
+          let vote_polled = 0;
+          let approved = 0;
+          let rejected = 0;
+          let abstained = 0;
+          let status = "";
+          if (votes.length > 0) {
+            vote_polled = votes.length;
+            votes.map((item) => {
+              console.log("ITEM==", item.vote);
+              if (item.vote == "Approved") {
+                approved++;
+              }
+              if (item.vote == "Rejected") {
+                rejected++;
+              }
+              if (item.vote == "Abstained") {
+                abstained++;
+              }
+            });
+          }
+          if (approved >= rejected) {
+            status = "Accepted";
+          } else {
+            status = "Rejected";
+          }
+          voting_tracker.vote_polled = vote_polled;
+          voting_tracker.accepted = approved;
+          voting_tracker.rejected = rejected;
+          voting_tracker.abstained = abstained;
+          voting_tracker.voting_status = status;
+          voting_tracker.save();
+          issue.voting = "Completed";
+          issue.status = status;
+          issue.votingDate = new Date();
+          await issue.save();
+          return res.status(200).send({
+            status: true,
+            // data: votes,
+            message: "Success",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+          return res.status(200).send({
+            status: false,
+            message: error,
+          });
+        });
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(200).send({ status: false, message: error });
     }
   },
 

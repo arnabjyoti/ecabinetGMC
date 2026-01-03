@@ -236,11 +236,7 @@
   <div class="ccard sshadow-sm ssection-card">
     <div
       class="row mb-5"
-      *ngIf="
-        activeTab != 'draft' &&
-        issue.status != 'Accepted' &&
-        issue.status != 'Rejected'
-      "
+      *ngIf="activeTab != 'draft'"
     >
       <div class="col-md-12">
         <div class="ccard sshadow-sm ssection-card mb-5"></div>
@@ -278,7 +274,11 @@
               </div>
             </div>
           </div>
-          <div class="comment-box">
+          <div class="comment-box"  *ngIf="
+        activeTab != 'draft' &&
+        issue.status != 'Accepted' &&
+        issue.status != 'Rejected'
+      ">
             <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->
 
             <div class="input-wrapper">

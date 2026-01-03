@@ -294,7 +294,6 @@ export class IssueDetailsComponent implements OnInit {
     const file: File = event.target.files[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert('File must be under 5MB');
       this.toastr.warning('File size must be under 5MB', 'Warning Message');
       return;
     }
