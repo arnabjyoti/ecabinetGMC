@@ -74,7 +74,7 @@ export class MuniSecIssueBucketComponent implements OnInit {
           issues.sent.push(item);
         }
         if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
-          item.from='Branch User';
+          item.from= item?.raisedByName+'('+item?.department+' Department)';
           item.subject=item?.title;
           item.time=item?.createdAt;
           issues.inbox.push(item);

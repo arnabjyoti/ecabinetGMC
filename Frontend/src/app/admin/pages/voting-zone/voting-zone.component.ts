@@ -61,7 +61,7 @@ export class VotingZoneComponent {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
       data?.map((item: any) => {
-        item.from = 'Branch User';
+        item.from= item?.raisedByName+'('+item?.department+' Department)';
         item.subject = item?.title;
         item.time = item?.createdAt;
         issues.inbox.push(item);
