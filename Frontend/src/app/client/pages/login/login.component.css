@@ -310,7 +310,7 @@ body { background: #f8f9fa; }
 .profile-card img { width: 50%; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
 
 .profile-card-minister img { width: 80%; border-radius: 5px; }
-.profile-card-mayor img { width: 60%; border-radius: 5px; }
+.profile-card-mayor img { width: 80%; border-radius: 5px; }
 
 .features {
   display: grid;
@@ -359,7 +359,7 @@ footer {
 .feature-card.modern {
   background: #ffffff;
   border-radius: 16px;
-  padding: 70px 25px 25px;
+  padding: 70px 50px 25px;
   height: 100%;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
