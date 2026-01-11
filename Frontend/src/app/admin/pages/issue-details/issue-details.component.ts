@@ -104,7 +104,7 @@ export class IssueDetailsComponent implements OnInit {
         this.issue.municipalActionDate
       ) {
         timeline.push({
-          step: 'Sent to Commissioner',
+          step: 'Sent to Commissioner by Municipal Secretary',
           date: this.issue.municipalActionDate,
         });
       }
@@ -122,7 +122,7 @@ export class IssueDetailsComponent implements OnInit {
         this.issue.commissionerActionDate
       ) {
         timeline.push({
-          step: 'Approved by Commissioner for MIC Review',
+          step: 'Sent to Mayor by Commissioner',
           date: this.issue.commissionerActionDate,
         });
       }
@@ -133,6 +133,24 @@ export class IssueDetailsComponent implements OnInit {
         timeline.push({
           step: 'Issue Rejected by Commissioner',
           date: this.issue.commissionerActionDate,
+        });
+      }
+      if (
+        this.issue.mayorAction == 'Approved' &&
+        this.issue.mayorActionDate
+      ) {
+        timeline.push({
+          step: 'Approved by Mayor for MIC Review',
+          date: this.issue.mayorActionDate,
+        });
+      }
+      if (
+        this.issue.mayorAction == 'Rejected' &&
+        this.issue.mayorActionDate
+      ) {
+        timeline.push({
+          step: 'Issue Rejected by Mayor',
+          date: this.issue.mayorActionDate,
         });
       }
       if (this.issue.voting == 'Started' && this.issue.votingDate) {
@@ -174,7 +192,6 @@ export class IssueDetailsComponent implements OnInit {
         if (res.status) {
           this.issueAttachments = res.data;
           this.issue.attachments = this.mapAttachments(res.data);
-          console.log('ATTACHMENTS==', this.issueAttachments);
         } else {
           this.toastr.error(res.message, 'Error Message');
         }
@@ -306,7 +323,6 @@ export class IssueDetailsComponent implements OnInit {
     formData.append('file', file);
     this.issueDetailsService.uploadIssueAttachment(formData).subscribe({
       next: (res) => {
-        console.log('RES==', res);
         if (res.status) {
           this.toastr.success(res.message, 'Success Message');
           this.getIssueAttachments();
@@ -386,7 +402,7 @@ export class IssueDetailsComponent implements OnInit {
 
 
   startVoting() {
-    let confMsg: any = 'Are you sure! You want start voting?';
+    let confMsg: any = 'Are you sure! You want start meeting?';
     Swal.fire({
       title: 'Confirmation Message',
       text: confMsg,
