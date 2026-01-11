@@ -17,9 +17,7 @@ import { CommissionerIssueBucketComponent } from './commissioner/commissioner-is
 import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.component';
 const routes: Routes = [
   {
-    path: '',
-    component: ClientLayoutComponent,
-    children: [{ path: '', component: LoginComponent }],
+    path: '', component: LoginComponent,
   },
   {
     path: 'dashboard',

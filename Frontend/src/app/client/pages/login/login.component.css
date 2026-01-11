@@ -17,11 +17,11 @@
 } */
 
 /* Full-page center alignment */
-
+/* 
 html, body {
   height: 100%;
   margin: 0;
-  overflow: hidden; /* 🚫 stop scrolling */
+  overflow: hidden;
   font-family: "Segoe UI", sans-serif;
 }
 
@@ -37,8 +37,6 @@ html, body {
   background-position: center;
   background-size: contain;
   background-size: cover;
-
-  /* White background */
   background-color: #ffffff;
   overflow: hidden;
 }
@@ -51,7 +49,6 @@ html, body {
   }
 }
 
-/* Content wrapper so content stays centered under navbar */
 .content-wrapper {
   text-align: center;
   margin-top: 200px;
@@ -64,7 +61,6 @@ html, body {
 }
 
 
-/* Navbar */
 .navbar {
   width: 100%;
   background: #ffffff;
@@ -78,7 +74,7 @@ html, body {
   left: 0;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   z-index: 100;
-}
+} */
 
 .login-box .logo {
   /* margin-top: 60px; */
@@ -96,10 +92,10 @@ html, body {
 }
 
 .login-box {
-  margin-top: 60px;
+  /* margin-top: 60px; */
   background: #ffffff26;
   padding: 40px 35px;
-  width: 380px;
+  width: auto;
   border-radius: 18px;
   border: 1px solid #e0e0e0;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
@@ -193,12 +189,12 @@ html, body {
   text-decoration: underline;
 }
 
-footer {
+/* footer {
   position: fixed;
   bottom: 10px;
   width: 100%;
   text-align: center;
-}
+} */
 
 .footer-content {
   display: flex;
@@ -209,7 +205,7 @@ footer {
 
 .footer-text {
   font-size: 15px;
-  color: #444;
+  /* color: #444; */
   font-weight: 500;
 }
 
@@ -219,3 +215,438 @@ footer {
 }
 
 /* for bg image */
+
+
+
+
+
+
+
+
+
+
+body { background: #f8f9fa; }
+
+.sidenav-container { height: 100vh; }
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  /* background: linear-gradient(90deg,#0d47a1,#1976d2); */
+  color: #000;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  background: #fff;
+}
+
+.brand { font-weight: 600; font-size: 18px; }
+.spacer { flex: 1 1 auto; }
+
+.desktop-menu { display: flex; gap: 10px; }
+.mobile-toggle { display: none; }
+.mobile-sidenav { width: 260px; }
+
+.hero {
+  background: url('../../../../assets/login/gmc.png') center/cover no-repeat;
+  color: #fff;
+  padding: 60px 20px;
+  position: relative;
+  margin-top: 0;
+  border-radius: 0;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+.hero-content {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 30px;
+}
+.hero-right img { width: 100%; max-width: 420px; border-radius: 12px; }
+
+.stats { display: flex; gap: 15px; margin-top: 20px; }
+.stat-box {
+  background: #ffc107;
+  color: #000;
+  padding: 15px;
+  border-radius: 10px;
+  min-width: 120px;
+  text-align: center;
+}
+
+.brand-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  background: transparent;
+}
+
+.brand-text {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.section { padding: 50px 20px; }
+.section.light { background: #f1f3f6; }
+
+.profile-feature-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 30px;
+}
+
+.profile-card img { width: 50%; border-radius: 12px; box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+
+.profile-card-minister img { width: 80%; border-radius: 5px; }
+.profile-card-mayor img { width: 60%; border-radius: 5px; }
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+  gap: 20px;
+}
+
+.feature-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.minister-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.minister-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+.minister-card img { width: 100%; border-radius: 10px; }
+
+footer {
+  background: #0d47a1;
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .desktop-menu { display: none; }
+  .mobile-toggle { display: inline-flex; }
+  .profile-feature-grid { grid-template-columns: 1fr; }
+  .hero-content { flex-direction: column; }
+}
+
+/* cards */
+.feature-card.modern {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 70px 25px 25px;
+  height: 100%;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card.modern:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+}
+
+.feature-card.modern h5 {
+  margin-top: 18px;
+  font-weight: 600;
+  font-size: 18px;
+  color: #1f2d3d;
+}
+
+.feature-card.modern p {
+  color: #6c757d;
+  font-size: 14.5px;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+/* Icon Circle */
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 24px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+  margin: 0 auto;
+  transition: transform 0.3s ease;
+}
+
+.feature-card.modern:hover .icon-circle {
+  transform: scale(1.1);
+}
+
+/* Gradient Colors for Icons */
+.bg-green {
+  background: linear-gradient(135deg, #28a745, #5dd39e);
+}
+
+.bg-blue {
+  background: linear-gradient(135deg, #007bff, #5fa9ff);
+}
+
+.bg-purple {
+  background: linear-gradient(135deg, #6f42c1, #a78bfa);
+}
+
+.bg-orange {
+  background: linear-gradient(135deg, #fd7e14, #ffb347);
+}
+
+/* Optional: Top accent bar for style */
+.feature-card.modern::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #ff9933, #ffffff, #138808); /* Indian tricolor effect */
+}
+
+
+/* minister card */
+.minister-card-pro {
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.minister-card-pro:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.12);
+}
+
+/* Image section */
+.minister-card-pro img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  background: #f5f5f5;
+}
+
+/* Body */
+.minister-body {
+  padding: 22px 18px 26px;
+  text-align: center;
+  flex-grow: 1;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.minister-body h5 {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  margin-bottom: 12px;
+  color: #000;
+  text-transform: uppercase;
+}
+
+.minister-body p {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  margin: 0;
+}
+
+
+
+/* count */
+.mic-info-section {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  padding-right: 32px;
+}
+
+/* Header */
+
+.mic-header {
+  border-left: 4px solid #2563eb;
+  padding-left: 16px;
+  margin-bottom: 22px;
+}
+
+.mic-title {
+  font-size: 28px;
+  font-weight: 600;
+  color: #fff;   /* soft slate */
+  margin-bottom: 6px;
+}
+
+.mic-subtitle {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.7;
+  max-width: 480px;
+}
+
+/* Stat Cards */
+
+.stat-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 18px 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+/* Icons */
+
+.stat-icon {
+  font-size: 26px;
+  color: #2563eb;
+  min-width: 32px;
+}
+
+/* Numbers & Labels */
+
+.stat-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: #475569; /* soft dark slate */
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: #94a3b8; /* light professional gray */
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+  .mic-title {
+    font-size: 22px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+}
+
+
+/* jayanta card */
+.center-wrap {
+  /* min-height: 100vh; */
+  display: flex;
+  align-items: center;
+}
+
+/* Main Card */
+.minister-card-modern {
+  display: flex;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  border-left: 5px solid #2563eb;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.minister-card-modern:hover {
+  transform: translateY(-4px);
+}
+
+/* Image */
+.minister-photo img {
+  width: 190px;
+  height: 260px;
+  object-fit: cover;
+}
+
+/* Info */
+.minister-info {
+  padding: 28px 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.minister-info .designation {
+  font-size: 12px;
+  letter-spacing: 1px;
+  font-weight: 600;
+  color: #2563eb;
+  margin-bottom: 6px;
+}
+
+.minister-info h4 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.minister-info p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+  .minister-card-modern {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .minister-photo img {
+    width: 100%;
+    height: 260px;
+  }
+
+  .minister-info {
+    padding: 20px;
+  }
+}
+
