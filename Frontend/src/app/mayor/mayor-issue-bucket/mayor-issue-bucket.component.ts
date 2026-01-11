@@ -2,18 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../../auth/auth.service';
-import { CommissionerIssueBucketService } from './commissioner-issue-bucket.service';
+import { MayorIssueBucketService } from './mayor-issue-bucket.service';
 import Swal from 'sweetalert2';
 
 type MailType = 'inbox' | 'sent' | 'draft';
 
 @Component({
-  selector: 'app-commissioner-issue-bucket',
-  templateUrl: './commissioner-issue-bucket.component.html',
-  styleUrls: ['./commissioner-issue-bucket.component.css'],
+  selector: 'app-mayor-issue-bucket',
+  templateUrl: './mayor-issue-bucket.component.html',
+  styleUrls: ['./mayor-issue-bucket.component.css']
 })
-export class CommissionerIssueBucketComponent implements OnInit {
-  sidebarCollapsed = false;
+export class MayorIssueBucketComponent implements OnInit{
+ sidebarCollapsed = false;
   isDetailView: boolean = false;
   issues: any = {
     inbox: [],
@@ -26,7 +26,7 @@ export class CommissionerIssueBucketComponent implements OnInit {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private authService: AuthService,
-    private commissionerIssueBucketService: CommissionerIssueBucketService
+    private mayorIssueBucketService: MayorIssueBucketService
   ) {
     this.user = {
       userId: this.authService.getUserId(),
@@ -46,7 +46,7 @@ export class CommissionerIssueBucketComponent implements OnInit {
       department: this.user.department,
     };
     this.spinner.show();
-    this.commissionerIssueBucketService.getIssueList(requestObject).subscribe({
+    this.mayorIssueBucketService.getIssueList(requestObject).subscribe({
       next: (res) => {
         if (res.status) {
           this.issues = this.issueClassifier(res.data);
@@ -67,7 +67,8 @@ export class CommissionerIssueBucketComponent implements OnInit {
         if (
           item?.branchAction == 'Sent' &&
           item?.municipalAction == 'Approved' &&
-          item?.commissionerAction == ''
+          item?.commissionerAction == 'Approved' &&
+          (item?.mayorAction == '' || item?.mayorAction == null)
         ) {
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
@@ -78,7 +79,8 @@ export class CommissionerIssueBucketComponent implements OnInit {
         if (
           item?.branchAction == 'Sent' &&
           item?.municipalAction == 'Approved' &&
-          item?.commissionerAction == 'Approved'
+          item?.commissionerAction == 'Approved' && 
+          item?.mayorAction == 'Approved'
         ) {
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
@@ -121,7 +123,7 @@ export class CommissionerIssueBucketComponent implements OnInit {
   }
 
   startVoting() {
-    let confMsg: any = 'Are you sure! You want start voting?';
+    let confMsg: any = 'Are you sure! You want start meeting?';
     Swal.fire({
       title: 'Confirmation Message',
       text: confMsg,
@@ -157,7 +159,7 @@ export class CommissionerIssueBucketComponent implements OnInit {
         isDeleted: false,
       };
       this.spinner.show();
-      this.commissionerIssueBucketService
+      this.mayorIssueBucketService
         .updateStartVotingStatus(requestObject)
         .subscribe({
           next: (res) => {
@@ -205,7 +207,7 @@ export class CommissionerIssueBucketComponent implements OnInit {
         userId: this.user.userId,
         role: this.user.role,
       };
-      this.commissionerIssueBucketService
+      this.mayorIssueBucketService
         .updateStopVotingStatus(requestObject)
         .subscribe({
           next: (res) => {

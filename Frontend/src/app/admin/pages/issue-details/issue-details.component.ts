@@ -209,6 +209,9 @@ export class IssueDetailsComponent implements OnInit {
         confMsg = 'Sending it to Commissioner. Is that okay?';
         break;
       case 'commissioner':
+        confMsg = 'Sending it to Mayor. Is that okay?';
+        break;
+      case 'mayor':
         confMsg = 'Approving it to place in MIC meeting. Is that okay?';
         break;
     }

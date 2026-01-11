@@ -19,12 +19,12 @@
 
 
 <!-- Members Voting Section -->
-<h3>Cabinet Members Voting Status</h3>
+<h3>MIC Members Opinion Status</h3>
 
 <!-- Result Section -->
 <div class="result-card">
 <h3>Final Result</h3>
-<p><strong>Members Voted:</strong> {{ votedCount }}/{{members.length}}</p>
+<p><strong>Members Posted Opinion:</strong> {{ votedCount }}/{{members.length}}</p>
 <h2 class="result">{{ result }}</h2>
 </div>
 
@@ -34,7 +34,6 @@
 <h4 [class.disabled-div]="user.userId!=m.id" style="padding-bottom: 0px;margin-bottom: 0px;text-align: center;">{{ m?.name }}</h4>
 <h6 [class.disabled-div]="user.userId!=m.id" style="padding: 0px;text-align: center;">{{ m?.roleName }}</h6>
 
-
 <div *ngIf="!m?.vote" class="vote-buttons" [class.disabled-div]="user.userId!=m.id">
 <button [disabled]="user.userId!=m.id" class="approve" (click)="castVote(m, 'Approved')">Approve</button>
 <button [disabled]="user.userId!=m.id" class="reject" (click)="castVote(m, 'Rejected')">Reject</button>
@@ -42,7 +41,7 @@
 </div>
 
 
-<div *ngIf="m?.vote" class="voted" style="text-align: center;">✔ Vote: {{ user.userId==m.id ? m.vote : 'Polled' }}</div>
+<div *ngIf="m?.vote" class="voted" style="text-align: center;">✔ Action: {{ user.userId==m.id ? m.vote : 'Done' }}</div>
 </div>
 </div>
 

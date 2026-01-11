@@ -6,7 +6,7 @@
         alt="GMC Logo"
         height="50"
         width="50"
-      />E-Cabinet GMC
+      />eMIC GMC
     </h1>
   </span>
   <span class="spacer">Welcome- {{ loggedInUser }}</span>
@@ -48,7 +48,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="bi bi-file-earmark-text"></i>
-      <span *ngIf="!isCollapsed"> Issue Bucket</span>
+      <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
       *ngIf="user.isVoter"
@@ -56,8 +56,8 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
-      <i class="bi bi-hand-thumbs-up"></i>
-      <span *ngIf="!isCollapsed"> Voting Zone</span>
+      <i class="bi bi-people-fill"></i>
+      <span *ngIf="!isCollapsed"> MIC Meeting Zone</span>
     </a>
     <a href="javascript:;" (click)="handleLogout()">
       <i class="bi bi-box-arrow-right"></i>
@@ -79,7 +79,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="bi bi-file-earmark-text"></i>
-      <span *ngIf="!isCollapsed"> Issue Bucket</span>
+      <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
       *ngIf="user.isVoter"
@@ -87,8 +87,8 @@
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
-      <i class="bi bi-hand-thumbs-up"></i>
-      <span *ngIf="!isCollapsed"> Voting Zone</span>
+      <i class="bi bi-people-fill"></i>
+      <span *ngIf="!isCollapsed"> MIC Meeting Zone</span>
     </a>
     <a href="javascript:;" (click)="handleLogout()">
       <i class="bi bi-box-arrow-right"></i>
@@ -111,7 +111,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
     >
       <i class="bi bi-file-earmark-text"></i>
-      <span *ngIf="!isCollapsed"> Issue Bucket</span>
+      <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <!-- <a routerLink="/vote-page"
       routerLinkActive="active"
@@ -134,6 +134,70 @@
     >
       <i class="bi bi-hand-thumbs-up"></i>
       <span *ngIf="!isCollapsed"> Voting Zone</span>
+    </a>
+    <!-- 
+        <a routerLink="/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+            <i class="bi bi-bar-chart-line"></i>
+            <span *ngIf="!isCollapsed"> Reports</span>
+        </a>
+
+        <a href="#">
+            <i class="bi bi-gear"></i>
+            <span *ngIf="!isCollapsed"> Settings</span>
+        </a> -->
+
+    <a href="javascript:;" (click)="handleLogout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!isCollapsed"> Logout</span>
+    </a>
+  </nav>
+  <nav *ngIf="user.role == 'mayor'">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-speedometer2"></i>
+      <span *ngIf="!isCollapsed"> Dashboard</span>
+    </a>
+
+    <a
+      routerLink="/mayor-issue-bucket"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-file-earmark-text"></i>
+      <span *ngIf="!isCollapsed"> Agenda Bucket</span>
+    </a>
+    <a
+      routerLink="/issue-archive"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-inbox"></i>
+      <span *ngIf="!isCollapsed"> Agenda Archive</span>
+    </a>
+    <!-- <a routerLink="/vote-page"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+      <i class="bi bi-check-square"></i>
+      <span *ngIf="!isCollapsed"> Approved Issues</span>
+    </a>
+
+    <a routerLink="/vote-page"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }">
+      <i class="bi bi-x-square"></i>
+      <span *ngIf="!isCollapsed"> Rejected Issues</span>
+    </a> -->
+    <a
+      *ngIf="user.isVoter"
+      routerLink="/voting-zone"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-people-fill"></i>
+      <span *ngIf="!isCollapsed"> MIC Meeting Zone</span>
     </a>
     <!-- 
         <a routerLink="/reports" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">

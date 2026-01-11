@@ -58,14 +58,16 @@ export class LoginComponent {
         this.authService.storeTokens(res.accessToken, res.refreshToken);
         this.toastr.success('Login successful!', 'Success Message');
         const role = this.authService.getRole();
-        if (role === 'branch_user') {
-           this.router.navigate(['/dashboard']);
-        } else if (role === 'municipal_secretary') {
-          this.router.navigate(['/dashboard']);
-        } else if (role === 'commissioner') {
-          this.router.navigate(['/dashboard']);
-        } else {
-          this.router.navigate(['/unknown-role']);
+        switch(role){
+          case 'branch_user': 
+          case 'municipal_secretary': 
+          case 'commissioner': 
+          case 'mayor':
+             this.router.navigate(['/dashboard']);
+          break;
+          default:
+            this.router.navigate(['/unknown-role']);
+          break;
         }
       },
       error: () => {

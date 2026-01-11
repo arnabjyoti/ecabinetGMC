@@ -20,7 +20,7 @@ const transporter = nodemailer.createTransport({
 
 const generateAccessToken = (user) => {
   return jwt.sign(
-    { id: user.id, name: user.name, role: user.role, department:user.department, mobile: user.mobile, email: user.email, isVoter: user.isVoter },
+    { id: user.id, name: user.name, role: user.role, department:user.department, designation:user.designation, mobile: user.mobile, email: user.email, isVoter: user.isVoter },
     config.JWT_SECRET,
     {
       expiresIn: "15m",
@@ -103,7 +103,7 @@ module.exports = {
                 <tr><td align="center">
                   <table width="480" cellpadding="0" cellspacing="0" border="0" style="background:#fff; border-radius:8px; overflow:hidden;">
                     <tr><td align="center" style="padding:30px 20px 10px;">
-                      <h2 style="color:#5b3fd4; margin:0;">eCabinet</h2>
+                      <h2 style="color:#5b3fd4; margin:0;">eMIC GMC</h2>
                     </td></tr>
                     <tr><td align="center" style="padding:10px 30px;">
                       <h3 style="color:#5b3fd4; font-size:22px;">2FA code</h3>
@@ -115,7 +115,7 @@ module.exports = {
                       <p style="color:#333; font-size:13px;"><strong>Note:</strong> The code will expire in 5 minutes.</p>
                     </td></tr>
                     <tr><td align="center" style="padding:25px; background-color:#f5f6ff;">
-                      <p style="font-size:13px; color:#777;">© 2025 eCabinet. All rights reserved.</p>
+                      <p style="font-size:13px; color:#777;">© 2025 eMIC GMC. All rights reserved.</p>
                     </td></tr>
                   </table>
                 </td></tr>
@@ -125,9 +125,9 @@ module.exports = {
             `;
         // Email options
         const mailOptions = {
-          from: '"eCabinet" <mithuzaman2020@gmail.com>',
+          from: '"eMIC GMC" <mithuzaman2020@gmail.com>',
           to: email,
-          subject: "eCabinet - Your login verification code",
+          subject: "eMIC GMC - Your login verification code",
           text: "2FA code",
           html: htmlTemplate,
         };
