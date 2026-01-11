@@ -25,6 +25,12 @@ export class LoginComponent {
     private spinner: NgxSpinnerService
   ) {}
 
+
+  close(drawer: any) {
+    drawer.close();
+  }
+
+
   sendOtp() {
     console.log('OTP sent to', this.email);
     if(!this.email){

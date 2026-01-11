@@ -1,6 +1,6 @@
 <div class="page-container">
   <!-- NAVBAR -->
-  <nav class="navbar">
+  <!-- <nav class="navbar">
     <div class="nav-title w-100 text-center">
       e-Cabinet MIC Portal – Guwahati Municipal Corporation
     </div>
@@ -52,24 +52,369 @@
         Verify OTP
       </button>
     </div>
+  </div> -->
 
-    <!-- FOOTER -->
-    <!-- <footer>
+  <!-- Navbar -->
+  <mat-sidenav-container class="sidenav-container">
+
+    <!-- Mobile Drawer -->
+    <mat-sidenav #drawer mode="over" class="mobile-sidenav">
+      <mat-nav-list>
+        <a mat-list-item (click)="close(drawer)">Home</a>
+        <a mat-list-item (click)="close(drawer)">About</a>
+        <a mat-list-item (click)="close(drawer)">Services</a>
+        <a mat-list-item (click)="close(drawer)">Contact</a>
+
+        <button mat-raised-button color="primary" class="login-btn" (click)="close(drawer)">
+          Login
+        </button>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <!-- Main Content -->
+    <mat-sidenav-content>
+
+      <!-- Navbar -->
+      <mat-toolbar class="navbar" color="primary">
+        <button mat-icon-button class="mobile-toggle" (click)="drawer.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <div class="brand-container">
+          <img src="../../../../assets/image/favicon/android-chrome-192x192.png" class="logo" alt="eMIC Logo">
+          <span class="brand-text">eMIC Guwahati Municipal Corporation</span>
+        </div>
+        <span class="spacer"></span>
+
+        <div class="desktop-menu">
+          <button mat-button>Home</button>
+          <button mat-button>About</button>
+          <button mat-button>Services</button>
+          <button mat-button>Contact</button>
+          <button mat-raised-button color="accent" type="button" class="btn btn-primary" data-toggle="modal"
+            data-target="#staticBackdrop">Login</button>
+        </div>
+        <!-- Button trigger modal -->
+
+        <!-- Modal -->
+
+
+      </mat-toolbar>
+
+
+
+
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mic-info-section">
+
+              <div class="mic-header">
+                <h2 class="mic-title">MIC Meetings Simplified</h2>
+                <p class="mic-subtitle">
+                  Enabling structured decision-making through real-time monitoring and secure paperless workflows.
+                </p>
+              </div>
+
+              <div class="row mt-4">
+
+                <div class="col-6 mb-3">
+                  <div class="stat-card">
+                    <div class="stat-icon">
+                      <i class="far fa-handshake"></i>
+                    </div>
+                    <div>
+                      <div class="stat-value">196</div>
+                      <div class="stat-label">Meetings Conducted</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-6 mb-3">
+                  <div class="stat-card">
+                    <div class="stat-icon">
+                      <i class="fas fa-file"></i>
+                    </div>
+                    <div>
+                      <div class="stat-value">3,720</div>
+                      <div class="stat-label">Agendas Processed</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+              <img src="../../../../assets/login/dummy.png" class="img-fluid rounded shadow" alt="cabinet">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Profile + Features -->
+      <section class="py-5">
+        <div class="container">
+          <div class="row">
+
+            <div class="col-lg-5 mb-4">
+              <div class="row">
+                <div class="col-12 mb-4">
+                 <div class="profile-card text-center">
+                <img src="../../../../assets/login/cm-1.png" alt="CM">
+                <h5 class="mt-3">Dr Himanta Biswa Sarma</h5>
+                <small>Hon'ble Chief Minister of Assam</small>
+              </div>
+              </div>
+              <div class="col-6 mb-4">
+              <div class="profile-card-minister text-center">
+                <img src="../../../../assets/login/members/jayanta.jpg" alt="CM">
+                <h6 class="mt-3">Shri Jayanta Malla Baruah</h6>
+                <small>Hon'ble Minister of DoHUA</small>
+              </div>
+              </div>
+              <div class="col-6 mb-4">
+              <div class="profile-card-mayor text-center">
+                <img src="../../../../assets/login/ms.png" alt="CM">
+                <h6 class="mt-3">Shri Mrigen Sarania</h6>
+                  <small>Hon'ble Mayor, GMC</small>
+              </div>
+              </div>
+            </div>
+            </div>
+
+            <div class="col-lg-7 ">
+              <div class="row py-3">
+
+                <div class="col-md-6 mb-4">
+                  <div class="feature-card modern">
+                    <div class="icon-circle bg-green">
+                      <i class="fas fa-leaf"></i>
+                    </div>
+                    <h5>Paperless</h5>
+                    <p>Commitment to paperless cabinet meetings, reducing carbon footprint.</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <div class="feature-card modern">
+                    <div class="icon-circle bg-blue">
+                      <i class="fas fa-video"></i>
+                    </div>
+                    <h5>Virtual Participation</h5>
+                    <p>Decision makers can participate remotely from any location.</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <div class="feature-card modern">
+                    <div class="icon-circle bg-purple">
+                      <i class="fas fa-bolt"></i>
+                    </div>
+                    <h5>Real-time Updates</h5>
+                    <p>Instant updates and tracking of cabinet decisions.</p>
+                  </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                  <div class="feature-card modern">
+                    <div class="icon-circle bg-orange">
+                      <i class="fas fa-brain"></i>
+                    </div>
+                    <h5>Enhanced Decision Making</h5>
+                    <p>Quick access to historical data and previous decisions.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Ministers -->
+      <!-- <section class="center-wrap bg-white">
+        <div class="container">
+
+          <div class="row justify-content-center align-items-center">
+
+            <div class="col-sm-10 col-md-8 col-lg-6">
+
+              <div class="minister-card-modern">
+
+                <div class="minister-photo">
+                  <img src="../../../../assets/login/FCWV3B_UcAM0iAw.jpg" alt="Minister">
+                </div>
+
+                <div class="minister-info">
+                  <span class="designation">Minister of Public Health Engineering of Assam</span>
+                  <h4>Shri Jayanta Malla Baruah</h4>
+                  <p>Public Health Engineering Department & Department of Housing & Urban Affairs Vice President:
+                    Athletics Federation of India</p>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </section> -->
+
+      <section class="py-3 bg-white">
+        <div class="container">
+
+          <h4>Municipal committee members/councillors</h4>
+          <br>
+
+          <div class="row d-flex align-items-stretch">
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Mrigen-Sarania.jpg" alt="">
+                <div class="minister-body">
+                  <h5>SHRI MRIGEN SARANIA</h5>
+                  <p>Mayor, Guwahati Municipal Corporation</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Smt Smita Roy.jpg" alt="">
+                <div class="minister-body">
+                  <h5>SMT SMITA ROY</h5>
+                  <p>Deputy Mayor of Guwahati Municipal Corporation</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Sasanka Deka.jpg" alt="">
+                <div class="minister-body">
+                  <h5>SHRI SASANKA JYOTI DEKA</h5>
+                  <p>Taxation and Finance, Planning and Development</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Smt Meghna Hazarika.jpg" alt="">
+                <div class="minister-body">
+                  <h5>SMT MEGHNA HAZARIKA</h5>
+                  <p>Public Works</p>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Ashim Saikia.jpg" alt="minister">
+                <div class="minister-body">
+                  <h5>Shri Ashim Saikia</h5>
+                  <p>Conservancy and Water Supply</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Gokul Goswami.jpg" alt="minister">
+                <div class="minister-body">
+                  <h5>Shri Gokul Goswami</h5>
+                  <p>Assessment, Markets and Trades</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Sankar Chakraborty.jpg" alt="minister">
+                <div class="minister-body">
+                  <h5>Shri Sankar Chakraborty</h5>
+                  <p>Appeals</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Mukul Kalita.jpg" alt="minister">
+                <div class="minister-body">
+                  <h6>Shri Mukul Kalita</h6>
+                  <p>Public Health, Sanitation and Environment</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-3 mb-4">
+              <div class="minister-card-pro">
+                <img src="../../../../assets/login/members/Sri Kallol Chakraborty.jpg" alt="minister">
+                <div class="minister-body">
+                  <h5>Sri Kallol Chakraborty</h5>
+                  <p>Planning and Development including matters related to Disaster management, building permission,
+                    license etc.</p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+
+      <!-- FOOTER -->
+      <footer>
         <div class="footer-content">
           <span class="footer-text">Developed By:</span>
-          <img
-            src="https://skaplinktechnologies.com/images/logo/logo.png"
-            class="footer-logo"
-          />
+          <img src="https://skaplinktechnologies.com/images/logo/logo.png" class="footer-logo" />
         </div>
-      </footer> -->
-  </div>
+      </footer>
+
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+
 </div>
 
-<ngx-spinner
-  bdColor="rgba(51,51,51,0.8)"
-  size="medium"
-  color="#fff"
-  type="ball-spin-clockwise"  style="background-color: aliceblue;">
-  <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending OTP...Please Wait</p>
+
+<div class="modal fade" id="staticBackdrop" data-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="login-box">
+        <h2>eMIC Login</h2>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" placeholder="Enter your registered email id" [(ngModel)]="email" name="email"
+            [disabled]="otpSent" />
+        </div>
+        <button *ngIf="!otpSent" type="button" class="send-otp" (click)="sendOtp()">
+          Send OTP
+        </button>
+        <div *ngIf="otpSent" class="input-group" style="margin-top: 10px">
+          <label>Enter OTP</label>
+          <input type="text" class="form-control" [(ngModel)]="otp" placeholder="6-digit OTP" required />
+        </div>
+        <button *ngIf="otpSent" type="submit" (click)="verifyOtp()" class="send-otp">
+          Verify OTP
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-spin-clockwise"
+  style="background-color: aliceblue;">
+  <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending
+    OTP...Please Wait</p>
 </ngx-spinner>

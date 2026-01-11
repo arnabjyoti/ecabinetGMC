@@ -19,9 +19,7 @@ import { MayorIssueBucketComponent } from './mayor/mayor-issue-bucket/mayor-issu
 
 const routes: Routes = [
   {
-    path: '',
-    component: ClientLayoutComponent,
-    children: [{ path: '', component: LoginComponent }],
+    path: '', component: LoginComponent,
   },
   {
     path: 'dashboard',
