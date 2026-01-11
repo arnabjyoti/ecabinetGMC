@@ -98,13 +98,13 @@ export class ApplicationsComponent implements OnInit {
           issues.draft.push(item);
         }
         if(item?.branchAction=='Sent' && item?.raisedBy==this.user.userId){
-          item.to='Municipal Secretary';
+          item.to='To Municipal Secretary';
           item.subject=item?.title;
           item.time=item?.branchActionDate;
           issues.sent.push(item);
         }
         if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
-          item.from='Branch User';
+          item.from= item?.raisedByName+'('+item?.department+' Department)';
           item.subject=item?.title;
           item.time=item?.createdAt;
           issues.inbox.push(item);

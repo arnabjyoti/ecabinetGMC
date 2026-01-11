@@ -16,7 +16,13 @@ constructor(private http: HttpClient) {}
     });
   }
 
-   stopVoting(requestObject: string): Observable<any> {
+   updateStartVotingStatus(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/start-voting`, {
+      requestObject,
+    });
+  }
+
+  updateStopVotingStatus(requestObject: string): Observable<any> {
     return this.http.post(`${environment.BASE_URL}/api/stop-voting`, {
       requestObject,
     });

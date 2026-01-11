@@ -5,6 +5,7 @@ const attachmentsModel = require("../models").attachments;
 const votingTrackersModel = require("../models").voting_trackers;
 const evmModel = require("../models").evms;
 const commentsModel = require("../models").comments;
+const micMeetingModel = require("../models").micmeetings;
 var request = require("request");
 const Op = require("sequelize").Op;
 const jwt = require("jsonwebtoken");
@@ -62,7 +63,7 @@ module.exports = {
     let whereClause = {
       isDeleted: false,
       status: {
-        [Op.ne]: "Completed",
+        [Op.notIn]: ["Accepted", "Rejected"],
       },
     };
     if (role === "branch_user" && department) {
@@ -74,6 +75,11 @@ module.exports = {
     if (role === "commissioner") {
       whereClause.branchAction = "Sent";
       whereClause.municipalAction = "Approved";
+    }
+    if (role === "mayor") {
+      whereClause.branchAction = "Sent";
+      whereClause.municipalAction = "Approved";
+      whereClause.commissionerAction = "Approved";
     }
     return issuesModel
       .findAll({
@@ -157,9 +163,14 @@ module.exports = {
       commissionerActionDate: null,
       commissionerActionRemarks: "",
       commissionerUserId: "",
+      mayorAction: "",
+      mayorActionDate: null,
+      mayorActionRemarks: "",
+      mayorUserId: "",
       voting: "",
       votingDate: null,
       status: "Pending",
+      finalStatus: "Pending",
       isDeleted: false,
     };
     issuesModel.create(newIssue).then((r) => {
@@ -209,7 +220,7 @@ module.exports = {
         case "commissioner":
           if (requestObject.action.status == "Positive") {
             issue.commissionerAction = "Approved";
-            msg = "Issue has been approved for MIC meeting.";
+            msg = "Issue successfully forwarded to Mayor.";
           }
           if (requestObject.action.status == "Negative") {
             issue.commissionerAction = "Rejected";
@@ -219,6 +230,20 @@ module.exports = {
           }
           issue.commissionerActionDate = new Date();
           issue.commissionerUserId = requestObject.user.userId;
+          break;
+        case "mayor":
+          if (requestObject.action.status == "Positive") {
+            issue.mayorAction = "Approved";
+            msg = "Issue has been approved for MIC meeting.";
+          }
+          if (requestObject.action.status == "Negative") {
+            issue.mayorAction = "Rejected";
+            issue.mayorActionRemarks = requestObject?.action?.remarks;
+            issue.status = "Rejected";
+            msg = "Issue has been rejected.";
+          }
+          issue.mayorActionDate = new Date();
+          issue.mayorUserId = requestObject.user.userId;
           break;
       }
       await issue.save();
@@ -315,7 +340,19 @@ module.exports = {
               .findAll({
                 where: whereClause,
               })
-              .then((voters) => {
+              .then((v) => {
+                let voters = [];
+                if (v.length > 0) {
+                  v.map((item) => {
+                    if (
+                      item.role != "municipal_secretary" &&
+                      item.role != "commissioner" &&
+                      item.role != "mayor"
+                    ) {
+                      voters.push(item);
+                    }
+                  });
+                }
                 responseObject.voters = voters;
                 return fn(null, responseObject);
               })
@@ -400,65 +437,65 @@ module.exports = {
           .send({ status: false, data: [], message: error });
       });
   },
-  async updateVotingStatus(req, res) {
-    let requestObject = req.body.requestObject;
-    if (!requestObject.user || !requestObject.issue) {
-      return res.status(200).send({
-        status: false,
-        message: "Unable to update issue. Please check the values provided",
-      });
-    }
-    try {
-      const id = requestObject.issue.id;
-      const issue = await issuesModel.findByPk(id);
-      if (!issue) {
-        return res
-          .status(404)
-          .json({ status: false, message: "Issue not found" });
-      }
-      let whereClause = {
-        status: "Active",
-        isDeleted: false,
-        isVoter: true,
-      };
-      await usersModel
-        .count({
-          where: whereClause,
-        })
-        .then((totalCount) => {
-          const newVotingTracker = {
-            issue_id: id,
-            total_voter: totalCount,
-            vote_polled: 0,
-            accepted: 0,
-            rejected: 0,
-            abstained: 0,
-            voting_status: "Open",
-            record_status: "Active",
-            isDeleted: false,
-          };
-          votingTrackersModel.create(newVotingTracker).then(async (r) => {
-            issue.voting = "Started";
-            issue.votingDate = new Date();
-            await issue.save();
-            return res.status(200).send({
-              status: true,
-              message: "Voting started successfully",
-            });
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(500).send({
-            status: false,
-            message: error,
-          });
-        });
-    } catch (error) {
-      console.error("Error updating issue:", error);
-      return res.status(500).send({ status: false, message: error });
-    }
-  },
+  // async updateVotingStatus(req, res) {
+  //   let requestObject = req.body.requestObject;
+  //   if (!requestObject.user || !requestObject.issue) {
+  //     return res.status(200).send({
+  //       status: false,
+  //       message: "Unable to update issue. Please check the values provided",
+  //     });
+  //   }
+  //   try {
+  //     const id = requestObject.issue.id;
+  //     const issue = await issuesModel.findByPk(id);
+  //     if (!issue) {
+  //       return res
+  //         .status(404)
+  //         .json({ status: false, message: "Issue not found" });
+  //     }
+  //     let whereClause = {
+  //       status: "Active",
+  //       isDeleted: false,
+  //       isVoter: true,
+  //     };
+  //     await usersModel
+  //       .count({
+  //         where: whereClause,
+  //       })
+  //       .then((totalCount) => {
+  //         const newVotingTracker = {
+  //           issue_id: id,
+  //           total_voter: totalCount,
+  //           vote_polled: 0,
+  //           accepted: 0,
+  //           rejected: 0,
+  //           abstained: 0,
+  //           voting_status: "Open",
+  //           record_status: "Active",
+  //           isDeleted: false,
+  //         };
+  //         votingTrackersModel.create(newVotingTracker).then(async (r) => {
+  //           issue.voting = "Started";
+  //           issue.votingDate = new Date();
+  //           await issue.save();
+  //           return res.status(200).send({
+  //             status: true,
+  //             message: "Voting started successfully",
+  //           });
+  //         });
+  //       })
+  //       .catch((error) => {
+  //         console.log(error);
+  //         return res.status(500).send({
+  //           status: false,
+  //           message: error,
+  //         });
+  //       });
+  //   } catch (error) {
+  //     console.error("Error updating issue:", error);
+  //     return res.status(500).send({ status: false, message: error });
+  //   }
+  // },
 
   getVoters(req, res) {
     const issueId = req.body.requestObject.issueId;
@@ -471,7 +508,19 @@ module.exports = {
       .findAll({
         where: whereClause,
       })
-      .then((voters) => {
+      .then((v) => {
+        let voters = [];
+        if (v.length > 0) {
+          v.map((item) => {
+            if (
+              item.role != "municipal_secretary" &&
+              item.role != "commissioner" &&
+              item.role != "mayor"
+            ) {
+              voters.push(item);
+            }
+          });
+        }
         return res
           .status(200)
           .send({ status: true, data: voters, message: "Success" });
@@ -542,10 +591,69 @@ module.exports = {
     }
   },
 
-  async stopVoting(req, res) {
-    console.log("Stop Voting---Backend==", req.body.requestObject);
+  async startVoting(req, res) {
     let requestObject = req.body.requestObject;
-    if (!requestObject.role == "commissioner" || !requestObject.issueId) {
+    if (!requestObject.meeting || !requestObject.issues) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to start voting. Please check the values provided",
+      });
+    }
+    try {
+      const issueIds = requestObject.issues.split(",");
+      if (issueIds.length > 0) {
+        micMeetingModel.create(requestObject).then(async (m) => {
+          let whereClause = {
+            status: "Active",
+            isDeleted: false,
+            isVoter: true,
+          };
+          let totalVoters = await usersModel.count({ where: whereClause });
+          let count = 0;
+          issueIds.map(async (id) => {
+            const issue = await issuesModel.findByPk(id);
+            if (issue) {
+              const newVotingTracker = {
+                issue_id: id,
+                total_voter: totalVoters,
+                vote_polled: 0,
+                accepted: 0,
+                rejected: 0,
+                abstained: 0,
+                voting_status: "Open",
+                record_status: "Active",
+                isDeleted: false,
+              };
+              votingTrackersModel.create(newVotingTracker).then(async (r) => {
+                issue.voting = "Started";
+                issue.votingDate = new Date();
+                await issue.save();
+              });
+            }
+            count++;
+            if (issueIds.length == count) {
+              return res.status(200).send({
+                status: true,
+                message: "Meeting started successfully",
+              });
+            }
+          });
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "No issues found for start voting.",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+
+  async stopVoting(req, res) {
+    let requestObject = req.body.requestObject;
+    if (!requestObject.role == "commissioner" || !requestObject.issues) {
       return res.status(200).send({
         status: false,
         message:
@@ -553,81 +661,90 @@ module.exports = {
       });
     }
     try {
-      const id = requestObject.issueId;
-      const issue = await issuesModel.findByPk(id);
-      let whereClause1 = {
-        issue_id: id,
-        record_status: "Active",
-        voting_status: "Open",
-        isDeleted: false,
-      };
-      const voting_tracker = await votingTrackersModel.findOne({
-        where: whereClause1,
-      });
-      if (!issue || !voting_tracker) {
-        return res
-          .status(200)
-          .json({ status: false, message: "Issue/voting details not found" });
-      }
-      let whereClause2 = {
-        issue_id: id,
-        status: "Active",
-        isDeleted: false,
-      };
-      await evmModel
-        .findAll({
-          where: whereClause2,
-        })
-        .then(async (votes) => {
-          let total_voter = voting_tracker.total_voter;
-          let vote_polled = 0;
-          let approved = 0;
-          let rejected = 0;
-          let abstained = 0;
-          let status = "";
-          if (votes.length > 0) {
-            vote_polled = votes.length;
-            votes.map((item) => {
-              console.log("ITEM==", item.vote);
-              if (item.vote == "Approved") {
-                approved++;
-              }
-              if (item.vote == "Rejected") {
-                rejected++;
-              }
-              if (item.vote == "Abstained") {
-                abstained++;
-              }
+      const issueIds = requestObject.issues.split(",");
+      if (issueIds.length > 0) {
+        let count = 0;
+        issueIds.map(async (id) => {
+          const issue = await issuesModel.findByPk(id);
+          let whereClause1 = {
+            issue_id: id,
+            record_status: "Active",
+            voting_status: "Open",
+            isDeleted: false,
+          };
+          const voting_tracker = await votingTrackersModel.findOne({
+            where: whereClause1,
+          });
+          if (issue && voting_tracker) {
+            let whereClause2 = {
+              issue_id: id,
+              status: "Active",
+              isDeleted: false,
+            };
+            await evmModel
+              .findAll({
+                where: whereClause2,
+              })
+              .then(async (votes) => {
+                let total_voter = voting_tracker.total_voter;
+                let vote_polled = 0;
+                let approved = 0;
+                let rejected = 0;
+                let abstained = 0;
+                let status = "";
+                if (votes.length > 0) {
+                  vote_polled = votes.length;
+                  votes.map((item) => {
+                    console.log("ITEM==", item.vote);
+                    if (item.vote == "Approved") {
+                      approved++;
+                    }
+                    if (item.vote == "Rejected") {
+                      rejected++;
+                    }
+                    if (item.vote == "Abstained") {
+                      abstained++;
+                    }
+                  });
+                }
+                if (approved >= rejected) {
+                  status = "Accepted";
+                } else {
+                  status = "Rejected";
+                }
+                voting_tracker.vote_polled = vote_polled;
+                voting_tracker.accepted = approved;
+                voting_tracker.rejected = rejected;
+                voting_tracker.abstained = abstained;
+                voting_tracker.voting_status = status;
+                voting_tracker.save();
+                issue.voting = "Completed";
+                issue.status = status;
+                issue.votingDate = new Date();
+                await issue.save();
+              })
+              .catch((error) => {
+                console.log(error);
+                return res.status(200).send({
+                  status: false,
+                  message: error,
+                });
+              });
+          }
+          count++;
+          if (issueIds.length == count) {
+            return res.status(200).send({
+              status: true,
+              message: "Meeting stopped successfully",
             });
           }
-          if (approved >= rejected) {
-            status = "Accepted";
-          } else {
-            status = "Rejected";
-          }
-          voting_tracker.vote_polled = vote_polled;
-          voting_tracker.accepted = approved;
-          voting_tracker.rejected = rejected;
-          voting_tracker.abstained = abstained;
-          voting_tracker.voting_status = status;
-          voting_tracker.save();
-          issue.voting = "Completed";
-          issue.status = status;
-          issue.votingDate = new Date();
-          await issue.save();
-          return res.status(200).send({
-            status: true,
-            // data: votes,
-            message: "Success",
-          });
-        })
-        .catch((error) => {
-          console.log(error);
-          return res.status(200).send({
-            status: false,
-            message: error,
-          });
         });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "No issues found for stop voting.",
+        });
+      }
     } catch (error) {
       console.error("Error updating issue:", error);
       return res.status(200).send({ status: false, message: error });

@@ -60,24 +60,47 @@ export class MuniSecIssueBucketComponent implements OnInit {
   issueClassifier(data: any) { 
     let issues:any = {inbox:[], sent:[], draft:[]}   
     if(data?.length>0){
-      data?.map((item:any)=>{
-        console.log('ITEM==', item);
-        if(item?.branchAction=='Draft' && item?.raisedBy==this.user.userId){
-          item.subject=item?.title;
-          item.time='Saved';
-          issues.draft.push(item);
-        }
-        if(item?.branchAction=='Sent' && item?.raisedBy==this.user.userId){
-          item.to='Municipal Secretary';
-          item.subject=item?.title;
-          item.time=item?.branchActionDate;
-          issues.sent.push(item);
-        }
-        if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
-          item.from='Branch User';
-          item.subject=item?.title;
-          item.time=item?.createdAt;
+      // data?.map((item:any)=>{
+      //   if(item?.branchAction=='Draft' && item?.raisedBy==this.user.userId){
+      //     item.subject=item?.title;
+      //     item.time='Saved';
+      //     issues.draft.push(item);
+      //   }
+      //   if(item?.branchAction=='Sent' && item?.raisedBy==this.user.userId){
+      //     item.to='Municipal Secretary';
+      //     item.subject=item?.title;
+      //     item.time=item?.branchActionDate;
+      //     issues.sent.push(item);
+      //   }
+      //   if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
+      //     item.from= item?.raisedByName+'('+item?.department+' Department)';
+      //     item.subject=item?.title;
+      //     item.time=item?.createdAt;
+      //     issues.inbox.push(item);
+      //   }
+      // });
+      data?.map((item: any) => {
+        if (
+          item?.branchAction == 'Sent' &&
+          item?.municipalAction == '' &&
+          item?.commissionerAction == ''
+        ) {
+          item.from =
+            item?.raisedByName + '(' + item?.department + ' Department)';
+          item.subject = item?.title;
+          item.time = item?.createdAt;
           issues.inbox.push(item);
+        }
+        if (
+          item?.branchAction == 'Sent' &&
+          item?.municipalAction == 'Approved' &&
+          item?.commissionerAction == ''
+        ) {
+          item.from =
+            item?.raisedByName + '(' + item?.department + ' Department)';
+          item.subject = item?.title;
+          item.time = item?.createdAt;
+          issues.sent.push(item);
         }
       });
     }
@@ -103,5 +126,10 @@ export class MuniSecIssueBucketComponent implements OnInit {
 
   onSidebarToggle(val: boolean) {
     this.sidebarCollapsed = val;
+  }
+
+   selectTab(tab: MailType) {
+    this.activeTab = tab;
+    this.isDetailView = false;
   }
 }

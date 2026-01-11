@@ -76,6 +76,22 @@ module.exports = (sequelize, type) => {
       type: DataTypes.STRING(10),
       allowNull: true,
     },
+    mayorAction:{
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+    mayorActionDate:{
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    mayorActionRemarks:{
+      type: DataTypes.STRING(250),
+      allowNull: true,
+    },
+    mayorUserId:{
+      type: DataTypes.STRING(10),
+      allowNull: true,
+    },
     voting:{
       type: DataTypes.STRING(50),
       allowNull: true,
@@ -85,6 +101,10 @@ module.exports = (sequelize, type) => {
       allowNull: true,
     },
     status: {
+      type: DataTypes.STRING(15),
+      allowNull: true,
+    },
+    finalStatus: {
       type: DataTypes.STRING(15),
       allowNull: true,
     },

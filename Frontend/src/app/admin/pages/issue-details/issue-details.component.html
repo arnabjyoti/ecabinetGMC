@@ -119,14 +119,14 @@
                 <strong>Final Acceptance Status:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.status == 'Pending'
+                    issue.finalStatus == 'Pending'
                       ? 'warning'
-                      : issue.status == 'Accepted'
+                      : issue.finalStatus == 'Accepted'
                       ? 'success'
                       : 'danger'
                   }}"
                 >
-                  {{ issue.status }}
+                  {{ issue.finalStatus }}
                 </span>
               </h5>
               <h5
@@ -139,9 +139,9 @@
                 <strong>Rejection Reason:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.status == 'Pending'
+                    issue.finalStatus == 'Pending'
                       ? 'warning'
-                      : issue.status == 'Accepted'
+                      : issue.finalStatus == 'Accepted'
                       ? 'success'
                       : 'danger'
                   }}"
@@ -151,6 +151,8 @@
                       ? issue?.municipalActionRemarks
                       : issue?.commissionerAction == "Rejected"
                       ? issue?.commissionerActionRemarks
+                      : issue?.mayorAction == "Rejected"
+                      ? issue?.mayorActionRemarks
                       : ""
                   }}
                 </span>
@@ -375,25 +377,41 @@
   <div
     class="row"
     *ngIf="
-      user.role == 'commissioner' && issue.commissionerAction == 'Approved'
+      user.role == 'mayor' &&
+      issue.mayorAction != 'Approved' &&
+      issue.mayorAction != 'Rejected'
     "
   >
     <div class="col-md-12">
       <button
-        *ngIf="issue.voting == ''"
         class="btn btn-primary px-4"
-        (click)="startVoting()"
+        (click)="confirmMe('mayor')"
         style="float: right"
       >
-        <i class="bi bi-hand-thumbs-up"></i> Start Voting
+        <i class="bi bi-check-circle"></i> Approve
       </button>
+      &nbsp;&nbsp;
+      <button
+        class="btn btn-primary px-4"
+        data-bs-toggle="modal"
+        data-bs-target="#issueRejectModal"
+        style="float: left"
+      >
+        <i class="bi bi-x-circle"></i> Reject
+      </button>
+    </div>
+  </div>
+
+  <div
+    class="row" *ngIf="issue.mayorAction == 'Approved'">
+    <div class="col-md-12">
       <button
         *ngIf="issue.voting == 'Started'"
         class="btn btn-primary px-4"
         disabled
-        style="float: right"
+        style="float: right;background-color: orange;"
       >
-        <i class="bi bi-hand-thumbs-up"></i> Voting Started
+        <i class="bi bi-hand-thumbs-up"></i> MIC Meeting Started
       </button>
     </div>
   </div>

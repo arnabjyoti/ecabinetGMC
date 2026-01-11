@@ -50,6 +50,7 @@ import { VotePageComponent } from './admin/pages/vote-page/vote-page.component';
 import { MuniSecIssueBucketComponent } from './municipal-secretary/muni-sec-issue-bucket/muni-sec-issue-bucket.component';
 import { CommissionerIssueBucketComponent } from './commissioner/commissioner-issue-bucket/commissioner-issue-bucket.component';
 import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.component';
+import { MayorIssueBucketComponent } from './mayor/mayor-issue-bucket/mayor-issue-bucket.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -73,7 +74,8 @@ import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.compo
     VotePageComponent,
     MuniSecIssueBucketComponent,
     CommissionerIssueBucketComponent,
-    VotingZoneComponent
+    VotingZoneComponent,
+    MayorIssueBucketComponent
   ],
   imports: [
     FormsModule,

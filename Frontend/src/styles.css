@@ -142,3 +142,24 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   background-clip: text;
   color: transparent;               /* show the gradient through text */
 }
+
+.no-issues-container {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.no-issues-image {
+  max-width: 220px;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.no-issues-container h3 {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.no-issues-container p {
+  font-size: 14px;
+}

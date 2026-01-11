@@ -24,28 +24,29 @@ export class SidebarComponent implements OnInit {
       email: this.authService.getEmail(),
       role: this.authService.getRole(),
       department: this.authService.getDepartment(),
+      designation: this.authService.getDesignation(),
       isVoter: this.authService.getIsVoter(),
     };
   }
   ngOnInit(): void {
-    console.log("User==", this.user);
     this.loggedInUser = this.getLoggedInUser();
   }
 
   getLoggedInUser(){
     let usr:any="";    
     if(this.user){
-      switch(this.user.role){
-        case 'branch_user': 
-          usr=this.user.name+"(Branch)";
-        break;
-        case 'municipal_secretary': 
-          usr=this.user.name+"(Municipal Secretary)";
-        break;
-        case 'commissioner': 
-          usr=this.user.name+"(Commissioner)";
-        break;
-      }
+      // switch(this.user.role){
+      //   case 'branch_user': 
+      //     usr=this.user.name+"(Branch)";
+      //   break;
+      //   case 'municipal_secretary': 
+      //     usr=this.user.name+"(Municipal Secretary)";
+      //   break;
+      //   case 'commissioner': 
+      //     usr=this.user.name+"(Commissioner)";
+      //   break;
+      // }
+      usr=this.user.name+"("+this.user.designation+")";
     }
     return usr;
   }

@@ -5,33 +5,54 @@
     class="page-title"
     style="margin-top: 50px; text-align: center; color: rgb(87, 90, 92)"
   >
-    MIC MEETING ZONE
+    AGENDA BUCKET
   </h3>
 
   <div class="mail-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div
+        class="menu"
+        [class.active]="activeTab === 'inbox'"
+        (click)="selectTab('inbox')"
+      >
+        <i class="bi bi-inbox"></i> &nbsp; Agenda Inbox&nbsp;
+        <span class="count" style="float: right">{{
+          issues.inbox.length
+        }}</span>
+      </div>
+
+      <div
+        class="menu"
+        [class.active]="activeTab === 'sent'"
+        (click)="selectTab('sent')"
+      >
+        <i class="bi bi-send"></i> &nbsp;Selected for MIC &nbsp;
+        <span class="count" style="float: right">{{ issues.sent.length }}</span>
+      </div>
+    </div>
     <!-- Content -->
     <div class="content" *ngIf="!isDetailView">
       <h3>
-        <i class="bi bi-inbox"></i>&nbsp;Agendas Ready for MIC Meeting
-        <span *ngIf="isVotingStarted && issues.inbox.length>0" style="float: right;">
-          <button *ngIf="user.role == 'mayor'"
-            class="btn btn-primary"
-            (click)="stopVoting()" style="background-color: brown">
-            <i class="bi bi-x-square"></i> Stop Meeting
-          </button>
-          <button *ngIf="user.role != 'mayor'"
-            class="btn btn-primary"
-            [disabled]="true" style="background-color: orange">
-            <i class="bi bi-hand-thumbs-up"></i> Meeting Started
-          </button>
-        </span>
-        <span *ngIf="!isVotingStarted && issues.inbox.length>0" style="float: right;">
-          <button *ngIf="user.role == 'mayor'"
-            class="btn btn-primary"
-            (click)="stopVoting()" style="background-color: green">
-            <i class="bi bi-hand-thumbs-up"></i> Start Meeting
-          </button>
-        </span>
+        <i *ngIf="activeTab == 'inbox'" class="bi bi-inbox"></i
+        ><i *ngIf="activeTab == 'sent'" class="bi bi-send"></i
+        >&nbsp;{{ activeTab == "inbox" ? "Agenda Inbox" : "Selected for MIC"
+        }}<button
+          *ngIf="activeTab == 'sent' && !isVotingStarted && issues.sent.length>0"
+          (click)="startVoting()"
+          class="btn btn-primary px-4"
+          style="float: right; background-color: green"
+        >
+          <i class="bi bi-hand-thumbs-up"></i> Start Meeting
+        </button>
+        <button
+          *ngIf="activeTab == 'sent' && isVotingStarted && issues.sent.length>0"
+          (click)="stopVoting()"
+          class="btn btn-primary px-4"
+          style="float: right; background-color: brown"
+        >
+          <i class="bi bi-x-square"></i> Stop Meeting
+        </button>
       </h3>
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
@@ -42,9 +63,7 @@
           >
             <div class="mail-from">{{ issue.from || issue.to || "Draft" }}</div>
             <div class="mail-subject">{{ issue.subject }}</div>
-            <div class="mail-time">
-              {{ issue.time | date : "dd/MM/yyyy, hh:mm a" }}
-            </div>
+            <div class="mail-time">{{ issue.time }}</div>
           </div>
         </div>
       </div>
@@ -69,7 +88,12 @@
           >&nbsp;{{ selectedIssue?.title }}</strong
         >
       </h4>
-      <app-vote-page [selectedIssue]="selectedIssue"></app-vote-page>
+      <app-issue-details
+        [issue]="selectedIssue"
+        [activeTab]="activeTab"
+        [user]="user"
+        (onSent)="onSent($event)"
+      ></app-issue-details>
     </div>
   </div>
 </div>

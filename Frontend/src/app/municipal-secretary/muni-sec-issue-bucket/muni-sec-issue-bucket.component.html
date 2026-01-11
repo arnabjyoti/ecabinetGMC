@@ -2,13 +2,38 @@
 
 <div class="main-content" [class.collapsed]="sidebarCollapsed">
   <h3 class="page-title" style="margin-top: 50px;text-align: center; color: rgb(87, 90, 92)">
-    ISSUE BUCKET
+    AGENDA BUCKET
   </h3>
 
   <div class="mail-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div
+        class="menu"
+        [class.active]="activeTab === 'inbox'"
+        (click)="selectTab('inbox')"
+      >
+        <i class="bi bi-inbox"></i> &nbsp; Agenda Inbox&nbsp;
+        <span class="count" style="float: right">{{
+          issues.inbox.length
+        }}</span>
+      </div>
+
+      <div
+        class="menu"
+        [class.active]="activeTab === 'sent'"
+        (click)="selectTab('sent')"
+      >
+        <i class="bi bi-send"></i> &nbsp;To Commissioner &nbsp;
+        <span class="count" style="float: right">{{ issues.sent.length }}</span>
+      </div>
+    </div>
     <!-- Content -->
     <div class="content" *ngIf="!isDetailView">
-      <h3><i class="bi bi-inbox"></i>&nbsp;Inbox</h3>
+      <h3><i *ngIf="activeTab == 'inbox'" class="bi bi-inbox"></i
+        ><i *ngIf="activeTab == 'sent'" class="bi bi-send"></i
+        >&nbsp;{{ activeTab == "inbox" ? "Agenda Inbox" : "To Commissioner"
+        }}</h3>
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
           <div class="mail-item" style="cursor: pointer;" (click)="onView(issue)">
@@ -20,7 +45,15 @@
       </div>
 
       <ng-template #noIssue>
-        <div class="empty">No issues</div>
+        <div class="no-issues-container">
+          <img
+            src="assets/image/no-issues.jpg"
+            alt="No issues available"
+            class="no-issues-image"
+          />
+          <h3>No Agendas Available</h3>
+          <p>You’re all caught up! There are currently no agendas to display.</p>
+        </div>
       </ng-template>
     </div>
     <div class="content" *ngIf="isDetailView">

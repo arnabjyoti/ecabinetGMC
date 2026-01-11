@@ -93,6 +93,11 @@ export class AuthService {
     return decoded?.department || null;
   }
 
+  getDesignation(): string | null {
+    const decoded = this.getDecodedToken();
+    return decoded?.designation || null;
+  }
+
   getEmail(): string | null {
     const decoded = this.getDecodedToken();
     return decoded?.email || null;
