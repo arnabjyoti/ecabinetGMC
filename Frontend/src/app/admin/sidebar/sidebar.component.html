@@ -82,6 +82,14 @@
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
+      routerLink="/issue-archive"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-inbox"></i>
+      <span *ngIf="!isCollapsed"> Agenda Archive</span>
+    </a>
+    <a
       *ngIf="user.isVoter"
       routerLink="/voting-zone"
       routerLinkActive="active"
@@ -112,6 +120,14 @@
     >
       <i class="bi bi-file-earmark-text"></i>
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
+    </a>
+    <a
+      routerLink="/issue-archive"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-inbox"></i>
+      <span *ngIf="!isCollapsed"> Agenda Archive</span>
     </a>
     <!-- <a routerLink="/vote-page"
       routerLinkActive="active"
