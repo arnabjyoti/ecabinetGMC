@@ -63,6 +63,10 @@ export class MayorIssueBucketComponent implements OnInit{
   issueClassifier(data: any) {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
+      let count:any={
+        inbox:0,
+        sent:0
+      }
       data?.map((item: any) => {
         if (
           item?.branchAction == 'Sent' &&
@@ -70,6 +74,8 @@ export class MayorIssueBucketComponent implements OnInit{
           item?.commissionerAction == 'Approved' &&
           (item?.mayorAction == '' || item?.mayorAction == null)
         ) {
+          count.inbox++;
+          item.serial = count.inbox;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;
@@ -82,6 +88,8 @@ export class MayorIssueBucketComponent implements OnInit{
           item?.commissionerAction == 'Approved' && 
           item?.mayorAction == 'Approved'
         ) {
+          count.sent++;
+          item.serial = count.sent;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;
@@ -123,7 +131,7 @@ export class MayorIssueBucketComponent implements OnInit{
   }
 
   startVoting() {
-    let confMsg: any = 'Are you sure! You want start meeting?';
+    let confMsg: any = 'Are you sure! You want to place agendas in the MIC meeting?';
     Swal.fire({
       title: 'Confirmation Message',
       text: confMsg,

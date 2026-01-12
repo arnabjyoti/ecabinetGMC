@@ -8,9 +8,9 @@
 <button (click)="getMonthlyIssuesForChart()">getMonthlyIssuesForChart</button> -->
     <!-- SUMMARY CARDS -->
     <div class="row g-4 mb-4">
-      <div class="col-md-3"><div class="issue-card">Total Agendas Raised <br> <span class="text-primary fs-3">{{counts.all}}</span></div></div>
-      <div class="col-md-3"><div class="issue-card">In-Process <br> <span class="text-warning fs-3">{{counts.pending}}</span></div></div>
+      <div class="col-md-3"><div class="issue-card">Agendas Raised <br> <span class="text-primary fs-3">{{counts.all}}</span></div></div>
       <div class="col-md-3"><div class="issue-card">Approved <br> <span class="text-success fs-3">{{counts.accepted}}</span></div></div>
+      <div class="col-md-3"><div class="issue-card">Deferred <br> <span class="text-warning fs-3">{{counts.deferred}}</span></div></div>
       <div class="col-md-3"><div class="issue-card">Rejected <br> <span class="text-danger fs-3">{{counts.rejected}}</span></div></div>
     </div>
   <!-- ISSUE LIST TABLE -->

@@ -112,7 +112,7 @@ export class VotePageComponent implements OnInit {
     const reject = this.members.filter((m: any) => m.vote === 'Rejected').length;
 
     if (this.votedCount < this.members.length) {
-      return 'Voting In Progress';
+      return 'Meeting In Progress';
     }
     return approve > reject ? 'APPROVED' : 'REJECTED';
   }

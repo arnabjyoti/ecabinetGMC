@@ -155,13 +155,13 @@ export class IssueDetailsComponent implements OnInit {
       }
       if (this.issue.voting == 'Started' && this.issue.votingDate) {
         timeline.push({
-          step: 'Voting Started',
+          step: 'Placed in MIC Meeting',
           date: this.issue.votingDate,
         });
       }
       if (this.issue.voting == 'Completed' && this.issue.votingDate) {
         timeline.push({
-          step: 'Voting Completed',
+          step: 'MIC Meeting Completed',
           date: this.issue.votingDate,
         });
       }
@@ -229,7 +229,7 @@ export class IssueDetailsComponent implements OnInit {
         confMsg = 'Sending it to Mayor. Is that okay?';
         break;
       case 'mayor':
-        confMsg = 'Approving it to place in MIC meeting. Is that okay?';
+        confMsg = 'Approving it to select for MIC meeting. Is that okay?';
         break;
     }
     Swal.fire({
@@ -244,6 +244,45 @@ export class IssueDetailsComponent implements OnInit {
       if (result.isConfirmed) {
         this.submitIssue();
       }
+    });
+  }
+
+  deferredMe(role: any) {
+    let confMsg: any = 'Are you sure?';
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.deferredIssue();
+      }
+    });
+  }
+
+  deferredIssue(){
+    let requestObject: any = {
+      user: this.user,
+      issue: this.issue
+    };
+    this.spinner.show();
+    this.issueDetailsService.deferredIssue(requestObject).subscribe({
+      next: (res) => {
+        if (res.status) {
+          this.toastr.success(res.message, 'Success Message');
+          this.onSent.emit('IssueSentToMunicipalSecretary');
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
     });
   }
 

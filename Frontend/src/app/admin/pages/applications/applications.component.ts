@@ -90,20 +90,30 @@ export class ApplicationsComponent implements OnInit {
   issueClassifier(data: any) { 
     let issues:any = {inbox:[], sent:[], draft:[]}   
     if(data?.length>0){
+      let count:any={
+        inbox:0,
+        sent:0,
+        draft:0
+      }
       data?.map((item:any)=>{
-        console.log('ITEM==', item);
         if(item?.branchAction=='Draft' && item?.raisedBy==this.user.userId){
+          count.draft++;
+          item.serial = count.draft;
           item.subject=item?.title;
           item.time='Saved';
           issues.draft.push(item);
         }
         if(item?.branchAction=='Sent' && item?.raisedBy==this.user.userId){
+          count.sent++;
+          item.serial = count.sent;
           item.to='To Municipal Secretary';
           item.subject=item?.title;
           item.time=item?.branchActionDate;
           issues.sent.push(item);
         }
         if(item?.branchAction=='Sent' && item?.raisedBy!=this.user.userId){
+          count.inbox++;
+          item.serial = count.inbox;
           item.from= item?.raisedByName+'('+item?.department+' Department)';
           item.subject=item?.title;
           item.time=item?.createdAt;

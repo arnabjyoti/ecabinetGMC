@@ -14,24 +14,24 @@
       <h3>
         <i class="bi bi-inbox"></i>&nbsp;Agendas Ready for MIC Meeting
         <span *ngIf="isVotingStarted && issues.inbox.length>0" style="float: right;">
-          <button *ngIf="user.role == 'mayor'"
+          <!-- <button *ngIf="user.role == 'mayor'"
             class="btn btn-primary"
             (click)="stopVoting()" style="background-color: brown">
             <i class="bi bi-x-square"></i> Stop Meeting
-          </button>
-          <button *ngIf="user.role != 'mayor'"
+          </button> -->
+          <!-- <button *ngIf="user.role != 'mayor'"
             class="btn btn-primary"
             [disabled]="true" style="background-color: orange">
             <i class="bi bi-hand-thumbs-up"></i> Meeting Started
-          </button>
+          </button> -->
         </span>
-        <span *ngIf="!isVotingStarted && issues.inbox.length>0" style="float: right;">
+        <!-- <span *ngIf="!isVotingStarted && issues.inbox.length>0" style="float: right;">
           <button *ngIf="user.role == 'mayor'"
             class="btn btn-primary"
             (click)="stopVoting()" style="background-color: green">
             <i class="bi bi-hand-thumbs-up"></i> Start Meeting
           </button>
-        </span>
+        </span> -->
       </h3>
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
@@ -40,7 +40,7 @@
             style="cursor: pointer"
             (click)="onView(issue)"
           >
-            <div class="mail-from">{{ issue.from || issue.to || "Draft" }}</div>
+            <div class="mail-from">{{issue.serial}}. {{ issue.from || issue.to || "Draft" }}</div>
             <div class="mail-subject">{{ issue.subject }}</div>
             <div class="mail-time">
               {{ issue.time | date : "dd/MM/yyyy, hh:mm a" }}
@@ -69,7 +69,13 @@
           >&nbsp;{{ selectedIssue?.title }}</strong
         >
       </h4>
-      <app-vote-page [selectedIssue]="selectedIssue"></app-vote-page>
+      <!-- <app-vote-page [selectedIssue]="selectedIssue"></app-vote-page> -->
+       <app-issue-details
+        [issue]="selectedIssue"
+        [activeTab]="activeTab"
+        [user]="user"
+        (onSent)="onSent($event)"
+      ></app-issue-details>
     </div>
   </div>
 </div>

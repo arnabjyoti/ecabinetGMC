@@ -62,7 +62,7 @@ module.exports = {
     const role = req.body.requestObject.role;
     let whereClause = {
       isDeleted: false,
-      status: {
+      finalStatus: {
         [Op.notIn]: ["Accepted", "Rejected"],
       },
     };
@@ -242,6 +242,52 @@ module.exports = {
             issue.status = "Rejected";
             msg = "Issue has been rejected.";
           }
+          issue.mayorActionDate = new Date();
+          issue.mayorUserId = requestObject.user.userId;
+          break;
+      }
+      await issue.save();
+      return res.status(200).send({
+        status: true,
+        message: msg,
+      });
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
+    }
+  },
+  async deferredIssue(req, res) {
+    let requestObject = req.body.requestObject;
+    if (!requestObject.user || !requestObject.issue) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to update issue. Please check the values provided",
+      });
+    }
+    try {
+      const id = requestObject.issue.id;
+      const issue = await issuesModel.findByPk(id);
+      if (!issue) {
+        return res
+          .status(404)
+          .json({ status: false, message: "Issue not found" });
+      }
+      let msg = "Success";
+      switch (requestObject.user.role) {
+        case "commissioner":
+          msg = "Issue has been deferred.";
+          issue.commissionerAction = "Deferred";
+          issue.commissionerActionRemarks = "";
+          issue.status = "Deferred";
+          issue.commissionerActionDate = new Date();
+          issue.commissionerUserId = requestObject.user.userId;
+          break;
+        case "mayor":
+          msg = "Issue has been deferred.";
+          issue.mayorAction = "Deferred";
+          issue.mayorActionRemarks = "";
+          issue.status = "Deferred";
+          issue.finalStatus = "Deferred";
           issue.mayorActionDate = new Date();
           issue.mayorUserId = requestObject.user.userId;
           break;
@@ -626,6 +672,7 @@ module.exports = {
               };
               votingTrackersModel.create(newVotingTracker).then(async (r) => {
                 issue.voting = "Started";
+                issue.status = "Accepted";
                 issue.votingDate = new Date();
                 await issue.save();
               });
@@ -634,7 +681,7 @@ module.exports = {
             if (issueIds.length == count) {
               return res.status(200).send({
                 status: true,
-                message: "Meeting started successfully",
+                message: "Placed in MIC Meeting successfully",
               });
             }
           });
@@ -657,7 +704,7 @@ module.exports = {
       return res.status(200).send({
         status: false,
         message:
-          "Unable to stop voting. Something went wrong, please try again",
+          "Unable to stop meeting. Something went wrong, please try again",
       });
     }
     try {

@@ -46,6 +46,14 @@ module.exports = {
         },
       }),
 
+      // Deferred
+      issuesModel.count({
+        where: {
+          ...baseWhere,
+          status: "Deferred",
+        },
+      }),
+
       // Rejected
       issuesModel.count({
         where: {
@@ -54,13 +62,14 @@ module.exports = {
         },
       }),
     ])
-      .then(([all, accepted, pending, rejected]) => {
+      .then(([all, accepted, pending, deferred, rejected]) => {
         return res.status(200).send({
           status: true,
           data: {
             all,
             accepted,
             pending,
+            deferred,
             rejected,
           },
           message: "Success",

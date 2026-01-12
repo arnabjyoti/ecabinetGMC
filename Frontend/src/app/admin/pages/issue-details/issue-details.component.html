@@ -23,7 +23,8 @@
           }}
         </div>
         <div class="col-md-4">
-          <strong>Submission Date:</strong> {{ issue.branchActionDate | date:'dd/MM/yyyy' }}
+          <strong>Submission Date:</strong>
+          {{ issue.branchActionDate | date : "dd/MM/yyyy" }}
         </div>
       </div>
 
@@ -105,7 +106,9 @@
                       <div class="timeline-dot"></div>
                       <div>
                         <p class="timeline-step mb-0">{{ t.step }}</p>
-                        <small class="text-muted">{{ t.date | date:'dd/MM/yyyy, hh:mm a' }}</small>
+                        <small class="text-muted">{{
+                          t.date | date : "dd/MM/yyyy, hh:mm a"
+                        }}</small>
                       </div>
                     </div>
                   </div>
@@ -119,29 +122,30 @@
                 <strong>Final Acceptance Status:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.finalStatus == 'Pending'
+                    issue.status == 'Pending'
                       ? 'warning'
-                      : issue.finalStatus == 'Accepted'
+                      : issue.status == 'Accepted'
                       ? 'success'
                       : 'danger'
                   }}"
                 >
-                  {{ issue.finalStatus }}
+                  {{ issue.status }}
                 </span>
               </h5>
               <h5
                 class="fw-bold mt-3"
                 *ngIf="
                   issue?.municipalAction == 'Rejected' ||
-                  issue?.commissionerAction == 'Rejected'
+                  issue?.commissionerAction == 'Rejected' ||
+                  issue?.mayorAction == 'Rejected'
                 "
               >
                 <strong>Rejection Reason:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.finalStatus == 'Pending'
+                    issue.status == 'Pending'
                       ? 'warning'
-                      : issue.finalStatus == 'Accepted'
+                      : issue.status == 'Accepted'
                       ? 'success'
                       : 'danger'
                   }}"
@@ -236,10 +240,7 @@
 
   <!-- COMMENTS -->
   <div class="ccard sshadow-sm ssection-card">
-    <div
-      class="row mb-5"
-      *ngIf="activeTab != 'draft'"
-    >
+    <div class="row mb-5" *ngIf="activeTab != 'draft'">
       <div class="col-md-12">
         <div class="ccard sshadow-sm ssection-card mb-5"></div>
         <div class="ccard-body">
@@ -276,11 +277,14 @@
               </div>
             </div>
           </div>
-          <div class="comment-box"  *ngIf="
-        activeTab != 'draft' &&
-        issue.status != 'Accepted' &&
-        issue.status != 'Rejected'
-      ">
+          <div
+            class="comment-box"
+            *ngIf="
+              activeTab != 'draft' &&
+              issue.status != 'Accepted' &&
+              issue.status != 'Rejected'
+            "
+          >
             <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->
 
             <div class="input-wrapper">
@@ -355,22 +359,29 @@
     "
   >
     <div class="col-md-12">
-      <button
-        class="btn btn-primary px-4"
-        (click)="confirmMe('commissioner')"
-        style="float: right"
-      >
-        <i class="bi bi-check-circle"></i> Approve
-      </button>
-      &nbsp;&nbsp;
-      <button
-        class="btn btn-primary px-4"
-        data-bs-toggle="modal"
-        data-bs-target="#issueRejectModal"
-        style="float: left"
-      >
-        <i class="bi bi-x-circle"></i> Reject
-      </button>
+      <div class="row">
+        <div class="col-md-5">
+          <button
+            class="btn btn-primary px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#issueRejectModal"
+            style="float: left"
+          >
+            <i class="bi bi-x-circle"></i> Reject
+          </button>
+        </div>
+        <div class="col-md-2">          
+        </div>
+        <div class="col-md-5">
+          <button
+            class="btn btn-primary px-4"
+            (click)="confirmMe('commissioner')"
+            style="float: right"
+          >
+            <i class="bi bi-check-circle"></i> Approve
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -383,15 +394,9 @@
     "
   >
     <div class="col-md-12">
-      <button
-        class="btn btn-primary px-4"
-        (click)="confirmMe('mayor')"
-        style="float: right"
-      >
-        <i class="bi bi-check-circle"></i> Approve
-      </button>
-      &nbsp;&nbsp;
-      <button
+      <div class="row">
+        <div class="col-md-5">
+<button
         class="btn btn-primary px-4"
         data-bs-toggle="modal"
         data-bs-target="#issueRejectModal"
@@ -399,22 +404,40 @@
       >
         <i class="bi bi-x-circle"></i> Reject
       </button>
+        </div>
+        <div class="col-md-2">
+<button
+            class="btn btn-primary px-4"
+            (click)="deferredMe('mayor')"
+          >
+            <i class="bi bi-hourglass-split"></i>  Deferred
+          </button>
+        </div>
+        <div class="col-md-5">
+<button
+        class="btn btn-primary px-4"
+        (click)="confirmMe('mayor')"
+        style="float: right"
+      >
+        <i class="bi bi-check-circle"></i> Approve
+      </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div
-    class="row" *ngIf="issue.mayorAction == 'Approved'">
+  <!-- <div class="row" *ngIf="issue.mayorAction == 'Approved'">
     <div class="col-md-12">
       <button
         *ngIf="issue.voting == 'Started'"
         class="btn btn-primary px-4"
         disabled
-        style="float: right;background-color: orange;"
+        style="float: right; background-color: orange"
       >
         <i class="bi bi-hand-thumbs-up"></i> MIC Meeting Started
       </button>
     </div>
-  </div>
+  </div> -->
 
   <!-- Bootstrap Modal -->
   <div class="modal fade" id="issueRejectModal" tabindex="-1">
@@ -422,7 +445,7 @@
       <div class="modal-content shadow-lg border-0 rounded-3">
         <div class="modal-header bg-primary text-white">
           <h5 class="modal-title fw-bold">
-            <i class="bi bi-x-square"></i>&nbsp;Rejecting Issue
+            <i class="bi bi-x-square"></i>&nbsp;Rejecting Agenda
           </h5>
           <button
             type="button"

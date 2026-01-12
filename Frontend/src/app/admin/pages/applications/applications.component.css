@@ -153,7 +153,7 @@ body {
 
 .mail-item {
   padding: 12px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 3px solid #eee;
   display: flex;
   justify-content: space-between;
 }

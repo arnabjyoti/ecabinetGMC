@@ -30,6 +30,7 @@ module.exports = (app) => {
 	app.post('/api/get-voting-ready-issue-list', IssuesController.getVotingReadyIssueList);
 	app.post('/api/create-issue', IssuesController.createIssue);
 	app.post('/api/update-issue', IssuesController.updateIssue);
+	app.post('/api/deferred-issue', IssuesController.deferredIssue);
 	app.post('/api/get-vote-page-data', IssuesController.getVotePageData);
 	app.post('/api/get-issue-attachments', IssuesController.getIssueAttachments);
 	app.post("/api/upload-issue-attachment", IssuesController.upload_config.single('file'), IssuesController.saveIssueAttachmentData);

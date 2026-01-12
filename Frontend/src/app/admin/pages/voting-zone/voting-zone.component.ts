@@ -62,9 +62,11 @@ export class VotingZoneComponent {
   issueClassifier(data: any) {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
+      let serial:any=0;
       data?.map((item: any) => {
-        item.from =
-          item?.raisedByName + '(' + item?.department + ' Department)';
+        serial++;
+        item.serial=serial;
+        item.from = item?.raisedByName + '(' + item?.department + ' Department)';
         item.subject = item?.title;
         item.time = item?.createdAt;
         issues.inbox.push(item);
@@ -179,7 +181,7 @@ export class VotingZoneComponent {
     }
   
     stopVoting() {
-      let confMsg: any = 'Are you sure! You want stop voting?';
+      let confMsg: any = 'Are you sure! You want stop meeting?';
       Swal.fire({
         title: 'Confirmation Message',
         text: confMsg,

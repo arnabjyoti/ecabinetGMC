@@ -22,6 +22,12 @@ export class IssueDetailsService {
     });
   }
 
+  deferredIssue(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/deferred-issue`, {
+      requestObject,
+    });
+  }
+
   uploadIssueAttachment(param?: any): Observable<any> {
     return this.http.post(`${environment.BASE_URL}/api/upload-issue-attachment`, param);
   }

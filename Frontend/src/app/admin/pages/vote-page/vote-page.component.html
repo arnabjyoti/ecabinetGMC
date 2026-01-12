@@ -32,7 +32,8 @@
 <div class="members-grid">
 <div class="member-card" *ngFor="let m of members">
 <h4 [class.disabled-div]="user.userId!=m.id" style="padding-bottom: 0px;margin-bottom: 0px;text-align: center;">{{ m?.name }}</h4>
-<h6 [class.disabled-div]="user.userId!=m.id" style="padding: 0px;text-align: center;">{{ m?.roleName }}</h6>
+<h6 [class.disabled-div]="user.userId!=m.id" style="padding: 0px;text-align: center;">MIC Member</h6>
+<!-- <h6 [class.disabled-div]="user.userId!=m.id" style="padding: 0px;text-align: center;">{{ m?.roleName }}</h6> -->
 
 <div *ngIf="!m?.vote" class="vote-buttons" [class.disabled-div]="user.userId!=m.id">
 <button [disabled]="user.userId!=m.id" class="approve" (click)="castVote(m, 'Approved')">Approve</button>

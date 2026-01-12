@@ -24,7 +24,7 @@
         [class.active]="activeTab === 'inbox'"
         (click)="selectTab('inbox')"
       >
-        <i class="bi bi-inbox"></i> &nbsp; Inbox &nbsp;&nbsp;
+        <i class="bi bi-inbox"></i> &nbsp;Agenda Inbox &nbsp;&nbsp;
         <span class="count" style="float: right">{{ issues.inbox.length }}</span>
       </div>
 
@@ -33,7 +33,7 @@
         [class.active]="activeTab === 'sent'"
         (click)="selectTab('sent')"
       >
-        <i class="bi bi-send"></i> &nbsp;Sent &nbsp;&nbsp;
+        <i class="bi bi-send"></i> &nbsp;Agenda Sent &nbsp;&nbsp;
         <span class="count" style="float: right">{{ issues.sent.length }}</span>
       </div>
 
@@ -42,7 +42,7 @@
         [class.active]="activeTab === 'draft'"
         (click)="selectTab('draft')"
       >
-        <i class="bi bi-file-earmark-text"></i> &nbsp;Drafts &nbsp;&nbsp;
+        <i class="bi bi-file-earmark-text"></i> &nbsp;Agenda Drafts &nbsp;&nbsp;
         <span class="count" style="float: right">{{ issues.draft.length }}</span>
       </div>
     </div>
@@ -53,7 +53,7 @@
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
           <div class="mail-item" style="cursor: pointer;" (click)="onView(issue)">
-            <div class="mail-from">{{ issue.from || issue.to || "Draft" }}</div>
+            <div class="mail-from">{{issue.serial}}. {{ issue.from || issue.to || "Draft" }}</div>
             <div class="mail-subject">{{ issue.subject }}</div>
             <div class="mail-time">{{ (issue.time && issue.time!='Saved') | date:'dd MMM yyyy, hh:mm a' : issue.time}}</div>
           </div>

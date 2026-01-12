@@ -43,16 +43,16 @@
           class="btn btn-primary px-4"
           style="float: right; background-color: green"
         >
-          <i class="bi bi-hand-thumbs-up"></i> Start Meeting
+          <i class="bi bi-hand-thumbs-up"></i> Place in MIC Meeting
         </button>
-        <button
+        <!-- <button
           *ngIf="activeTab == 'sent' && isVotingStarted && issues.sent.length>0"
           (click)="stopVoting()"
           class="btn btn-primary px-4"
           style="float: right; background-color: brown"
         >
           <i class="bi bi-x-square"></i> Stop Meeting
-        </button>
+        </button> -->
       </h3>
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
@@ -61,7 +61,7 @@
             style="cursor: pointer"
             (click)="onView(issue)"
           >
-            <div class="mail-from">{{ issue.from || issue.to || "Draft" }}</div>
+            <div class="mail-from">{{issue.serial}}. {{ issue.from || issue.to || "Draft" }}</div>
             <div class="mail-subject">{{ issue.subject }}</div>
             <div class="mail-time">{{ issue.time }}</div>
           </div>

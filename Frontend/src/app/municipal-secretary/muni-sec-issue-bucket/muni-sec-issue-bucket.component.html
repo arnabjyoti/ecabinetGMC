@@ -37,7 +37,7 @@
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
           <div class="mail-item" style="cursor: pointer;" (click)="onView(issue)">
-            <div class="mail-from">{{ issue.from || issue.to || "Draft" }}</div>
+            <div class="mail-from">{{issue.serial}}. {{ issue.from || issue.to || "Draft" }}</div>
             <div class="mail-subject">{{ issue.subject }}</div>
             <div class="mail-time">{{ issue.time | date:'dd MMM yyyy, hh:mm a' }}</div>
           </div>

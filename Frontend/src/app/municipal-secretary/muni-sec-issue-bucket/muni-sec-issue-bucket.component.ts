@@ -79,12 +79,18 @@ export class MuniSecIssueBucketComponent implements OnInit {
       //     issues.inbox.push(item);
       //   }
       // });
+      let count:any={
+        inbox:0,
+        sent:0
+      }
       data?.map((item: any) => {
         if (
           item?.branchAction == 'Sent' &&
           item?.municipalAction == '' &&
           item?.commissionerAction == ''
         ) {
+          count.inbox++;
+          item.serial = count.inbox;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;
@@ -96,6 +102,8 @@ export class MuniSecIssueBucketComponent implements OnInit {
           item?.municipalAction == 'Approved' &&
           item?.commissionerAction == ''
         ) {
+          count.sent++;
+          item.serial = count.sent;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;

@@ -63,12 +63,18 @@ export class CommissionerIssueBucketComponent implements OnInit {
   issueClassifier(data: any) {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
+      let count:any={
+        inbox:0,
+        sent:0
+      }
       data?.map((item: any) => {
         if (
           item?.branchAction == 'Sent' &&
           item?.municipalAction == 'Approved' &&
           item?.commissionerAction == ''
         ) {
+          count.inbox++;
+          item.serial = count.inbox;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;
@@ -80,6 +86,8 @@ export class CommissionerIssueBucketComponent implements OnInit {
           item?.municipalAction == 'Approved' &&
           item?.commissionerAction == 'Approved'
         ) {
+          count.sent++;
+          item.serial = count.sent;
           item.from =
             item?.raisedByName + '(' + item?.department + ' Department)';
           item.subject = item?.title;
