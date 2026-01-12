@@ -89,7 +89,7 @@ export class IssueDetailsComponent implements OnInit {
     if (this.issue) {
       if (this.issue.createdAt) {
         timeline.push({
-          step: 'Issue Drafted → Branch Office',
+          step: 'Agenda Drafted → Branch Office',
           date: this.issue.createdAt,
         });
       }
@@ -113,7 +113,7 @@ export class IssueDetailsComponent implements OnInit {
         this.issue.municipalActionDate
       ) {
         timeline.push({
-          step: 'Issue Rejected by Municipal Secretary',
+          step: 'Agenda Rejected by Municipal Secretary',
           date: this.issue.municipalActionDate,
         });
       }
@@ -131,7 +131,7 @@ export class IssueDetailsComponent implements OnInit {
         this.issue.commissionerActionDate
       ) {
         timeline.push({
-          step: 'Issue Rejected by Commissioner',
+          step: 'Agenda Rejected by Commissioner',
           date: this.issue.commissionerActionDate,
         });
       }
@@ -149,7 +149,7 @@ export class IssueDetailsComponent implements OnInit {
         this.issue.mayorActionDate
       ) {
         timeline.push({
-          step: 'Issue Rejected by Mayor',
+          step: 'Agenda Rejected by Mayor',
           date: this.issue.mayorActionDate,
         });
       }
@@ -167,15 +167,15 @@ export class IssueDetailsComponent implements OnInit {
       }
       if (this.issue.status == 'Pending' && this.issue.votingDate) {
         timeline.push({
-          step: 'Issue Acceptance Pending',
+          step: 'Agenda Acceptance Pending',
           date: this.issue.votingDate,
         });
       }
       if (this.issue.status == 'Accepted' && this.issue.votingDate) {
-        timeline.push({ step: 'Issue Accepted', date: this.issue.votingDate });
+        timeline.push({ step: 'Agenda Accepted', date: this.issue.votingDate });
       }
       if (this.issue.status == 'Rejected' && this.issue.votingDate) {
-        timeline.push({ step: 'Issue Rejected', date: this.issue.votingDate });
+        timeline.push({ step: 'Agenda Rejected', date: this.issue.votingDate });
       }
     }
     return timeline;
