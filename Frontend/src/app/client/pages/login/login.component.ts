@@ -69,6 +69,8 @@ export class LoginComponent {
           case 'municipal_secretary': 
           case 'commissioner': 
           case 'mayor':
+            let ele:any = document.getElementById('loginModal');
+            ele.click();
              this.router.navigate(['/dashboard']);
           break;
           default:
