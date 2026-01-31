@@ -8,6 +8,7 @@ const env = "development";
 console.log("env: ", env);
 const config = require("../config/config.json")[env];
 const nodemailer = require("nodemailer");
+//const { query } = require("express");
 
 // Create a transporter
 const transporter = nodemailer.createTransport({
@@ -20,7 +21,7 @@ const transporter = nodemailer.createTransport({
 
 const generateAccessToken = (user) => {
   return jwt.sign(
-    { id: user.id, name: user.name, role: user.role, department:user.department, designation:user.designation, mobile: user.mobile, email: user.email, isVoter: user.isVoter },
+    { id: user.id, name: user.name, role: user.role, department: user.department, designation: user.designation, mobile: user.mobile, email: user.email, isVoter: user.isVoter },
     config.JWT_SECRET,
     {
       expiresIn: "15m",
@@ -56,6 +57,36 @@ const authorizeRoles = (...allowedRoles) => {
 };
 
 module.exports = {
+
+  async requestLogin(req, res) {
+
+    const { email, password } = req.body; console.log(req.body);
+    if (!email && !password)
+      return res.status(200).json({ status: false, message: "Email and Password required" });
+    const user = await usersModel.findOne({ where: { email: email, password: password } });
+    console.log(user);
+
+    if (!user) {
+      return res.status(200).json({
+        status: false,
+        message: "Invalid email or password",
+      });
+    } else {
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+      user.refreshToken = refreshToken;
+      return res.status(200).json({
+        status: true,
+        message: "Sucessfully Login",
+        accessToken,
+        refreshToken
+      });
+    }
+
+  },
+
+
+
   // Request OTP
   async requestOTP(req, res) {
     const { mobile, email } = req.body;
@@ -151,6 +182,26 @@ module.exports = {
         });
       }
     }
+  },
+  async resetPassword(req, res) {
+
+    const { email, newPassword, otp } = req.body;
+    const user = await usersModel.findOne({ where: { otp: otp } })
+    //console.log(user.name);
+    if (!user || user.otp !== otp || new Date() > user.otpExpiry) {
+      //return res.status(400).json({ message: "Invalid or expired OTP" });
+      return res.json({
+        status: 400,
+        message: "Invalid or expired OTP"
+      });
+    }
+    user.password = newPassword;
+    await user.save();
+    //res.status(200).json({ message: "Password updated successfully" });
+    return res.json({
+      status: 200,
+      message: "Password updated successfully"
+    });
   },
 
   async verifyOTP(req, res) {

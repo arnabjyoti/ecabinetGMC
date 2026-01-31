@@ -14,6 +14,7 @@ export class IssueDetailsService {
     return this.http.post(`${environment.BASE_URL}/api/get-issue-attachments`, {
       requestObject,
     });
+    
   }
 
   updateIssue(requestObject: string): Observable<any> {

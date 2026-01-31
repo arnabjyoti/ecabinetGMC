@@ -650,3 +650,18 @@ footer {
   }
 }
 
+#togglePassword{
+  float: right;
+  margin-left: 393px;
+  margin-top: -40px;
+  right: 10px;
+  position: relative;
+  cursor: pointer;
+}
+#forgotPassword {
+  cursor: pointer;
+}
+#errorText {
+  color: red;
+}
+
