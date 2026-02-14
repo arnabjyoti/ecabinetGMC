@@ -142,6 +142,7 @@ export class IssueDetailsComponent implements OnInit {
         timeline.push({
           step: 'Approved by Mayor for MIC Review',
           date: this.issue.mayorActionDate,
+         
         });
       }
       if (
@@ -240,7 +241,7 @@ export class IssueDetailsComponent implements OnInit {
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes',
-    }).then((result) => {
+    }).then((result) => { 
       if (result.isConfirmed) {
         this.submitIssue();
       }
@@ -297,9 +298,9 @@ export class IssueDetailsComponent implements OnInit {
     };
     this.spinner.show();
     this.issueDetailsService.updateIssue(requestObject).subscribe({
-      next: (res) => {
+      next: (res) => { console.log(res);
         if (res.status) {
-          this.toastr.success(res.message, 'Success Message');
+          this.toastr.success(res.message, 'Success Message12');
           this.onSent.emit('IssueSentToMunicipalSecretary');
         } else {
           this.toastr.error(res.message, 'Error Message');

@@ -44,6 +44,21 @@ export class AuthService {
     });
   }
 
+  requestLogin(email?: string, password?: string): Observable<any> {
+    
+    return this.http.post(`${environment.BASE_URL}/api/login`, {
+      email,
+      password,
+    });
+  }
+  resetPassword(email?: string, newPassword?: string, otp?: string): Observable<any> {
+    return this.http.put(`${environment.BASE_URL}/api/updatePassword`, {
+      email,
+      newPassword,
+      otp
+    });
+  }
+
   // refreshAccessToken() {
   //   const refreshToken = localStorage.getItem('refreshToken');
   //   return this.http
