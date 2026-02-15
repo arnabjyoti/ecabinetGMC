@@ -5,6 +5,16 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import Swal from 'sweetalert2';
 import { environment } from 'src/environments/environment';
+import { ViewChild } from '@angular/core';
+import { QuillEditorComponent } from 'ngx-quill';
+
+import Quill from 'quill';
+import QuillMention from 'quill-mention';
+
+Quill.register('modules/mention', QuillMention);
+
+
+
 
 @Component({
   selector: 'app-issue-details',
@@ -62,6 +72,7 @@ export class IssueDetailsComponent implements OnInit {
   @Input() activeTab: any = null;
   @Input() user: any = null;
   @Output() onSent = new EventEmitter<any>();
+  @ViewChild('quillRef') quillEditor!: QuillEditorComponent;
   endpoint: any;
   constructor(
     private route: ActivatedRoute,
@@ -135,19 +146,13 @@ export class IssueDetailsComponent implements OnInit {
           date: this.issue.commissionerActionDate,
         });
       }
-      if (
-        this.issue.mayorAction == 'Approved' &&
-        this.issue.mayorActionDate
-      ) {
+      if (this.issue.mayorAction == 'Approved' && this.issue.mayorActionDate) {
         timeline.push({
           step: 'Approved by Mayor for MIC Review',
           date: this.issue.mayorActionDate,
         });
       }
-      if (
-        this.issue.mayorAction == 'Rejected' &&
-        this.issue.mayorActionDate
-      ) {
+      if (this.issue.mayorAction == 'Rejected' && this.issue.mayorActionDate) {
         timeline.push({
           step: 'Agenda Rejected by Mayor',
           date: this.issue.mayorActionDate,
@@ -264,10 +269,10 @@ export class IssueDetailsComponent implements OnInit {
     });
   }
 
-  deferredIssue(){
+  deferredIssue() {
     let requestObject: any = {
       user: this.user,
-      issue: this.issue
+      issue: this.issue,
     };
     this.spinner.show();
     this.issueDetailsService.deferredIssue(requestObject).subscribe({
@@ -385,17 +390,20 @@ export class IssueDetailsComponent implements OnInit {
   sendComment() {
     if (!this.commentText.trim()) return;
 
-    console.log('Comment:', this.commentText);
-
+    console.log('Comment==>:', this.commentText);
+    console.log('root_id==>', this.selectedComment.id);
+    let root_id = this.selectedComment?.id || null;
     // TODO: API call here
     console.log('JSON.stringify(this.user) ', this.user);
     let requestObject: any = {
       user: this.user,
       issue: this.issue,
       comment: this.commentText,
+      root_id: root_id || null,
     };
 
     console.log('requestObject ', requestObject);
+    // return;
 
     this.issueDetailsService.addComment(requestObject).subscribe({
       next: (res) => {
@@ -427,7 +435,7 @@ export class IssueDetailsComponent implements OnInit {
       next: (res) => {
         if (res.status) {
           this.allComments = res.data;
-          
+          this.prepareMentionUsers();
         } else {
           this.toastr.error(res.message, 'Error Message');
         }
@@ -438,6 +446,28 @@ export class IssueDetailsComponent implements OnInit {
       },
     });
   }
+
+  mentionUsers: any[] = [];
+
+prepareMentionUsers() {
+  const usersMap = new Map();
+
+  this.allComments.forEach(comment => {
+    usersMap.set(comment.commentBy, {
+      id: comment.commentBy,
+      value: comment.commentByName
+    });
+
+    comment.replies?.forEach((reply: any) => {
+      usersMap.set(reply.commentBy, {
+        id: reply.commentBy,
+        value: reply.commentByName
+      });
+    });
+  });
+
+  this.mentionUsers = Array.from(usersMap.values());
+}
 
 
   startVoting() {
@@ -478,4 +508,64 @@ export class IssueDetailsComponent implements OnInit {
       },
     });
   }
+
+  agents = [ { id: 1, value: 'Sofi Salman' }, { id: 2, value: 'John Smith' }, { id: 3, value: 'Riya Sharma' } ];
+
+  editorModules = {
+    toolbar: false,
+    mention: {
+      mentionDenotationChars: ['@'],
+      allowedChars: /^[A-Za-z\s]*$/,
+      source: (searchTerm: string, renderList: any) => {
+        const values = this.mentionUsers;
+  
+        if (!searchTerm.length) {
+          renderList(values, searchTerm);
+        } else {
+          const matches = values.filter(item =>
+            item.value.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+          renderList(matches, searchTerm);
+        }
+      }
+    }
+  };
+  
+
+  selectedComment: any;
+
+  replyComment(comment: any) {
+    // this.replyToComment = comment;
+    console.log('comment ', comment);
+
+    this.selectedComment = comment; //add root id
+    let content = this.commentText?.replace('<p>', '').replace('</p>', '');
+    let tag = comment.commentByName;
+
+    // this.commentText =
+    //   content +
+    //   '<span class="reply-to" style="color: #0000ff;">' +
+    //   '@' +
+    //   tag +
+    //   '</span>' +
+    //   ' ';
+
+    this.commentText = content;
+
+    setTimeout(() => {
+      const editor = this.quillEditor.quillEditor;
+      editor.focus();
+      editor.setSelection(editor.getLength(), 0);
+    }, 0);
+  }
+
+
+
+  manageComment(e: any, comment: any) {
+    console.log("e ", e);
+    this.selectedComment = comment || null;
+    // this.commentText = comment?.comment || null;
+  }
+
+  
 }

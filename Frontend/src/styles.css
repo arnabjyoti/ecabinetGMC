@@ -36,9 +36,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     --mdc-protected-button-label-text-color: #fff;
 }
 
-.ql-container {
-    height: 200px !important;
-}
+
 
  /* Reset + base */
     *,*::before,*::after{box-sizing:border-box}

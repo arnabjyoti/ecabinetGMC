@@ -830,6 +830,7 @@ module.exports = {
         comment: requestObject.comment,
         status: "Active",
         isDeleted: false,
+        root_id: requestObject.root_id || null,
       };
 
       commentsModel.create(obj).then((r) => {
@@ -846,37 +847,96 @@ module.exports = {
     }
   },
 
+  // async getAllComments(req, res) {
+  //   let requestObject = req.body.requestObject;
+  //   if (!requestObject.user || !requestObject.issue) {
+  //     return res.status(200).send({
+  //       status: false,
+  //       message: "Unable to update issue. Please check the values provided",
+  //     });
+  //   }
+  //   try {
+  //     const id = requestObject.issue.id;
+  //     const issue = await issuesModel.findByPk(id);
+  //     if (!issue) {
+  //       return res
+  //         .status(404)
+  //         .json({ status: false, message: "Issue not found" });
+  //     }
+  //     const comments = await commentsModel.findAll({
+  //       where: {
+  //         issue_id: id,
+  //         status: "Active",
+  //         isDeleted: false,
+  //         root_id: null,
+  //       },
+  //     });
+  //     return res.status(200).send({
+  //       status: true,
+  //       data: comments,
+  //       message: "Success",
+  //     });
+  //   } catch (error) {
+  //     console.error("Error updating issue:", error);
+  //     return res.status(500).send({ status: false, message: error });
+  //   }
+  // },
+
   async getAllComments(req, res) {
     let requestObject = req.body.requestObject;
+
     if (!requestObject.user || !requestObject.issue) {
       return res.status(200).send({
         status: false,
         message: "Unable to update issue. Please check the values provided",
       });
     }
+
     try {
       const id = requestObject.issue.id;
+
       const issue = await issuesModel.findByPk(id);
       if (!issue) {
-        return res
-          .status(404)
-          .json({ status: false, message: "Issue not found" });
+        return res.status(404).json({
+          status: false,
+          message: "Issue not found",
+        });
       }
-      const comments = await commentsModel.findAll({
+
+      // 🔥 Get ALL comments (root + replies)
+      const allComments = await commentsModel.findAll({
         where: {
           issue_id: id,
           status: "Active",
           isDeleted: false,
         },
+        order: [["createdAt", "ASC"]],
+        raw: true,
       });
+
+      // 🔹 Separate root and replies
+      const rootComments = allComments.filter((c) => c.root_id === null);
+      const replies = allComments.filter((c) => c.root_id !== null);
+
+      // 🔹 Attach replies under their parent
+      const structuredComments = rootComments.map((root) => {
+        return {
+          ...root,
+          replies: replies.filter((r) => r.root_id === root.id),
+        };
+      });
+
       return res.status(200).send({
         status: true,
-        data: comments,
+        data: structuredComments,
         message: "Success",
       });
     } catch (error) {
-      console.error("Error updating issue:", error);
-      return res.status(500).send({ status: false, message: error });
+      console.error("Error fetching comments:", error);
+      return res.status(500).send({
+        status: false,
+        message: error.message,
+      });
     }
   },
 };

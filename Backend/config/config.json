@@ -23,7 +23,7 @@
       "username": "u476288869_cabinete",
       "password": "ECabinete@123",
       "database": "u476288869_cabinete",
-      "host": "62.72.28.52",
+      "host": "82.25.121.109",
       "dialect": "mysql",
         "dialectOptions": {
           "timezone": "local"

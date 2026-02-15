@@ -200,7 +200,8 @@
 
 /* Bubble */
 .comment-bubble {
-  max-width: 70%;
+  width: 100%;
+  /* max-width: 70%; */
   padding: 10px 14px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
@@ -216,10 +217,59 @@
 
 .comment-author {
   font-weight: 600;
+  color: #1877f2;
 }
 
 .comment-content {
   font-size: 14px;
   line-height: 1.4;
   word-wrap: break-word;
+}
+
+
+quill-editor {
+  width: 100%;
+  display: block;
+}
+
+.ql-container,
+.ql-editor {
+  width: 100%;
+}
+
+.ql-toolbar.ql-snow {
+  display: none !important;
+}
+
+.ql-container {
+  height: 100px !important;
+}
+
+.reply-to {
+  color: #1877f2;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.reply-card{
+  padding: 10px;
+  background-color: azure;
+  border-bottom: 1px dashed;
+  border-radius: 5px;
+}
+
+.comment-footer{
+  font-size: smaller;
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.reply-btn{
+  cursor: pointer;
+  background-color: #2222e0cf;
+  color: white;
+  padding: 2px 10px 2px 10px;
+  border-radius: 20px;
 }

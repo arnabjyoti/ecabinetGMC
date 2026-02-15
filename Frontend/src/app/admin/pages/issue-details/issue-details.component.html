@@ -270,9 +270,105 @@
                     </span>
                   </div>
 
-                  <div class="comment-content">
+                  <!-- <div class="comment-content">
                     {{ comment.comment }}
+                  </div> -->
+
+                  <div
+                    style="padding-bottom: 15px"
+                    class="comment-content"
+                    [innerHTML]="comment.comment"
+                  ></div>
+
+                  <div>
+                    <div class="comment-reply">
+                      <div
+                        class="reply-card"
+                        *ngFor="let reply of comment.replies"
+                      >
+                        <div class="comment-header">
+                          <span class="comment-author">
+                            {{
+                              reply.commentBy === user.userId
+                                ? "Me"
+                                : reply.commentByName
+                            }}
+                          </span>
+                          <span class="comment-date">
+                            {{ reply.createdAt | date : "short" }}
+                          </span>
+                        </div>
+                        <span class="contnet-name">
+                          <!-- {{ reply.comment }} -->
+                          <div
+                            class="comment-content"
+                            [innerHTML]="reply.comment"
+                          ></div>
+                        </span>
+                      </div>
+                    </div>
+
+                    <div *ngIf="selectedComment?.id === comment.id">
+
+                      <div
+                        class="input-wrapper"
+                        
+                      >
+                        <!-- <input
+                          type="text"
+                          class="comment-input"
+                          placeholder="Write a comment..."
+                          [(ngModel)]="commentText"
+                          (keyup.enter)="sendComment()"
+                        /> -->
+
+                        <!-- [(ngModel)]="commentText" -->
+                        <quill-editor
+                          #quillRef
+                          [(ngModel)]="commentText"
+                          [placeholder]="'Write a reply...'"
+                          (ngModelChange)="manageComment('reply', comment)"
+                          name="editorContent"
+                          [modules]="editorModules"
+                        ></quill-editor>
+
+                        <button
+                          class="send-btn"
+                          [disabled]="!commentText?.trim()"
+                          (click)="sendComment()"
+                        >
+                          <i class="bi bi-send-fill"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                    <div class="comment-footer" *ngIf="selectedComment?.id !== comment.id">
+                      <span class="reply-btn" (click)="replyComment(comment)">
+                        <span class="reply-icon">
+                          <i class="bi bi-reply"></i>
+                        </span>
+                        {{
+                          comment.replies.length > 0
+                            ? comment.replies.length
+                            : "0"
+                        }}
+                        Reply
+                      </span>
+                      <!-- <span>
+                        <span
+                          class="reply-icon"
+                          (click)="replyComment(comment)"
+                        >
+                          <i class="bi bi-eye"></i>
+                        </span>
+                        View
+                      </span> -->
+                    </div>
                   </div>
+
+                  <!-- <div>
+                    {{commentText}}
+                  </div> -->
                 </div>
               </div>
             </div>
@@ -288,13 +384,23 @@
             <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->
 
             <div class="input-wrapper">
-              <input
+              <!-- <input
                 type="text"
                 class="comment-input"
                 placeholder="Write a comment..."
                 [(ngModel)]="commentText"
                 (keyup.enter)="sendComment()"
-              />
+              /> -->
+
+              <!-- [(ngModel)]="commentText" -->
+              <quill-editor
+                #quillRef
+                [(ngModel)]="selectedComment?.id ? ' ' : commentText"
+                [placeholder]="'Write a new comment...'"
+                (ngModelChange)="manageComment('comment', {})"
+                name="editorContent"
+                [modules]="editorModules"
+              ></quill-editor>
 
               <button
                 class="send-btn"
@@ -321,6 +427,8 @@
       </div>
     </div>
   </div>
+
+  <!-- --------------------------------------------- -->
 
   <div
     class="row"
@@ -370,13 +478,10 @@
             <i class="bi bi-x-circle"></i> Reject
           </button>
         </div>
-        <div class="col-md-2">     
-          <button
-            class="btn btn-primary px-4"
-            (click)="deferredMe('mayor')"
-          >
-            <i class="bi bi-hourglass-split"></i>  Deferred
-          </button>     
+        <div class="col-md-2">
+          <button class="btn btn-primary px-4" (click)="deferredMe('mayor')">
+            <i class="bi bi-hourglass-split"></i> Deferred
+          </button>
         </div>
         <div class="col-md-5">
           <button
@@ -402,31 +507,28 @@
     <div class="col-md-12">
       <div class="row">
         <div class="col-md-5">
-<button
-        class="btn btn-primary px-4"
-        data-bs-toggle="modal"
-        data-bs-target="#issueRejectModal"
-        style="float: left"
-      >
-        <i class="bi bi-x-circle"></i> Reject
-      </button>
+          <button
+            class="btn btn-primary px-4"
+            data-bs-toggle="modal"
+            data-bs-target="#issueRejectModal"
+            style="float: left"
+          >
+            <i class="bi bi-x-circle"></i> Reject
+          </button>
         </div>
         <div class="col-md-2">
-<button
-            class="btn btn-primary px-4"
-            (click)="deferredMe('mayor')"
-          >
-            <i class="bi bi-hourglass-split"></i>  Deferred
+          <button class="btn btn-primary px-4" (click)="deferredMe('mayor')">
+            <i class="bi bi-hourglass-split"></i> Deferred
           </button>
         </div>
         <div class="col-md-5">
-<button
-        class="btn btn-primary px-4"
-        (click)="confirmMe('mayor')"
-        style="float: right"
-      >
-        <i class="bi bi-check-circle"></i> Approve
-      </button>
+          <button
+            class="btn btn-primary px-4"
+            (click)="confirmMe('mayor')"
+            style="float: right"
+          >
+            <i class="bi bi-check-circle"></i> Approve
+          </button>
         </div>
       </div>
     </div>

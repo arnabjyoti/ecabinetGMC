@@ -10,6 +10,10 @@ module.exports = (sequelize, type) => {
         allowNull: false,
         primaryKey: true,
       },
+      root_id: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
       commentByName: {
         type: DataTypes.STRING(255),
         allowNull: true,
