@@ -509,10 +509,9 @@ prepareMentionUsers() {
     });
   }
 
-  agents = [ { id: 1, value: 'Sofi Salman' }, { id: 2, value: 'John Smith' }, { id: 3, value: 'Riya Sharma' } ];
 
   editorModules = {
-    toolbar: false,
+    toolbar: true,
     mention: {
       mentionDenotationChars: ['@'],
       allowedChars: /^[A-Za-z\s]*$/,

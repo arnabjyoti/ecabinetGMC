@@ -230,6 +230,7 @@
 quill-editor {
   width: 100%;
   display: block;
+  /* height: 150px !important; */
 }
 
 .ql-container,
@@ -242,7 +243,7 @@ quill-editor {
 }
 
 .ql-container {
-  height: 100px !important;
+  height: 500px !important;
 }
 
 .reply-to {
