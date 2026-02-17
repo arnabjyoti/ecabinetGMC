@@ -3,6 +3,7 @@ const { sendMail, eventController } = require('../controllers');
 const AuthController = require('../controllers').AuthController;
 const IssuesController = require('../controllers').IssuesController;
 const analyticController = require('../controllers').analyticController;
+const sendSMS = require('../controllers/sendSMS');
 
 const upload = require('../middlewares/multer');
 //Api's
@@ -46,4 +47,6 @@ module.exports = (app) => {
 	app.post('/api/get-counts', analyticController.getCounts);
 	app.post('/api/get-monthly-issues-chart', analyticController.getMonthlyIssuesChart);
 	app.post('/api/get-recent-issues', analyticController.getRecentIssues);
+
+	app.post('/api/sendSms', sendSMS.sendMessage);
 };
