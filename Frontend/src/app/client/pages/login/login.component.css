@@ -660,6 +660,11 @@ footer {
 }
 #forgotPassword {
   cursor: pointer;
+  color: #f77823;
+  font-weight: bold;
+}
+#forgotPassword:hover{
+  color: #f75814;
 }
 #errorText {
   color: red;

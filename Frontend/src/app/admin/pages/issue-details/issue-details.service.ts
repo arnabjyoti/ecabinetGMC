@@ -10,6 +10,12 @@ export class IssueDetailsService {
 
   constructor(private http: HttpClient) {}
 
+  sendSms(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/sendSms`, {
+      requestObject,
+    });
+  }
+
   getIssueAttachments(requestObject: string): Observable<any> {
     return this.http.post(`${environment.BASE_URL}/api/get-issue-attachments`, {
       requestObject,

@@ -300,6 +300,14 @@ export class IssueDetailsComponent implements OnInit {
     this.issueDetailsService.updateIssue(requestObject).subscribe({
       next: (res) => { console.log(res);
         if (res.status) {
+          this.issueDetailsService.sendSms(requestObject).subscribe({
+            next: (res) => {
+              console.log(res);
+            },
+            error: (err) => {
+              console.log(err);
+            }
+          });
           this.toastr.success(res.message, 'Success Message12');
           this.onSent.emit('IssueSentToMunicipalSecretary');
         } else {

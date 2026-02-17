@@ -23,7 +23,7 @@ export class LoginComponent {
   showOtp:any = false;
   form: FormGroup;
   
-
+emailRegex = /^([a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/;
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -63,7 +63,8 @@ export class LoginComponent {
   sendOtp() {
     console.log('OTP sent to', this.email);
     if(!this.email){
-      this.toastr.warning('Please enter your registered email id','Warning Message');
+      this.toastr.warning('Please enter your registered email id','Warning Message',
+      {timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,});
       return;
     }
     this.spinner.show();
@@ -72,16 +73,22 @@ export class LoginComponent {
         console.log('RES==', res);
         if (res?.status) {
           this.otpSent = true; this.showOtp = false;
-          this.toastr.success(res.message, 'Success Message');
+          this.toastr.success(res.message, 'Success Message',{
+            timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+          });
         } else {
           this.otpSent = false;
-          this.toastr.error(res.message, 'Error Message');
+          this.toastr.error(res.message, 'Error Message', {
+            timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+          });
         }
         this.spinner.hide();
       },
       error: (err) => {
         this.otpSent = false;
-        this.toastr.error('Failed to send OTP','Error Message');
+        this.toastr.error('Failed to send OTP','Error Message', {
+          timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+        });
         this.spinner.hide();
       },
     });
@@ -90,12 +97,22 @@ export class LoginComponent {
   login() {
     console.log("Email:", this.email);
     console.log("Password:", this.password);
+    if(!this.emailRegex.test(this.email)){
+      this.toastr.warning('Please enter a valid Email id', 'Warning Message',{
+        timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+      });
+      return;
+    } 
     if(!this.email){
-      this.toastr.warning('Please enter your registered email id','Warning Message');
+      this.toastr.warning('Please enter your registered email id','Warning Message',{
+        timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+      });
       return;
     }
     if(!this.password){
-      this.toastr.warning('Please enter your password','Warning Message');
+      this.toastr.warning('Please enter your password','Warning Message', {
+        timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+      });
       return;
     }
     this.spinner.show();
@@ -103,7 +120,9 @@ export class LoginComponent {
       next: (res) => {
         console.log('RES==', res);
         if(res?.status) {
-          this.toastr.success(res.message, 'Sucess Message');
+          this.toastr.success(res.message, 'Sucess Message', {
+            timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+          });
           this.authService.storeTokens(res.accessToken, res.refreshToken);
           const role = this.authService.getRole(); console.log(role);
           switch(role){
@@ -122,13 +141,17 @@ export class LoginComponent {
             break;
           }
         } else {
-          this.toastr.error(res.message, 'Error Message');
+          this.toastr.error(res.message, 'Error Message', {
+            timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+          });
         }
         this.spinner.hide();
       },
       error: (err) => {
         console.log(err);
-        this.toastr.error('Failed to login please try after some time','Error Message');
+        this.toastr.error('Failed to login please try after some time','Error Message', {
+          timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+        });
         this.spinner.hide();
       },
     });
@@ -142,15 +165,21 @@ export class LoginComponent {
     this.authService.resetPassword(this.email,this.newPassword, this.otp).subscribe({
       next: (res)=> {
           if(res.status === 200) {
-            this.toastr.success(res.message, 'Success Message');
+            this.toastr.success(res.message, 'Success Message', {
+              timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+            });
             this.otpSent = false;
             this.forgotPass = false;
           } else if (res.status === 400) {
-            this.toastr.error(res.message, 'Error Message');
+            this.toastr.error(res.message, 'Error Message', {
+              timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+            });
           }  
       },
       error: (err)=>{
-        this.toastr.error(err, 'Error Message');
+        this.toastr.error(err, 'Error Message', {
+          timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+        });
       }
     })
   }
@@ -159,7 +188,9 @@ export class LoginComponent {
     this.authService.verifyOtp("", this.email, this.otp).subscribe({
       next: (res) => {
         this.authService.storeTokens(res.accessToken, res.refreshToken);
-        this.toastr.success('Login successful!', 'Success Message');
+        this.toastr.success('Login successful!', 'Success Message', {
+          timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+        });
         const role = this.authService.getRole();
         switch(role){
           case 'branch_user': 
@@ -176,7 +207,9 @@ export class LoginComponent {
         }
       },
       error: () => {
-        this.toastr.error('Invalid or expired OTP','Error Message');
+        this.toastr.error('Invalid or expired OTP','Error Message', {
+          timeOut:3000, closeButton:true, disableTimeOut: false, progressBar:true,
+        });
       },
     });
   }
