@@ -115,7 +115,7 @@ export class MayorIssueBucketComponent implements OnInit{
     this.isDetailView = false;
   }
 
-  onSent(e: any) {
+  onSent(e: any) { 
     this.getIssueList();
     this.activeTab = 'inbox';
     this.isDetailView = false;

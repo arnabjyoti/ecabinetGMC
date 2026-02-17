@@ -55,6 +55,7 @@
   </div> -->
 
   <!-- Navbar -->
+  
   <mat-sidenav-container class="sidenav-container">
 
     <!-- Mobile Drawer -->
@@ -389,7 +390,7 @@
 </div>
 
 
-<div class="modal fade" id="staticBackdrop" data-keyboard="false" tabindex="-1" aria-hidden="true">
+<!-- <div class="modal fade" id="staticBackdrop" data-keyboard="false" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <button id="loginModal" style="display: none;"
@@ -422,4 +423,69 @@
   style="background-color: aliceblue;">
   <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending
     OTP...Please Wait</p>
+</ngx-spinner> -->
+<div class="modal fade" id="staticBackdrop" data-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <button id="loginModal" style="display: none;"
+            type="button"
+            class="btn-close btn-primary"
+            data-dismiss="modal"
+          ></button>
+      <div class="login-box">
+        <h2>{{!forgotPass ? 'eMIC Login' : 'Reset Password'}}</h2>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" placeholder="Enter your registered email id" [(ngModel)]="email" name="email"
+            [disabled]="otpSent" />
+        </div>
+        <div class="input-group" *ngIf="!forgotPass">
+          <label>Password</label>
+          <input [type]="showPassword ? 'text' : 'password' " placeholder="Enter your password" name="password" [(ngModel)]="password"/>
+          <span class="input-group-text" id="togglePassword" (click)="togglePasswordVisibility()">
+              <span *ngIf="!showPassword"><i class="bi bi-eye-slash"></i></span>
+              <span *ngIf="showPassword"><i class="bi bi-eye"></i></span>
+          </span>
+        </div>
+        <div class="input-group" *ngIf="!forgotPass">
+          <a id="forgotPassword" (click)="forgotPassword()">Forgot Password</a>
+        </div>
+        <button *ngIf="!forgotPass" type="button" class="send-otp" (click)="login()">
+          Login
+        </button>
+        <button *ngIf="forgotPass && showOtp" type="button" class="send-otp" (click)="sendOtp()">
+          Send OTP
+        </button>
+       
+          <div *ngIf="otpSent" class="input-group" style="margin-top: 10px">
+            <label>Enter New Password</label>
+            <input type="password" class="form-control" [(ngModel)]="newPassword" name="newPassword" placeholder="New password" required />
+          </div>
+          <div *ngIf="otpSent" class="input-group" style="margin-top: 10px">
+            <label>Confirm Password</label>
+            <input type="password" class="form-control" name="confirmPassword" placeholder="Re type password" required />
+          </div>
+          <!-- <div *ngIf="form?.errors?.['mismatch'] && form?.touched" id="errorText">
+            Password must match
+          </div> -->
+          <div *ngIf="otpSent" class="input-group" style="margin-top: 10px">
+            <label>Enter OTP</label>
+            <input type="text" class="form-control" [(ngModel)]="otp" name="otp" placeholder="6-digit OTP" required />
+          </div>
+          <button *ngIf="otpSent" type="submit" (click)="resetPassword()" class="send-otp">
+            Reset Password
+          </button>
+       
+      </div>
+    </div>
+  </div>
+</div>
+<ngx-spinner bdColor="rgba(51,51,51,0.8)" size="medium" color="#fff" type="ball-spin-clockwise"
+  style="background-color: aliceblue;">
+  <!-- <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>Sending
+    OTP...Please Wait</p> -->
+    <p style="color: white"><i class="fa fa-circle-o-notch fa-spin fa-4x text-danger" aria-hidden="true"></i>
+     
+      {{!forgotPass ? 'Please wait, while your credentials are verified':'Please wait, while otp is sendig to your email id' }}
+    </p>
 </ngx-spinner>

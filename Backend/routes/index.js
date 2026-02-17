@@ -1,4 +1,4 @@
-const { sendMail, eventController} = require('../controllers');
+const { sendMail, eventController } = require('../controllers');
 
 const AuthController = require('../controllers').AuthController;
 const IssuesController = require('../controllers').IssuesController;
@@ -15,6 +15,8 @@ module.exports = (app) => {
 
 	// Auth API's
 	app.post('/api/request-otp', AuthController.requestOTP);
+	app.post('/api/login', AuthController.requestLogin);
+	app.put('/api/updatePassword', AuthController.resetPassword);
 	app.post('/api/user', AuthController.getUser);
 
 	app.post('/api/verify-otp', AuthController.verifyOTP);
@@ -34,14 +36,14 @@ module.exports = (app) => {
 	app.post('/api/get-vote-page-data', IssuesController.getVotePageData);
 	app.post('/api/get-issue-attachments', IssuesController.getIssueAttachments);
 	app.post("/api/upload-issue-attachment", IssuesController.upload_config.single('file'), IssuesController.saveIssueAttachmentData);
-	app.post('/api/start-voting', IssuesController.startVoting);	
+	app.post('/api/start-voting', IssuesController.startVoting);
 	app.post('/api/get-voters', IssuesController.getVoters);
 	app.post('/api/cast-vote', IssuesController.castVote);
 	app.post('/api/stop-voting', IssuesController.stopVoting);
 
-	app.post('/api/add-comment', IssuesController.addComment);	
-	app.post('/api/get-all-comments', IssuesController.getAllComments);	
-	app.post('/api/get-counts', analyticController.getCounts);	
-	app.post('/api/get-monthly-issues-chart', analyticController.getMonthlyIssuesChart);	
-	app.post('/api/get-recent-issues', analyticController.getRecentIssues);	
+	app.post('/api/add-comment', IssuesController.addComment);
+	app.post('/api/get-all-comments', IssuesController.getAllComments);
+	app.post('/api/get-counts', analyticController.getCounts);
+	app.post('/api/get-monthly-issues-chart', analyticController.getMonthlyIssuesChart);
+	app.post('/api/get-recent-issues', analyticController.getRecentIssues);
 };

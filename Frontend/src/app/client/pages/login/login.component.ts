@@ -6,6 +6,7 @@ import { AuthService } from '../../../auth/auth.service';
 // import * as users from 'users.json';
 import users from 'src/assets/dummy/users.json';
 import issues from 'src/assets/dummy/issues.json';
+import { AbstractControl, FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,20 +15,48 @@ import issues from 'src/assets/dummy/issues.json';
 })
 export class LoginComponent {
   email:any = '';
+  password:any='';
+  newPassword:any='';
   otp:any = '';
   otpSent:any = false;
-  // message = '';
+  forgotPass:any = false;
+  showOtp:any = false;
+  form: FormGroup;
+  
 
   constructor(
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
     private spinner: NgxSpinnerService
-  ) {}
+  ) {
+    this.form = new FormGroup(
+      {
+        //email: new FormControl('',[Validators.required,Validators.email]),
+      newPassword: new FormControl('',[Validators.required]),
+      confirmPassword: new FormControl('',[Validators.required]),
+      },
+      {
+        validators: this.passwordMatchValidator,
+      }
+    );
+  }
+  passwordMatchValidator(control: AbstractControl) {
+    return control.get('newPassword')?.value === control.get('confirmPassword')?.value
+    ? null 
+    : {mismatch: true}
+  }
+
+  
 
 
   close(drawer: any) {
     drawer.close();
+  }
+
+  showPassword: boolean = false;
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
   }
 
 
@@ -42,7 +71,7 @@ export class LoginComponent {
       next: (res) => {
         console.log('RES==', res);
         if (res?.status) {
-          this.otpSent = true;
+          this.otpSent = true; this.showOtp = false;
           this.toastr.success(res.message, 'Success Message');
         } else {
           this.otpSent = false;
@@ -56,6 +85,74 @@ export class LoginComponent {
         this.spinner.hide();
       },
     });
+  }
+
+  login() {
+    console.log("Email:", this.email);
+    console.log("Password:", this.password);
+    if(!this.email){
+      this.toastr.warning('Please enter your registered email id','Warning Message');
+      return;
+    }
+    if(!this.password){
+      this.toastr.warning('Please enter your password','Warning Message');
+      return;
+    }
+    this.spinner.show();
+    this.authService.requestLogin(this.email,this.password).subscribe({
+      next: (res) => {
+        console.log('RES==', res);
+        if(res?.status) {
+          this.toastr.success(res.message, 'Sucess Message');
+          this.authService.storeTokens(res.accessToken, res.refreshToken);
+          const role = this.authService.getRole(); console.log(role);
+          switch(role){
+            case 'branch_user': 
+            case 'municipal_secretary': 
+            case 'commissioner': 
+            case 'mayor':
+              this.spinner.hide();
+              let ele:any = document.getElementById('loginModal');
+              ele.click();
+               this.router.navigate(['/dashboard']);
+            break;
+            default:
+              this.spinner.hide();
+              this.router.navigate(['/unknown-role']);
+            break;
+          }
+        } else {
+          this.toastr.error(res.message, 'Error Message');
+        }
+        this.spinner.hide();
+      },
+      error: (err) => {
+        console.log(err);
+        this.toastr.error('Failed to login please try after some time','Error Message');
+        this.spinner.hide();
+      },
+    });
+  }
+
+  forgotPassword() { 
+    this.forgotPass = true;
+    this. showOtp = true;
+  }
+  resetPassword() {
+    this.authService.resetPassword(this.email,this.newPassword, this.otp).subscribe({
+      next: (res)=> {
+          if(res.status === 200) {
+            this.toastr.success(res.message, 'Success Message');
+            this.otpSent = false;
+            this.forgotPass = false;
+          } else if (res.status === 400) {
+            this.toastr.error(res.message, 'Error Message');
+          }  
+      },
+      error: (err)=>{
+        this.toastr.error(err, 'Error Message');
+      }
+    })
   }
 
   verifyOtp() {
