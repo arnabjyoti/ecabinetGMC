@@ -309,11 +309,7 @@
                     </div>
 
                     <div *ngIf="selectedComment?.id === comment.id">
-
-                      <div
-                        class="input-wrapper"
-                        
-                      >
+                      <div class="input-wrapper">
                         <!-- <input
                           type="text"
                           class="comment-input"
@@ -324,6 +320,7 @@
 
                         <!-- [(ngModel)]="commentText" -->
                         <quill-editor
+                          class="reply-editor"
                           #quillRef
                           [(ngModel)]="commentText"
                           [placeholder]="'Write a reply...'"
@@ -332,17 +329,22 @@
                           [modules]="editorModules"
                         ></quill-editor>
 
-                        <button
-                          class="send-btn"
-                          [disabled]="!commentText?.trim()"
-                          (click)="sendComment()"
-                        >
-                          <i class="bi bi-send-fill"></i>
-                        </button>
+                        <div class="send-btn-wrapper">
+                          <button
+                            class="send-btn"
+                            [disabled]="!commentText?.trim()"
+                            (click)="sendComment()"
+                          >
+                            <i class="bi bi-send-fill">Send</i>
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <div class="comment-footer" *ngIf="selectedComment?.id !== comment.id">
+                    <div
+                      class="comment-footer"
+                      *ngIf="selectedComment?.id !== comment.id"
+                    >
                       <span class="reply-btn" (click)="replyComment(comment)">
                         <span class="reply-icon">
                           <i class="bi bi-reply"></i>
@@ -394,6 +396,7 @@
 
               <!-- [(ngModel)]="commentText" -->
               <quill-editor
+                class="reply-editor"
                 #quillRef
                 [(ngModel)]="selectedComment?.id ? ' ' : commentText"
                 [placeholder]="'Write a new comment...'"
@@ -402,13 +405,23 @@
                 [modules]="editorModules"
               ></quill-editor>
 
-              <button
+              <!-- <button
                 class="send-btn"
                 [disabled]="!commentText?.trim()"
                 (click)="sendComment()"
               >
                 <i class="bi bi-send-fill"></i>
-              </button>
+              </button> -->
+
+              <div class="send-btn-wrapper">
+                <button
+                  class="send-btn"
+                  [disabled]="!commentText?.trim()"
+                  (click)="sendComment()"
+                >
+                  <i class="bi bi-send-fill">Send</i>
+                </button>
+              </div>
             </div>
           </div>
         </div>

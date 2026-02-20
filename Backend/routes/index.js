@@ -46,4 +46,5 @@ module.exports = (app) => {
 	app.post('/api/get-counts', analyticController.getCounts);
 	app.post('/api/get-monthly-issues-chart', analyticController.getMonthlyIssuesChart);
 	app.post('/api/get-recent-issues', analyticController.getRecentIssues);
+	app.get('/api/get-high-designation', analyticController.getHighDesignation);
 };

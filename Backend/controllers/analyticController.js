@@ -230,4 +230,27 @@ module.exports = {
           .send({ status: false, data: [], message: error });
       });
   },
+
+
+
+  getHighDesignation(req, res) {
+    return usersModel
+      .findAll({
+        where: {
+          isDeleted: false,
+          department:  "All"
+        }
+      })
+      .then((issues) => {
+        return res
+          .status(200)
+          .send({ status: true, data: issues, message: "Success" });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res
+          .status(500)
+          .send({ status: false, data: [], message: error });
+      });
+  },
 };

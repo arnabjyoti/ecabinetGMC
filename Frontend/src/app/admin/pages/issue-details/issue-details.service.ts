@@ -50,4 +50,7 @@ export class IssueDetailsService {
       requestObject,
     });
   }
+  getHighDesignation(): Observable<any> {
+    return this.http.get(`${environment.BASE_URL}/api/get-high-designation`);
+  }
 }

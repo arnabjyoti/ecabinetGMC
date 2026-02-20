@@ -13,9 +13,6 @@ import QuillMention from 'quill-mention';
 
 Quill.register('modules/mention', QuillMention);
 
-
-
-
 @Component({
   selector: 'app-issue-details',
   templateUrl: './issue-details.component.html',
@@ -150,7 +147,6 @@ export class IssueDetailsComponent implements OnInit {
         timeline.push({
           step: 'Approved by Mayor for MIC Review',
           date: this.issue.mayorActionDate,
-         
         });
       }
       if (this.issue.mayorAction == 'Rejected' && this.issue.mayorActionDate) {
@@ -246,7 +242,7 @@ export class IssueDetailsComponent implements OnInit {
       confirmButtonColor: '#d33',
       cancelButtonColor: '#3085d6',
       confirmButtonText: 'Yes',
-    }).then((result) => { 
+    }).then((result) => {
       if (result.isConfirmed) {
         this.submitIssue();
       }
@@ -303,7 +299,8 @@ export class IssueDetailsComponent implements OnInit {
     };
     this.spinner.show();
     this.issueDetailsService.updateIssue(requestObject).subscribe({
-      next: (res) => { console.log(res);
+      next: (res) => {
+        console.log(res);
         if (res.status) {
           this.toastr.success(res.message, 'Success Message12');
           this.onSent.emit('IssueSentToMunicipalSecretary');
@@ -437,6 +434,7 @@ export class IssueDetailsComponent implements OnInit {
         if (res.status) {
           this.allComments = res.data;
           this.prepareMentionUsers();
+          this.getHighDesignation();
         } else {
           this.toastr.error(res.message, 'Error Message');
         }
@@ -450,27 +448,39 @@ export class IssueDetailsComponent implements OnInit {
 
   mentionUsers: any[] = [];
 
-prepareMentionUsers() {
-  const usersMap = new Map();
+  prepareMentionUsers() {
+    const usersMap = new Map();
 
-  this.allComments.forEach(comment => {
-    usersMap.set(comment.commentBy, {
-      id: comment.commentBy,
-      value: comment.commentByName
-    });
+    this.allComments.forEach((comment) => {
+      usersMap.set(comment.commentBy, {
+        id: comment.commentBy,
+        value: comment.commentByName,
+      });
 
-    comment.replies?.forEach((reply: any) => {
-      usersMap.set(reply.commentBy, {
-        id: reply.commentBy,
-        value: reply.commentByName
+      comment.replies?.forEach((reply: any) => {
+        usersMap.set(reply.commentBy, {
+          id: reply.commentBy,
+          value: reply.commentByName,
+        });
       });
     });
-  });
 
-  this.mentionUsers = Array.from(usersMap.values());
-  this.mentionUsers.push({ id: 5, value: 'Utpal Das' });
-}
+    this.mentionUsers = Array.from(usersMap.values());
+    // this.mentionUsers.push({ id: 5, value: 'Utpal Das' });
+  }
 
+  getHighDesignation() {
+    this.issueDetailsService.getHighDesignation().subscribe({
+      next: (res) => {
+        console.log('getHighDesignation ', res.data);
+        let temp: any = res.data.map((item:any) => ({ id: item.id, value: item.name }));
+        this.mentionUsers = [...this.mentionUsers, ...temp];
+      },
+      error: (err) => {
+        this.spinner.hide();
+      },
+    });
+  }
 
   startVoting() {
     let confMsg: any = 'Are you sure! You want start meeting?';
@@ -511,27 +521,34 @@ prepareMentionUsers() {
     });
   }
 
-
   editorModules = {
-    toolbar: true,
+    // toolbar: true,
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      ['image'], // image picker button
+      [{ list: 'ordered' }, { list: 'bullet' }],
+    ],
+    // imageResize: {
+    //   parchment: Quill.import('parchment'),
+    //   modules: ['Resize', 'DisplaySize', 'Toolbar']
+    // },
     mention: {
       mentionDenotationChars: ['@'],
       allowedChars: /^[A-Za-z\s]*$/,
       source: (searchTerm: string, renderList: any) => {
         const values = this.mentionUsers;
-  
+
         if (!searchTerm.length) {
           renderList(values, searchTerm);
         } else {
-          const matches = values.filter(item =>
+          const matches = values.filter((item) =>
             item.value.toLowerCase().includes(searchTerm.toLowerCase())
           );
           renderList(matches, searchTerm);
         }
-      }
-    }
+      },
+    },
   };
-  
 
   selectedComment: any;
 
@@ -560,13 +577,9 @@ prepareMentionUsers() {
     }, 0);
   }
 
-
-
   manageComment(e: any, comment: any) {
-    console.log("e ", e);
+    console.log('e ', e);
     this.selectedComment = comment || null;
     // this.commentText = comment?.comment || null;
   }
-
-  
 }
