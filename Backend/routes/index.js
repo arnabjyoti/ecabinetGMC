@@ -40,6 +40,7 @@ module.exports = (app) => {
 	app.post('/api/get-voters', IssuesController.getVoters);
 	app.post('/api/cast-vote', IssuesController.castVote);
 	app.post('/api/stop-voting', IssuesController.stopVoting);
+	app.post('/api/final-acceptance-status', IssuesController.updateFinalAcceptanceStatus);
 
 	app.post('/api/add-comment', IssuesController.addComment);
 	app.post('/api/get-all-comments', IssuesController.getAllComments);
@@ -47,4 +48,9 @@ module.exports = (app) => {
 	app.post('/api/get-monthly-issues-chart', analyticController.getMonthlyIssuesChart);
 	app.post('/api/get-recent-issues', analyticController.getRecentIssues);
 	app.get('/api/get-high-designation', analyticController.getHighDesignation);
+
+
+	// Archive API's
+	app.post('/api/get-archive-meetings', IssuesController.getArchiveMeetings);
+	app.post('/api/get-archive-agendas', IssuesController.getArchiveAgendas);
 };

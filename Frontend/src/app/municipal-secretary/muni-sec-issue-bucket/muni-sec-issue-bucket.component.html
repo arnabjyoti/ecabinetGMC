@@ -33,7 +33,16 @@
       <h3><i *ngIf="activeTab == 'inbox'" class="bi bi-inbox"></i
         ><i *ngIf="activeTab == 'sent'" class="bi bi-send"></i
         >&nbsp;{{ activeTab == "inbox" ? "Agenda Inbox" : "To Commissioner"
-        }}</h3>
+        }}
+        <!-- <button
+          *ngIf="activeTab == 'sent' && !isVotingStarted && issues.sent.length>0"
+          (click)="startVoting()"
+          class="btn btn-primary px-4"
+          style="float: right; background-color: green"
+        >
+          <i class="bi bi-hand-thumbs-up"></i> Place in MIC Meeting
+        </button> -->
+      </h3>
       <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
         <div *ngFor="let issue of issues[activeTab]">
           <div class="mail-item" style="cursor: pointer;" (click)="onView(issue)">

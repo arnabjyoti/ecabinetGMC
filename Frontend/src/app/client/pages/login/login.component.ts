@@ -108,6 +108,7 @@ export class LoginComponent {
           const role = this.authService.getRole(); console.log(role);
           switch(role){
             case 'branch_user': 
+            case 'counselor': 
             case 'municipal_secretary': 
             case 'commissioner': 
             case 'mayor':

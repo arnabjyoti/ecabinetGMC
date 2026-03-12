@@ -51,6 +51,14 @@
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
+      routerLink="/agenda-archive"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-inbox"></i>
+      <span *ngIf="!isCollapsed"> Agenda Archive</span>
+    </a>
+    <a
       *ngIf="user.isVoter"
       routerLink="/voting-zone"
       routerLinkActive="active"
@@ -58,6 +66,28 @@
     >
       <i class="bi bi-people-fill"></i>
       <span *ngIf="!isCollapsed"> MIC Meeting Zone</span>
+    </a>
+    <a href="javascript:;" (click)="handleLogout()">
+      <i class="bi bi-box-arrow-right"></i>
+      <span *ngIf="!isCollapsed"> Logout</span>
+    </a>
+  </nav>
+  <nav *ngIf="user.role == 'counselor'">
+    <a
+      routerLink="/dashboard"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-speedometer2"></i>
+      <span *ngIf="!isCollapsed"> Dashboard</span>
+    </a>
+    <a
+      routerLink="/agenda-archive"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: true }"
+    >
+      <i class="bi bi-inbox"></i>
+      <span *ngIf="!isCollapsed"> Agenda Archive</span>
     </a>
     <a href="javascript:;" (click)="handleLogout()">
       <i class="bi bi-box-arrow-right"></i>
@@ -82,7 +112,7 @@
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
-      routerLink="/issue-archive"
+      routerLink="/agenda-archive"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -122,7 +152,7 @@
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
-      routerLink="/issue-archive"
+      routerLink="/agenda-archive"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >
@@ -186,7 +216,7 @@
       <span *ngIf="!isCollapsed"> Agenda Bucket</span>
     </a>
     <a
-      routerLink="/issue-archive"
+      routerLink="/agenda-archive"
       routerLinkActive="active"
       [routerLinkActiveOptions]="{ exact: true }"
     >

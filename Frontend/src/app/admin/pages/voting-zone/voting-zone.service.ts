@@ -27,4 +27,10 @@ constructor(private http: HttpClient) {}
       requestObject,
     });
   }
+
+  updateFinalAcceptanceStatus(requestObject: string): Observable<any> {
+    return this.http.post(`${environment.BASE_URL}/api/final-acceptance-status`, {
+      requestObject,
+    });
+  }
 }

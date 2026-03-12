@@ -26,7 +26,7 @@ export class VotingZoneComponent {
     private toastr: ToastrService,
     private spinner: NgxSpinnerService,
     private authService: AuthService,
-    private votingZoneService: VotingZoneService
+    private votingZoneService: VotingZoneService,
   ) {
     this.user = {
       userId: this.authService.getUserId(),
@@ -59,19 +59,28 @@ export class VotingZoneComponent {
   }
 
   isVotingStarted: boolean = true;
+  isStatusAccepted: boolean = true;
+  isFinalStatusAccepted: boolean = true;
   issueClassifier(data: any) {
     let issues: any = { inbox: [], sent: [], draft: [] };
     if (data?.length > 0) {
-      let serial:any=0;
+      let serial: any = 0;
       data?.map((item: any) => {
         serial++;
-        item.serial=serial;
-        item.from = item?.raisedByName + '(' + item?.department + ' Department)';
+        item.serial = serial;
+        item.from =
+          item?.raisedByName + '(' + item?.department + ' Department)';
         item.subject = item?.title;
         item.time = item?.createdAt;
         issues.inbox.push(item);
         if (item?.voting != 'Started') {
           this.isVotingStarted = false;
+        }
+        if (item?.status != 'Accepted') {
+          this.isStatusAccepted = false;
+        }
+        if (item?.finalStatus != 'Accepted') {
+          this.isFinalStatusAccepted = false;
         }
       });
     }
@@ -122,109 +131,153 @@ export class VotingZoneComponent {
   // }
 
   startVoting() {
-      let confMsg: any = 'Are you sure! You want start voting?';
-      Swal.fire({
-        title: 'Confirmation Message',
-        text: confMsg,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.updateStartVotingStatus();
-        }
-      });
-    }
-  
-    getMeetingId() {
-      const now = new Date();
-      const day = String(now.getDate()).padStart(2, '0');
-      const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is 0-based
-      const year = now.getFullYear();
-      const random4Digit = Math.floor(1000 + Math.random() * 9000);
-      const uniqueId = `MIC${day}${month}${year}${random4Digit}`;
-      return uniqueId;
-    }
-    updateStartVotingStatus() {
-      if (this.issues.inbox.length > 0) {
-        const ids = this.issues.inbox.map((ele: any) => ele.id).join(', ');      
-        let requestObject: any = {
-          meeting: this.getMeetingId(),
-          issues: ids,
-          meetingDate: new Date(),
-          status: 'Active',
-          isDeleted: false,
-        };
-        this.spinner.show();
-        this.votingZoneService
-          .updateStartVotingStatus(requestObject)
-          .subscribe({
-            next: (res) => {
-              if (res.status) {
-                this.toastr.success(res.message, 'Success Message');
-                location.reload();
-                this.activeTab = 'inbox';
-              } else {
-                this.toastr.error(res.message, 'Error Message');
-              }
-              this.spinner.hide();
-            },
-            error: (err) => {
-              this.spinner.hide();
-            },
-          });
-      } else {
-        this.toastr.warning('No issues found', 'Warning Message');
+    let confMsg: any = 'Are you sure! You want start voting?';
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.updateStartVotingStatus();
       }
-    }
-  
-    stopVoting() {
-      let confMsg: any = 'Are you sure! You want stop meeting?';
-      Swal.fire({
-        title: 'Confirmation Message',
-        text: confMsg,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Yes',
-      }).then((result) => {
-        if (result.isConfirmed) {
-          this.updateStopVotingStatus();
-        }
+    });
+  }
+
+  getMeetingId() {
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+    const year = now.getFullYear();
+    const random4Digit = Math.floor(1000 + Math.random() * 9000);
+    const uniqueId = `MIC${day}${month}${year}${random4Digit}`;
+    return uniqueId;
+  }
+  updateStartVotingStatus() {
+    if (this.issues.inbox.length > 0) {
+      const ids = this.issues.inbox.map((ele: any) => ele.id).join(', ');
+      let requestObject: any = {
+        meeting: this.getMeetingId(),
+        issues: ids,
+        meetingDate: new Date(),
+        status: 'Active',
+        isDeleted: false,
+      };
+      this.spinner.show();
+      this.votingZoneService.updateStartVotingStatus(requestObject).subscribe({
+        next: (res) => {
+          if (res.status) {
+            this.toastr.success(res.message, 'Success Message');
+            location.reload();
+            this.activeTab = 'inbox';
+          } else {
+            this.toastr.error(res.message, 'Error Message');
+          }
+          this.spinner.hide();
+        },
+        error: (err) => {
+          this.spinner.hide();
+        },
       });
+    } else {
+      this.toastr.warning('No issues found', 'Warning Message');
     }
-  
-    updateStopVotingStatus() {
-      if (this.issues.inbox.length > 0) {
-        const ids = this.issues.inbox.map((ele: any) => ele.id).join(', ');
-        this.spinner.show();
-        let requestObject: any = {
-          issues: ids,
-          userId: this.user.userId,
-          role: this.user.role,
-        };
-        this.votingZoneService
-          .updateStopVotingStatus(requestObject)
-          .subscribe({
-            next: (res) => {
-              if (res.status) {
-                this.toastr.success(res.message, 'Success Message');
-                location.reload();
-                this.activeTab = 'inbox';
-              } else {
-                this.toastr.error(res.message, 'Error Message');
-              }
-              this.spinner.hide();
-            },
-            error: (err) => {
-              this.spinner.hide();
-            },
-          });
-      } else {
-        this.toastr.warning('No issues found', 'Warning Message');
+  }
+
+  stopVoting() {
+    let confMsg: any = 'Are you sure! You want to forward it to Municipal Secretary?';
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.updateStopVotingStatus();
       }
+    });
+  }
+
+  updateStopVotingStatus() {
+    if (this.issues.inbox.length > 0) {
+      const ids = this.issues.inbox.map((ele: any) => ele.id).join(', ');
+      this.spinner.show();
+      let requestObject: any = {
+        issues: ids,
+        userId: this.user.userId,
+        role: this.user.role,
+      };
+      this.votingZoneService.updateStopVotingStatus(requestObject).subscribe({
+        next: (res) => {
+          if (res.status) {
+            this.toastr.success(res.message, 'Success Message');
+            location.reload();
+            this.activeTab = 'inbox';
+          } else {
+            this.toastr.error(res.message, 'Error Message');
+          }
+          this.spinner.hide();
+        },
+        error: (err) => {
+          this.spinner.hide();
+        },
+      });
+    } else {
+      this.toastr.warning('No issues found', 'Warning Message');
     }
+  }
+
+  finalAcceptance() {
+    let confMsg: any = 'Are you sure! You want to approve all and publish?';
+    Swal.fire({
+      title: 'Confirmation Message',
+      text: confMsg,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.updateFinalAcceptanceStatus();
+      }
+    });
+  }
+
+  updateFinalAcceptanceStatus() {
+    if (this.issues.inbox.length > 0) {
+      const ids = this.issues.inbox.map((ele: any) => ele.id).join(', ');
+      let requestObject: any = {
+        meeting: this.getMeetingId(),
+        issues: ids,
+        meetingDate: new Date(),
+        status: 'Active',
+        isDeleted: false,
+      };
+      this.spinner.show();
+      this.votingZoneService.updateFinalAcceptanceStatus(requestObject).subscribe({
+        next: (res) => {
+          if (res.status) {
+            this.toastr.success(res.message, 'Success Message');
+            location.reload();
+            this.activeTab = 'inbox';
+          } else {
+            this.toastr.error(res.message, 'Error Message');
+          }
+          this.spinner.hide();
+        },
+        error: (err) => {
+          this.spinner.hide();
+        },
+      });
+    } else {
+      this.toastr.warning('No issues found', 'Warning Message');
+    }
+  }
 }

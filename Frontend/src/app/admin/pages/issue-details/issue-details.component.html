@@ -24,7 +24,7 @@
         </div>
         <div class="col-md-4">
           <strong>Submission Date:</strong>
-          {{ issue.branchActionDate | date : "dd/MM/yyyy" }}
+          {{ issue.branchActionDate | date: "dd/MM/yyyy" }}
         </div>
       </div>
 
@@ -41,7 +41,7 @@
           <h5 class="fw-bold mb-3">
             Attachments
             <button
-              *ngIf="issue.status != 'Accepted' && issue.status != 'Rejected'"
+              *ngIf="issue.finalStatus != 'Accepted' && issue.finalStatus != 'Rejected'"
               (click)="fileInput.click()"
               class="btn"
               style="
@@ -107,7 +107,7 @@
                       <div>
                         <p class="timeline-step mb-0">{{ t.step }}</p>
                         <small class="text-muted">{{
-                          t.date | date : "dd/MM/yyyy, hh:mm a"
+                          t.date | date: "dd/MM/yyyy, hh:mm a"
                         }}</small>
                       </div>
                     </div>
@@ -122,14 +122,14 @@
                 <strong>Final Acceptance Status:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.status == 'Pending'
+                    issue.finalStatus == 'Pending'
                       ? 'warning'
-                      : issue.status == 'Accepted'
-                      ? 'success'
-                      : 'danger'
+                      : issue.finalStatus == 'Accepted'
+                        ? 'success'
+                        : 'danger'
                   }}"
                 >
-                  {{ issue.status }}
+                  {{ issue.finalStatus }}
                 </span>
               </h5>
               <h5
@@ -143,21 +143,21 @@
                 <strong>Rejection Reason:&nbsp;</strong>
                 <span
                   class="badge status-badge text-white bg-{{
-                    issue.status == 'Pending'
+                    issue.finalStatus == 'Pending'
                       ? 'warning'
-                      : issue.status == 'Accepted'
-                      ? 'success'
-                      : 'danger'
+                      : issue.finalStatus == 'Accepted'
+                        ? 'success'
+                        : 'danger'
                   }}"
                 >
                   {{
                     issue?.municipalAction == "Rejected"
                       ? issue?.municipalActionRemarks
                       : issue?.commissionerAction == "Rejected"
-                      ? issue?.commissionerActionRemarks
-                      : issue?.mayorAction == "Rejected"
-                      ? issue?.mayorActionRemarks
-                      : ""
+                        ? issue?.commissionerActionRemarks
+                        : issue?.mayorAction == "Rejected"
+                          ? issue?.mayorActionRemarks
+                          : ""
                   }}
                 </span>
               </h5>
@@ -253,7 +253,7 @@
                 *ngFor="let comment of allComments"
                 [ngClass]="{
                   'my-comment': comment.commentBy === user.userId,
-                  'other-comment': comment.commentBy !== user.userId
+                  'other-comment': comment.commentBy !== user.userId,
                 }"
               >
                 <div class="comment-bubble">
@@ -266,7 +266,7 @@
                       }}
                     </span>
                     <span class="comment-date">
-                      {{ comment.createdAt | date : "short" }}
+                      {{ comment.createdAt | date: "short" }}
                     </span>
                   </div>
 
@@ -295,7 +295,7 @@
                             }}
                           </span>
                           <span class="comment-date">
-                            {{ reply.createdAt | date : "short" }}
+                            {{ reply.createdAt | date: "short" }}
                           </span>
                         </div>
                         <span class="contnet-name">
@@ -309,7 +309,14 @@
                     </div>
 
                     <div *ngIf="selectedComment?.id === comment.id">
-                      <div class="input-wrapper">
+                      <div
+                        class="input-wrapper"
+                        *ngIf="
+                          activeTab != 'draft' &&
+                          issue.finalStatus != 'Accepted' &&
+                          issue.finalStatus != 'Rejected'
+                        "
+                      >
                         <!-- <input
                           type="text"
                           class="comment-input"
@@ -345,7 +352,11 @@
                       class="comment-footer"
                       *ngIf="selectedComment?.id !== comment.id"
                     >
-                      <span class="reply-btn" (click)="replyComment(comment)">
+                      <span class="reply-btn" (click)="replyComment(comment)" *ngIf="
+                          activeTab != 'draft' &&
+                          issue.finalStatus != 'Accepted' &&
+                          issue.finalStatus != 'Rejected'
+                        ">
                         <span class="reply-icon">
                           <i class="bi bi-reply"></i>
                         </span>
@@ -379,8 +390,8 @@
             class="comment-box"
             *ngIf="
               activeTab != 'draft' &&
-              issue.status != 'Accepted' &&
-              issue.status != 'Rejected'
+              issue.finalStatus != 'Accepted' &&
+              issue.finalStatus != 'Rejected'
             "
           >
             <!-- <img src="assets/user-avatar.png" class="avatar" alt="User" /> -->

@@ -51,6 +51,8 @@ import { MuniSecIssueBucketComponent } from './municipal-secretary/muni-sec-issu
 import { CommissionerIssueBucketComponent } from './commissioner/commissioner-issue-bucket/commissioner-issue-bucket.component';
 import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.component';
 import { MayorIssueBucketComponent } from './mayor/mayor-issue-bucket/mayor-issue-bucket.component';
+import { CounselorIssueBucketComponent } from './counselor/counselor-issue-bucket/counselor-issue-bucket.component';
+import { AgendaArchiveComponent } from './agenda-archive/agenda-archive/agenda-archive.component';
 // import { LoaderComponent } from './loader/loader.component';
 
 @NgModule({
@@ -75,7 +77,9 @@ import { MayorIssueBucketComponent } from './mayor/mayor-issue-bucket/mayor-issu
     MuniSecIssueBucketComponent,
     CommissionerIssueBucketComponent,
     VotingZoneComponent,
-    MayorIssueBucketComponent
+    MayorIssueBucketComponent,
+    CounselorIssueBucketComponent,
+    AgendaArchiveComponent
   ],
   imports: [
     FormsModule,

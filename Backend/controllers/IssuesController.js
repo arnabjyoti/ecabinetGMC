@@ -14,6 +14,7 @@ const config = require("../config/config.json")[env];
 const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
+const { log } = require("console");
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
@@ -21,7 +22,7 @@ const storage = multer.diskStorage({
     const issue = JSON.parse(req.body.issue);
     let dest = path.join(
       path.join(config.FILE_UPLOAD_PATH, user.userId.toString()),
-      issue.id.toString()
+      issue.id.toString(),
     );
     module.exports.checkDirectory(dest, () => {
       callback(null, dest);
@@ -101,18 +102,26 @@ module.exports = {
     const department = req.body.requestObject.department;
     const role = req.body.requestObject.role;
     let whereClause = {
-      isDeleted: false,
-      status: {
-        [Op.ne]: "Completed",
+      branchAction:"Sent",
+      municipalAction:"Approved",
+      commissionerAction:"Approved",
+      mayorAction:"Approved",
+      voting: {
+        [Op.ne]: "",
       },
+      finalStatus: {
+        [Op.ne]: "Accepted",
+      },
+      isDeleted: false,
     };
     // if (role === "branch_user" && department) {
     //   whereClause.department = department;
     // }
-    whereClause.branchAction = "Sent";
-    whereClause.municipalAction = "Approved";
-    whereClause.commissionerAction = "Approved";
-    whereClause.voting = "Started";
+    // whereClause.branchAction = "Sent";
+    // whereClause.municipalAction = "Approved";
+    // whereClause.commissionerAction = "Approved";
+    // whereClause.mayorAction = "Approved";
+    // whereClause.voting = "Started";
     return issuesModel
       .findAll({
         where: whereClause,
@@ -453,7 +462,7 @@ module.exports = {
           return res
             .status(200)
             .send({ status: true, data: result, message: "Success" });
-        }
+        },
       );
     } catch (error) {
       console.error("Error in getVotePageData:", error);
@@ -637,18 +646,79 @@ module.exports = {
     }
   },
 
+  // async startVoting(req, res) {
+  //   let requestObject = req.body.requestObject;
+  //   if (!requestObject.meeting || !requestObject.issues) {
+  //     return res.status(200).send({
+  //       status: false,
+  //       message: "Unable to start voting. Please check the values provided",
+  //     });
+  //   }
+  //   try {
+  //     const issueIds = requestObject.issues.split(",");
+  //     if (issueIds.length > 0) {
+  //       micMeetingModel.create(requestObject).then(async (m) => {
+  //         let whereClause = {
+  //           status: "Active",
+  //           isDeleted: false,
+  //           isVoter: true,
+  //         };
+  //         let totalVoters = await usersModel.count({ where: whereClause });
+  //         let count = 0;
+  //         issueIds.map(async (id) => {
+  //           const issue = await issuesModel.findByPk(id);
+  //           if (issue) {
+  //             const newVotingTracker = {
+  //               issue_id: id,
+  //               total_voter: totalVoters,
+  //               vote_polled: 0,
+  //               accepted: 0,
+  //               rejected: 0,
+  //               abstained: 0,
+  //               voting_status: "Open",
+  //               record_status: "Active",
+  //               isDeleted: false,
+  //             };
+  //             votingTrackersModel.create(newVotingTracker).then(async (r) => {
+  //               issue.voting = "Started";
+  //               issue.status = "Accepted";
+  //               issue.votingDate = new Date();
+  //               await issue.save();
+  //             });
+  //           }
+  //           count++;
+  //           if (issueIds.length == count) {
+  //             return res.status(200).send({
+  //               status: true,
+  //               message: "Placed in MIC Meeting successfully",
+  //             });
+  //           }
+  //         });
+  //       });
+  //     } else {
+  //       return res.status(200).send({
+  //         status: false,
+  //         message: "No issues found for start voting.",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error("Error updating issue:", error);
+  //     return res.status(500).send({ status: false, message: error });
+  //   }
+  // },
+
   async startVoting(req, res) {
     let requestObject = req.body.requestObject;
     if (!requestObject.meeting || !requestObject.issues) {
       return res.status(200).send({
         status: false,
-        message: "Unable to start voting. Please check the values provided",
+        message: "Unable to place in MIC. Please check the values provided",
       });
     }
     try {
       const issueIds = requestObject.issues.split(",");
       if (issueIds.length > 0) {
-        micMeetingModel.create(requestObject).then(async (m) => {
+        // micMeetingModel.create(requestObject).then(async (m) => {
           let whereClause = {
             status: "Active",
             isDeleted: false,
@@ -672,7 +742,7 @@ module.exports = {
               };
               votingTrackersModel.create(newVotingTracker).then(async (r) => {
                 issue.voting = "Started";
-                issue.status = "Accepted";
+                // issue.status = "Accepted";
                 issue.votingDate = new Date();
                 await issue.save();
               });
@@ -685,7 +755,7 @@ module.exports = {
               });
             }
           });
-        });
+        // });
       } else {
         return res.status(200).send({
           status: false,
@@ -704,7 +774,7 @@ module.exports = {
       return res.status(200).send({
         status: false,
         message:
-          "Unable to stop meeting. Something went wrong, please try again",
+          "Unable to forward it to Municipal Secretary. Something went wrong, please try again",
       });
     }
     try {
@@ -742,7 +812,6 @@ module.exports = {
                 if (votes.length > 0) {
                   vote_polled = votes.length;
                   votes.map((item) => {
-                    console.log("ITEM==", item.vote);
                     if (item.vote == "Approved") {
                       approved++;
                     }
@@ -766,7 +835,8 @@ module.exports = {
                 voting_tracker.voting_status = status;
                 voting_tracker.save();
                 issue.voting = "Completed";
-                issue.status = status;
+                // issue.status = status;
+                issue.status = "Accepted";
                 issue.votingDate = new Date();
                 await issue.save();
               })
@@ -782,19 +852,59 @@ module.exports = {
           if (issueIds.length == count) {
             return res.status(200).send({
               status: true,
-              message: "Meeting stopped successfully",
+              message: "Successfully forwarded to Municipal Secretary",
             });
           }
         });
       } else {
         return res.status(200).send({
           status: false,
-          message: "No issues found for stop voting.",
+          message: "No issues found for forwarding to Municipal Secretary",
         });
       }
     } catch (error) {
       console.error("Error updating issue:", error);
       return res.status(200).send({ status: false, message: error });
+    }
+  },
+
+  async updateFinalAcceptanceStatus(req, res) {
+    let requestObject = req.body.requestObject;
+    if (!requestObject.meeting || !requestObject.issues) {
+      return res.status(200).send({
+        status: false,
+        message: "Unable to publish. Please check the values provided",
+      });
+    }
+    try {
+      const issueIds = requestObject.issues.split(",");
+      if (issueIds.length > 0) {
+        micMeetingModel.create(requestObject).then(async (m) => {
+          let count = 0;
+          issueIds.map(async (id) => {
+            const issue = await issuesModel.findByPk(id);
+            if (issue) {
+                issue.finalStatus = "Accepted";
+                await issue.save();
+            }
+            count++;
+            if (issueIds.length == count) {
+              return res.status(200).send({
+                status: true,
+                message: "Agendas published successfully",
+              });
+            }
+          });
+        });
+      } else {
+        return res.status(200).send({
+          status: false,
+          message: "No agenda found for publish",
+        });
+      }
+    } catch (error) {
+      console.error("Error updating issue:", error);
+      return res.status(500).send({ status: false, message: error });
     }
   },
 
@@ -937,6 +1047,57 @@ module.exports = {
         status: false,
         message: error.message,
       });
+    }
+  },
+
+  getArchiveMeetings(req, res) {
+    console.log("req.body ", req.body);
+    return micMeetingModel
+      .findAll({
+        where: {
+          status: "Active",
+          isDeleted: false,
+        },
+      })
+      .then((meetings) => {
+        return res
+          .status(200)
+          .send({ status: true, data: meetings, message: "Success" });
+      })
+      .catch((error) => {
+        console.log(error);
+        return res
+          .status(500)
+          .send({ status: false, data: [], message: error });
+      });
+  },
+  async getArchiveAgendas(req, res) {
+    let agendaIds = req.body.requestObject.agendaIds.split(",");
+    if (agendaIds.length > 0) {
+      try {
+        const agendas = await Promise.all(
+          agendaIds.map((id) =>
+            issuesModel.findOne({
+              where: {
+                id: parseInt(id),
+                isDeleted: false,
+              },
+            }),
+          ),
+        );
+        return res.status(200).send({
+          status: true,
+          data: agendas,
+          message: "Success",
+        });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+          status: false,
+          data: [],
+          message: error.message,
+        });
+      }
     }
   },
 };

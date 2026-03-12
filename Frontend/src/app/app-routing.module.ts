@@ -16,6 +16,8 @@ import { MuniSecIssueBucketComponent } from './municipal-secretary/muni-sec-issu
 import { CommissionerIssueBucketComponent } from './commissioner/commissioner-issue-bucket/commissioner-issue-bucket.component';
 import { VotingZoneComponent } from './admin/pages/voting-zone/voting-zone.component';
 import { MayorIssueBucketComponent } from './mayor/mayor-issue-bucket/mayor-issue-bucket.component';
+import { CounselorIssueBucketComponent } from './counselor/counselor-issue-bucket/counselor-issue-bucket.component';
+import { AgendaArchiveComponent } from './agenda-archive/agenda-archive/agenda-archive.component';
 
 const routes: Routes = [
   {
@@ -29,25 +31,37 @@ const routes: Routes = [
     path: 'branch-issue-bucket',
     component: ApplicationsComponent,
     canActivate: [RoleGuard],
-    data: { expectedRole: 'branch_user' },
+    data: { expectedRole: ['branch_user'] },
   },
   {
     path: 'municipal-secretary-issue-bucket',
     component: MuniSecIssueBucketComponent,
     canActivate: [RoleGuard],
-    data: { expectedRole: 'municipal_secretary' },
+    data: { expectedRole: ['municipal_secretary'] },
   },
   {
     path: 'commissioner-issue-bucket',
     component: CommissionerIssueBucketComponent,
     canActivate: [RoleGuard],
-    data: { expectedRole: 'commissioner' },
+    data: { expectedRole: ['commissioner'] },
   },
   {
     path: 'mayor-issue-bucket',
     component: MayorIssueBucketComponent,
     canActivate: [RoleGuard],
-    data: { expectedRole: 'mayor' },
+    data: { expectedRole: ['mayor'] },
+  },
+   {
+    path: 'approved-agenda-list',
+    component: CounselorIssueBucketComponent,
+    canActivate: [RoleGuard],
+    data: { expectedRole: ['counselor'] },
+  },
+   {
+    path: 'agenda-archive',
+    component: AgendaArchiveComponent,
+    canActivate: [RoleGuard],
+    data: { expectedRole: ['branch_user','counselor','municipal_secretary','commissioner','mayor'] },
   },
   {
     path: 'voting-zone',

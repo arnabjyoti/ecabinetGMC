@@ -1,56 +1,27 @@
 <app-sidebar (collapsedChange)="onSidebarToggle($event)"></app-sidebar>
 
-<div class="main-content" [class.collapsed]="sidebarCollapsed">
-  <h3
+<div class="main-content" [class.collapsed]="sidebarCollapsed" style="margin-top: 90px;">
+  <!-- <h3
     class="page-title"
-    style="margin-top: 50px; text-align: center; color: rgb(87, 90, 92)"
+    style="margin-top: 90px; text-align: center; color: rgb(87, 90, 92)"
   >
     MIC MEETING ZONE
-  </h3>
+  </h3> -->
 
   <div class="mail-container">
     <!-- Content -->
     <div class="content" *ngIf="!isDetailView">
       <h3>
-        <i class="bi bi-inbox"></i>&nbsp;Agendas in MIC Meeting
-        <button
-          *ngIf="user.role == 'commissioner' && !isStatusAccepted && issues.inbox.length>0"
-          (click)="stopVoting()"
-          class="btn btn-primary px-4"
-          style="float: right; background-color: green"
-        >
-          <i class="bi bi-send"></i> Forward to MS
-        </button>
-        <button
-          *ngIf="user.role == 'municipal_secretary' && isStatusAccepted && !isFinalStatusAccepted && issues.inbox.length>0"
-          (click)="finalAcceptance()"
-          class="btn btn-primary px-4"
-          style="float: right; background-color: green"
-        >
-          <i class="bi bi-hand-thumbs-up"></i> Approve All & Publish
-        </button>
-        <span *ngIf="isVotingStarted && issues.inbox.length>0" style="float: right;">
-          <!-- <button *ngIf="user.role == 'mayor'"
-            class="btn btn-primary"
-            (click)="stopVoting()" style="background-color: brown">
-            <i class="bi bi-x-square"></i> Stop Meeting
-          </button> -->
-          <!-- <button *ngIf="user.role != 'mayor'"
-            class="btn btn-primary"
-            [disabled]="true" style="background-color: orange">
-            <i class="bi bi-hand-thumbs-up"></i> Meeting Started
-          </button> -->
+        <i class="bi bi-inbox"></i>&nbsp;List of Agendas 
+        <span *ngIf="meetings.length>0" style="float: right;font-size: 16px;">      
+        MIC Meeting
+        <select [(ngModel)]="selectedMeeting" (change)="onChangeMeeting()">
+            <option *ngFor="let m of meetings" [value]="m.meeting">{{m.meeting}}</option>
+        </select> 
         </span>
-        <!-- <span *ngIf="!isVotingStarted && issues.inbox.length>0" style="float: right;">
-          <button *ngIf="user.role == 'mayor'"
-            class="btn btn-primary"
-            (click)="stopVoting()" style="background-color: green">
-            <i class="bi bi-hand-thumbs-up"></i> Start Meeting
-          </button>
-        </span> -->
       </h3>
-      <div class="mail-list" *ngIf="issues[activeTab]?.length; else noIssue">
-        <div *ngFor="let issue of issues[activeTab]">
+      <div class="mail-list" *ngIf="agendas[activeTab]?.length; else noIssue">
+        <div *ngFor="let issue of agendas[activeTab]">
           <div
             class="mail-item"
             style="cursor: pointer"

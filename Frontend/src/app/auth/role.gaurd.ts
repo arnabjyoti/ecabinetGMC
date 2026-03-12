@@ -10,7 +10,8 @@ export class RoleGuard implements CanActivate {
     const expectedRole = route.data['expectedRole'];
     const role = this.authService.getRole();
 
-    if (role === expectedRole) {
+    // if (role === expectedRole) {
+    if (expectedRole.includes(role)) {
       return true;
     }
     this.router.navigate(['/']);

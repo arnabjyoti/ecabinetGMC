@@ -167,16 +167,16 @@ export class IssueDetailsComponent implements OnInit {
           date: this.issue.votingDate,
         });
       }
-      if (this.issue.status == 'Pending' && this.issue.votingDate) {
+      if (this.issue.finalStatus == 'Pending' && this.issue.votingDate) {
         timeline.push({
           step: 'Agenda Acceptance Pending',
           date: this.issue.votingDate,
         });
       }
-      if (this.issue.status == 'Accepted' && this.issue.votingDate) {
+      if (this.issue.finalStatus == 'Accepted' && this.issue.votingDate) {
         timeline.push({ step: 'Agenda Accepted', date: this.issue.votingDate });
       }
-      if (this.issue.status == 'Rejected' && this.issue.votingDate) {
+      if (this.issue.finalStatus == 'Rejected' && this.issue.votingDate) {
         timeline.push({ step: 'Agenda Rejected', date: this.issue.votingDate });
       }
     }
